@@ -10,7 +10,7 @@ The CSVs, `story.md`, and `notes.md` in `data/` are the source of truth. The XLS
 
 - `data/timeseries.csv` — main daily series, global totals only. One row per Report Date. See `README.md` for the schema.
 - `data/country_breakdown.csv` — per-country detail in long format (DRC, Uganda, future reporters). Grows as new countries report cases.
-- `data/declarations.csv` — per-country CDC advisory and WHO declaration status with primary-source URLs. Schema: `country, first_report_date, case_status, cdc_advisory, cdc_url, who_status, who_url, last_reviewed, notes`. Updates when declarations change or a new country starts reporting cases.
+- `data/declarations.csv` — per-country CDC advisory, CDC travel notice, and WHO declaration status with primary-source URLs. Schema: `country, first_report_date, case_status, cdc_advisory, cdc_url, cdc_travel_notice_level, cdc_travel_notice_url, who_status, who_url, notes`. The CDC fields cover two distinct advisory systems: HAN (clinician-facing alerts in `cdc_advisory`/`cdc_url`) and Travel Health Notices (traveler-facing per-country level in `cdc_travel_notice_level`/`cdc_travel_notice_url`, drawn from wwwnc.cdc.gov/travel/notices). Travel notice levels run 1 (Practice Usual Precautions) through 4 (Avoid All Travel). Updates when declarations change, a travel-notice level shifts, or a new country starts reporting cases.
 - `data/story.md` — narrative summary. Markdown with two sections: "Story so far" (slow-moving context) and "Latest update" (the most recent material development, refreshed by the daily run when warranted). Rendered as the lead block on the site.
 - `data/notes.md` — append-only methodology and revision log.
 
