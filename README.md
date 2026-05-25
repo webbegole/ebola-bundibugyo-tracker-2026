@@ -16,6 +16,7 @@ Live site: [webbegole.github.io/ebola-bundibugyo-tracker-2026](https://webbegole
 - `METHODOLOGY.md` — the playbook: source preference order, lookback policy, no-dip rule, chart conventions.
 - `src/generate_charts.py` — reads the CSVs and renders the PNG charts.
 - `src/build_xlsx.py` — rebuilds a convenience XLSX export from the CSVs.
+- `src/validate.py` — pre-commit gate. Checks CSV schemas, monotonic cumulative columns (the no-dip rule), `total = suspected + confirmed`, country sums equal global totals on the latest date, and date format and uniqueness. Run with `python3 src/validate.py`; exit 0 = clean, non-zero = at least one failure with a row-level explanation.
 - `outputs/` — generated charts and the XLSX export. Build artifacts.
 
 ## Latest charts

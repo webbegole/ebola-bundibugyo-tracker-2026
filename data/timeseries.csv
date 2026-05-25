@@ -8,5 +8,5 @@ report_date,suspected_global,confirmed_global,total_global,suspected_deaths_glob
 2026-05-21,746,85,831,176,"WHO DON603 (data as of 21 May, pub. 22 May)",2026-05-21
 2026-05-22,746,85,831,176,WHO DON603 figures carried forward (no-dip rule); May 22 CDC Situation Summary reported 744/83/176,2026-05-22
 2026-05-23,750,88,838,177,"WHO Tedros briefing (May 22, via CIDRAP/ABC) + Uganda MoH (May 23); DRC confirmed carried forward from revised May 22 (no-dip cascade); briefing-source globals: 750/87/837",2026-05-23
-2026-05-24,904,106,1010,220,"DRC govt figures (Sunday May 24, via Reuters/AP/UN News/CNN) for cases; WHO DG Tedros (May 25 remarks) for suspected deaths ('at least 220'); no-dip rule applied",2026-05-24
-2026-05-25,904,108,1012,220,Uganda MoH (May 25): +2 confirmed (Kampala health workers); DRC cases carry Sunday May 24 govt figures (Reuters/AP); WHO DG Tedros (May 25 remarks) for suspected deaths ('at least 220'); no-dip rule applied,2026-05-25
+2026-05-24,904,106,1010,220,"DRC govt figures (Sunday May 24, via Reuters/AP/UN News/CNN) for cases; WHO DG Tedros (May 25 Virtual Ministerial Briefing on Bundibugyo) reaffirms 220 suspected deaths and 10 confirmed deaths in DRC; no-dip rule applied",2026-05-24
+2026-05-25,904,108,1012,220,"WHO DG Tedros (May 25 Virtual Ministerial Briefing on Bundibugyo): 904 sus / 101 conf / 220 sus deaths / 10 conf deaths in DRC; Uganda MoH (May 25 press release): +2 confirmed (Kampala health workers), Uganda 7 conf / 1 death; no-dip rule applied",2026-05-25
