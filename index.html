@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Ebola (Bundibugyo) Outbreak Tracker</title>
+<meta name="description" content="Daily time series of the 2026 Ebola (Bundibugyo) outbreak in DRC and Uganda, compiled from official public-health sources.">
+<style>
+  :root {
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-text: #222222;
+    --color-subtle: #666666;
+    --color-border: #e0e0e0;
+    --color-accent: #1f4e79;
+    --color-suspected: #4a6fa5;
+    --color-confirmed: #c24e4e;
+    --color-deaths: #2c3e50;
+    --max-width: 1120px;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--color-text);
+    background: var(--color-bg);
+  }
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  header { margin-bottom: 40px; }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: -0.02em;
+  }
+  header .subtitle {
+    margin: 0 0 16px;
+    font-size: 17px;
+    color: var(--color-subtle);
+    max-width: 720px;
+  }
+  header .updated {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-subtle);
+    font-family: var(--font-mono);
+  }
+  header .updated strong { color: var(--color-text); }
+
+  section { margin-bottom: 48px; }
+  section h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 8px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .stat-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 20px 22px;
+  }
+  .stat-card h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-subtle);
+  }
+  .stat-card .big {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+  }
+  .stat-card .delta {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--color-subtle);
+    font-family: var(--font-mono);
+  }
+  .stat-card.suspected .big { color: var(--color-suspected); }
+  .stat-card.confirmed .big { color: var(--color-confirmed); }
+  .stat-card.deaths    .big { color: var(--color-deaths); }
+
+  .charts {
+    display: grid;
+    gap: 24px;
+  }
+  .chart {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .chart img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+  .chart figcaption {
+    margin: 12px 4px 0;
+    font-size: 13px;
+    color: var(--color-subtle);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+  th {
+    background: #f5f7fa;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-subtle);
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.source { color: var(--color-subtle); font-size: 13px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8f9fb; }
+
+  .table-scroll { overflow-x: auto; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    font-size: 14px;
+    color: var(--color-subtle);
+  }
+  footer p { margin: 0 0 8px; }
+  footer a { color: var(--color-accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .error {
+    background: #fff4f4;
+    border: 1px solid #f0c0c0;
+    color: #883333;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 20px 16px; }
+    header h1 { font-size: 26px; }
+    .stat-card .big { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>2026 Ebola (Bundibugyo) Outbreak Tracker</h1>
+    <p class="subtitle">
+      A daily time series of the outbreak in DRC and Uganda. Compiled from
+      WHO, CDC, Africa CDC, and established wire services. Aggregate counts only.
+    </p>
+    <p class="updated">Last updated: <strong id="last-updated">loading…</strong></p>
+  </header>
+
+  <section class="stats" aria-label="Headline figures">
+    <div class="stat-card suspected">
+      <h3>Suspected (global)</h3>
+      <p class="big" id="stat-suspected">—</p>
+      <p class="delta" id="delta-suspected">—</p>
+    </div>
+    <div class="stat-card confirmed">
+      <h3>Lab-confirmed (global)</h3>
+      <p class="big" id="stat-confirmed">—</p>
+      <p class="delta" id="delta-confirmed">—</p>
+    </div>
+    <div class="stat-card">
+      <h3>Total cases (global)</h3>
+      <p class="big" id="stat-total">—</p>
+      <p class="delta" id="delta-total">—</p>
+    </div>
+    <div class="stat-card deaths">
+      <h3>Suspected deaths</h3>
+      <p class="big" id="stat-deaths">—</p>
+      <p class="delta" id="delta-deaths">—</p>
+    </div>
+    <div class="stat-card">
+      <h3>Uganda confirmed</h3>
+      <p class="big" id="stat-uganda-conf">—</p>
+      <p class="delta" id="delta-uganda-conf">—</p>
+    </div>
+    <div class="stat-card">
+      <h3>Uganda deaths</h3>
+      <p class="big" id="stat-uganda-deaths">—</p>
+      <p class="delta" id="delta-uganda-deaths">—</p>
+    </div>
+  </section>
+
+  <section class="charts" aria-label="Charts">
+    <h2>Charts</h2>
+    <figure class="chart">
+      <img src="outputs/latest-cases.png" alt="7-day rolling sum of new cases with cumulative total and confirmed lines">
+      <figcaption>7-day rolling sum of new cases. Bronze line: cumulative total. Deep-red line: cumulative lab-confirmed.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
+      <figcaption>7-day rolling sum of suspected deaths.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="outputs/latest-doubling-time.png" alt="Doubling time of lab-confirmed cases">
+      <figcaption>Trailing 7-day doubling time of lab-confirmed cases. Lower = faster spread.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-label="Recent reporting">
+    <h2>Recent reporting</h2>
+    <div class="table-scroll">
+      <table id="recent-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Suspected</th>
+            <th>Confirmed</th>
+            <th>Total</th>
+            <th>Susp. Deaths</th>
+            <th>Uganda Conf.</th>
+            <th>Uganda Deaths</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="recent-body">
+          <tr><td colspan="8" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Tracker by <strong>Web Begole</strong> ·
+      <a href="https://x.com/web_begole">@web_begole</a> on X ·
+      <a href="https://www.linkedin.com/in/webbegole/">LinkedIn</a> ·
+      <a href="https://github.com/webbegole/ebola-bundibugyo-tracker-2026">GitHub</a>
+    </p>
+    <p>
+      Methodology: <a href="METHODOLOGY.md">METHODOLOGY.md</a> ·
+      Data: <a href="data/timeseries.csv">timeseries.csv</a>,
+      <a href="data/country_breakdown.csv">country_breakdown.csv</a>,
+      <a href="data/notes.md">notes.md</a> ·
+      <a href="README.md">README</a>
+    </p>
+    <p>
+      Data licensed CC BY 4.0. Code licensed MIT.
+      Compiled from WHO AFRO Sitrep, WHO Disease Outbreak News, CDC, Africa CDC, BNO News, Reuters, AP.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Minimal CSV parser. Handles quoted fields with commas inside; does not
+  // support escaped quotes (the tracker CSVs don't need it).
+  function parseCSV(text) {
+    const lines = text.replace(/\r\n?/g, "\n").split("\n").filter(l => l.length);
+    const rows = lines.map(parseLine);
+    const headers = rows[0];
+    return rows.slice(1).map(cols => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = cols[i] !== undefined ? cols[i] : ""; });
+      return obj;
+    });
+  }
+
+  function parseLine(line) {
+    const out = [];
+    let cur = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === "\"") { inQuotes = !inQuotes; continue; }
+      if (ch === "," && !inQuotes) { out.push(cur); cur = ""; continue; }
+      cur += ch;
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function fmtNum(n) {
+    if (n === "" || n === null || n === undefined) return "—";
+    const v = Number(n);
+    if (!Number.isFinite(v)) return "—";
+    return v.toLocaleString("en-US");
+  }
+
+  function fmtDelta(curr, prev) {
+    if (curr === "" || prev === "" || curr === undefined || prev === undefined) return "";
+    const c = Number(curr), p = Number(prev);
+    if (!Number.isFinite(c) || !Number.isFinite(p)) return "";
+    const d = c - p;
+    if (d === 0) return "no change vs. prior day";
+    const sign = d > 0 ? "+" : "";
+    return `${sign}${d.toLocaleString("en-US")} vs. prior day`;
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function renderError(message) {
+    const body = document.getElementById("recent-body");
+    body.innerHTML = `<tr><td colspan="8"><div class="error">${message}</div></td></tr>`;
+  }
+
+  function render(rows) {
+    if (!rows.length) {
+      renderError("No data rows found in data/timeseries.csv.");
+      return;
+    }
+    const latest = rows[rows.length - 1];
+    const prior = rows.length >= 2 ? rows[rows.length - 2] : null;
+
+    setText("last-updated", latest.report_date);
+
+    const fields = [
+      ["suspected", "suspected_global"],
+      ["confirmed", "confirmed_global"],
+      ["total", "total_global"],
+      ["deaths", "suspected_deaths_global"],
+      ["uganda-conf", "uganda_confirmed"],
+      ["uganda-deaths", "uganda_deaths"],
+    ];
+    fields.forEach(([slug, col]) => {
+      setText(`stat-${slug}`, fmtNum(latest[col]));
+      setText(`delta-${slug}`, prior ? fmtDelta(latest[col], prior[col]) : "");
+    });
+
+    // Recent rows: last 10, most recent first.
+    const recent = rows.slice(-10).reverse();
+    const body = document.getElementById("recent-body");
+    body.innerHTML = "";
+    recent.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.report_date}</td>
+        <td class="num">${fmtNum(r.suspected_global)}</td>
+        <td class="num">${fmtNum(r.confirmed_global)}</td>
+        <td class="num">${fmtNum(r.total_global)}</td>
+        <td class="num">${fmtNum(r.suspected_deaths_global)}</td>
+        <td class="num">${fmtNum(r.uganda_confirmed)}</td>
+        <td class="num">${fmtNum(r.uganda_deaths)}</td>
+        <td class="source">${r.primary_source || ""}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  fetch("data/timeseries.csv", { cache: "no-store" })
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status} fetching data/timeseries.csv`);
+      return res.text();
+    })
+    .then(text => {
+      const rows = parseCSV(text).filter(r => r.report_date && r.report_date.startsWith("2026-"));
+      render(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      renderError("Could not load data/timeseries.csv. If you are viewing this page locally, serve the folder over HTTP (e.g. <code>python3 -m http.server</code>).");
+    });
+})();
+</script>
+
+</body>
+</html>

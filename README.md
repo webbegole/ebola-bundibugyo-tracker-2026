@@ -1,0 +1,87 @@
+# 2026 Ebola (Bundibugyo) Outbreak Tracker
+
+By [Web Begole](https://www.linkedin.com/in/webbegole/) ([@web_begole](https://x.com/web_begole) on X).
+
+A daily time series of the 2026 Ebola outbreak in DRC and Uganda, compiled from official public-health sources for academic use. Aggregate counts only. No individuals named. No medical advice.
+
+Live site: [webbegole.github.io/ebola-bundibugyo-tracker-2026](https://webbegole.github.io/ebola-bundibugyo-tracker-2026/)
+
+## What's in the repo
+
+- `data/timeseries.csv` — the main daily series. Global headline totals plus Uganda breakout. One row per Report Date.
+- `data/country_breakdown.csv` — per-country detail in long format. Grows as new countries report cases.
+- `data/notes.md` — methodology decisions, source-conflict resolutions, and the revision log. Append-only and dated. The git history of this file is the canonical audit trail.
+- `METHODOLOGY.md` — the playbook: source preference order, lookback policy, no-dip rule, chart conventions.
+- `src/generate_charts.py` — reads the CSVs and renders the PNG charts.
+- `src/build_xlsx.py` — rebuilds a convenience XLSX export from the CSVs.
+- `outputs/` — generated charts and the XLSX export. Build artifacts.
+
+## Latest charts
+
+The most recent charts are in `outputs/` with date-prefixed filenames:
+
+- `outputs/YYYY-MM-DD_ebola-cases-7d-rolling-sum.png`
+- `outputs/YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png`
+- `outputs/YYYY-MM-DD_ebola-doubling-time.png`
+
+Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`.
+
+## Data schemas
+
+### `timeseries.csv`
+
+| Column | Type | Definition |
+|---|---|---|
+| `report_date` | `YYYY-MM-DD` | The calendar day this row was added. |
+| `suspected_global` | int | Cumulative suspected cases across all reporting countries. |
+| `confirmed_global` | int | Cumulative lab-confirmed cases (PCR at INRB or partner labs). |
+| `total_global` | int | `suspected_global + confirmed_global`. |
+| `suspected_deaths_global` | int | Cumulative suspected deaths across all reporting countries. |
+| `uganda_confirmed` | int | Uganda-specific confirmed cases (salient cross-border line). |
+| `uganda_deaths` | int | Uganda-specific deaths. |
+| `primary_source` | string | Short citation, including the source's "as of" date. |
+| `source_timestamp` | `YYYY-MM-DD` | The date the source itself uses for the data. Makes reporting lag visible. |
+
+### `country_breakdown.csv`
+
+| Column | Type | Definition |
+|---|---|---|
+| `date` | `YYYY-MM-DD` | Matches the main timeseries `report_date`. |
+| `country` | string | Reporting country (DRC, Uganda, etc.). |
+| `suspected` | int (nullable) | Country-specific cumulative suspected cases. Blank if source doesn't publish. |
+| `confirmed` | int (nullable) | Country-specific cumulative confirmed cases. |
+| `suspected_deaths` | int (nullable) | Country-specific cumulative suspected deaths. |
+| `confirmed_deaths` | int (nullable) | Country-specific cumulative confirmed deaths. Blank if not broken out. |
+| `primary_source` | string | Country-level source citation. |
+| `source_timestamp` | `YYYY-MM-DD` | Source's "as of" date. |
+
+### `notes.md`
+
+Plain markdown list. Each bullet is dated and attributed. New bullets are appended; existing bullets are not edited. See `METHODOLOGY.md` for the rules around when a bullet is added.
+
+## Build
+
+```bash
+pip install -r requirements.txt   # or: pip install -e .
+python3 src/generate_charts.py    # regenerates the three PNGs in outputs/
+python3 src/build_xlsx.py         # regenerates outputs/ebola_timeseries.xlsx
+```
+
+## Methodology
+
+The full methodology is in [METHODOLOGY.md](METHODOLOGY.md). Key rules:
+
+- **Source preference order**: WHO AFRO Sitrep > WHO Disease Outbreak News > CDC > Africa CDC > established wires (Reuters, AP, AFP, BNO News). Within each tier, the most recent reconciled snapshot wins.
+- **Lookback**: every run re-checks the most recent 7 rows against the latest sources and applies revisions in place. Every revision is logged in `data/notes.md`.
+- **No-dip rule**: cumulative metrics are monotonically non-decreasing. A single source proposing a downward revision is held in NOTES; the dip is only applied when multiple high-value sources confirm. WHO Director-General statements count as a high-value source.
+- **Provisional bars**: chart bars after the latest WHO Weekly Sitrep "as of" date are diagonally hatched to mark them as provisional.
+
+## License
+
+Data: CC-BY 4.0. Code: MIT. See `LICENSE-DATA` and `LICENSE-CODE`.
+
+## About
+
+Maintained by [Web Begole](https://www.linkedin.com/in/webbegole/). The methodology is intended to be reproducible: clone the repo, install the deps, and rebuild the charts from the CSVs.
+
+Contact: [@web_begole](https://x.com/web_begole) on X · [linkedin.com/in/webbegole](https://www.linkedin.com/in/webbegole/)

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ebola-bundibugyo-tracker-2026"
+version = "0.1.0"
+description = "Daily time series of the 2026 Ebola (Bundibugyo) outbreak in DRC and Uganda, with chart generation."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["ebola", "bundibugyo", "public-health", "outbreak", "drc", "uganda"]
+authors = [{ name = "Web Begole" }]
+
+[project.urls]
+Repository = "https://github.com/webbegole/ebola-bundibugyo-tracker-2026"
+Homepage = "https://webbegole.github.io/ebola-bundibugyo-tracker-2026/"
+
+dependencies = [
+    "matplotlib>=3.7,<4",
+    "openpyxl>=3.1,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.4",
+]
+
+[tool.setuptools]
+packages = []

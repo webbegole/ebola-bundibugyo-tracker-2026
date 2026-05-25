@@ -1,0 +1,152 @@
+# Methodology
+
+## What this is
+
+A daily time series of the 2026 Ebola (Bundibugyo) outbreak, compiled from official public-health sources for academic use. Tracks the global outbreak total across all reporting countries (currently DRC and Uganda; designed to absorb additional countries as they emerge). Aggregate counts only. No individuals named. No medical advice.
+
+## Data files
+
+The CSVs and `notes.md` in `data/` are the source of truth. The XLSX in `outputs/` is a convenience export; do not edit it.
+
+- `data/timeseries.csv` — main daily series. One row per Report Date. See `README.md` for the schema.
+- `data/country_breakdown.csv` — per-country detail in long format. Grows as new countries report cases.
+- `data/notes.md` — append-only methodology and revision log.
+
+## Adding a new country
+
+When a third country starts reporting cases:
+
+1. Add the new country's cases to the running global totals in `timeseries.csv`. `total_global = suspected_global + confirmed_global`.
+2. Add per-country rows for that date to `country_breakdown.csv` covering DRC, Uganda, and the new country. Use country-specific sources where available.
+3. If the new country becomes operationally significant (sustained transmission, regular WHO reporting), consider adding a per-country breakout column on the main timeseries alongside Uganda's `uganda_confirmed` and `uganda_deaths`.
+4. Log the scope change as a new bullet in `notes.md`.
+
+## Source preference order
+
+Always prefer the most reconciled source available. In order:
+
+1. WHO AFRO Weekly External Situation Report (gold standard, reconciled across DRC MoH and Uganda MoH).
+2. WHO Disease Outbreak News (DON), which carries an explicit "as of" date.
+3. CDC Situation Summary.
+4. Africa CDC briefings.
+5. BNO News, Reuters, AP, AFP. Daily wires, used only when nothing above is fresher.
+
+The WHO Sitrep can revise numbers down as well as up. That's a feature of better data. Take the revision and log it (subject to the no-dip rule below).
+
+## Daily task
+
+1. Search for the latest numbers across the source preference order.
+2. Append one row at the bottom of `timeseries.csv`. Fill all columns. `total_global = suspected_global + confirmed_global`.
+3. Run the lookback (next section).
+4. Append a NOTES bullet to `data/notes.md` for any revision or methodology decision made this run.
+5. Regenerate the chart PNGs: `python3 src/generate_charts.py`.
+6. Regenerate the XLSX export if needed: `python3 src/build_xlsx.py`.
+
+## Lookback
+
+On every run, re-check the last 7 rows against the latest sources. When a higher-preference source publishes revised figures for a date already in the timeseries:
+
+- Edit the row's numeric columns in place.
+- Refresh `primary_source` and `source_timestamp` on the revised row.
+- Append a dated bullet to `notes.md` naming the row, the fields changed, and the old → new values.
+
+This catches the common 1 to 3 day lag where BNO News figures get superseded by a WHO DON or Sitrep the next day. It also catches WHO's retroactive reclassifications (subject to the no-dip rule).
+
+## No-dip rule (cumulative figures)
+
+Cumulative metrics (`suspected_global`, `confirmed_global`, `total_global`, `suspected_deaths_global`) are monotonically non-decreasing on this tracker. When a source proposes a downward revision (a "dip"), the previous higher value is **carried forward** unless multiple independent high-value sources confirm the dip.
+
+**High-value sources** for the purpose of this rule:
+
+- WHO official publications (Weekly Sitrep, Disease Outbreak News).
+- WHO Director-General statements at briefings, press conferences, or official remarks — these count as high-value even when not yet in a WHO publication. A DG-attributed figure carried by Reuters, AP, AFP, RFI, or a similar credentialed wire is acceptable.
+- DRC Ministry of Health official press releases.
+- Uganda Ministry of Health official press releases.
+- CDC Situation Summary or HAN advisory.
+
+A single high-value source proposing a dip is **not** enough. The classic case is a DRC MoH reclassification carried by one wire service. When that happens: hold the prior higher value in the row, log the dip claim in `notes.md` with the source attribution and the magnitude, and wait for WHO Sitrep / DON / DG remarks to confirm or refute.
+
+**Upward revisions** follow normal source-preference rules. A single high-value source citing a higher figure is sufficient.
+
+**When a dip is eventually accepted** (because a second high-value source corroborates): apply the dip with a NOTES bullet that names both corroborating sources and the date the rule's two-source threshold was met.
+
+**Rationale**: cumulative drops confuse a general-audience reader (the chart looks like deaths are coming back to life). In this outbreak's data environment, most apparent drops are definitional reclassifications, not actual recoveries. The no-dip rule biases toward the higher figure until the lower one earns multi-source backing.
+
+## Rules
+
+- Only append at the bottom of the data block in `timeseries.csv`. No mid-history insertions.
+- Existing rows only change under the lookback policy. Every change goes in `notes.md`.
+- If no new numbers and no revisions, skip the day.
+- Always cumulative, never daily increments. The deltas are derived by `generate_charts.py`.
+- If a source gives a combined total without splitting suspected vs. confirmed, put it in `total_global` and leave `suspected_global` and `confirmed_global` blank, with a note in `primary_source`.
+
+## Sources
+
+| Source | URL | Cadence |
+|---|---|---|
+| WHO AFRO Weekly Sitrep | https://www.afro.who.int/countries/democratic-republic-of-congo/publications | Weekly |
+| WHO Disease Outbreak News | https://www.who.int/emergencies/disease-outbreak-news | Periodic, "as of" dated |
+| WHO outbreak page | https://www.who.int/emergencies/situations/ebola-outbreak---drc-2026 | Periodic |
+| CDC Situation Summary | https://www.cdc.gov/ebola/situation-summary/ | Every 1 to 2 days |
+| Africa CDC | https://africacdc.org | Periodic |
+| ECDC | https://www.ecdc.europa.eu/en/ebola-virus-disease-outbreak-democratic-republic-congo-and-uganda | Weekly |
+| BNO News | https://bnonews.com | Daily |
+| Reuters | https://www.reuters.com | As events occur |
+| Wikipedia | https://en.wikipedia.org/wiki/2026_Ituri_Province_Ebola_epidemic | Ongoing |
+
+### Real-time signal (X / Twitter via xcancel)
+
+Useful as a leading indicator for figures that haven't hit the wire yet (DRC MoH press statements, Uganda MoH press releases, WHO Director-General quotes from briefings).
+
+Search URL pattern: `https://xcancel.com/search?f=tweets&q=ebola`
+
+The page is client-rendered. Plain `curl`/`requests` returns an empty body. Use a headless browser if you need to script it.
+
+**Filtering rules (strict)**: trust only primary public-health institutions, established wire services, and credentialed health journalists. Examples of trustworthy accounts: @WHO, @WHOAFRO, @DrTedros, @AfricaCDC, @CDCgov, @MinSanteRDC, @MinofHealthUG, @Reuters, @AP, @AFP, @BNODesk, @BNONews, @CIDRAP, @HelenBranswell, @KrutikaKuppalli, @MackayIM, @TulioDeOliveira. Ignore anonymous accounts, opinion-only accounts, conspiracy/anti-vax/pandemic-skeptic accounts, influencers, engagement-farming threads. A tweet from a credentialed source is a lead, not a citation: before logging a figure, follow the tweet's link or wait for the corresponding statement to appear on the institutional channel and cite that.
+
+## Charts
+
+Three PNGs are produced on every run, written to `outputs/`:
+
+1. `YYYY-MM-DD_ebola-cases-7d-rolling-sum.png` — stacked bars of suspected (bottom) and laboratory-confirmed (top) new cases summed over the trailing 7 days. Two cumulative lines on the right axis: cumulative TOTAL cases (bronze) and cumulative LAB-CONFIRMED cases (deep red). The gap between the two lines is the share of the running count still in clinical-suspicion-only status.
+2. `YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png` — bars of suspected deaths summed over the trailing 7 days, with cumulative suspected deaths on the right axis.
+3. `YYYY-MM-DD_ebola-doubling-time.png` — trailing 7-day exponential-fit doubling time of cumulative lab-confirmed cases.
+
+The `YYYY-MM-DD` prefix is the most recent Report Date in `timeseries.csv`.
+
+### Rolling-sum methodology
+
+Baseline: 2026-05-14 (the day before outbreak declaration) is treated as zero across all metrics. The May 15 row's daily delta therefore equals the full cumulative count on declaration day. While the trailing window is shorter than 7 days (May 15 through May 20), the rolling sum equals total outbreak-to-date growth. From May 21 onward every bar is a true 7-day window.
+
+The rolling sum can in principle go negative when underlying daily deltas include a downward revision. After the no-dip rule was adopted on 2026-05-25 this is much less common, but the chart will still draw a bar below zero if it happens.
+
+### Provisional vs. Sitrep-stable bars
+
+Bars on each chart are marked as either solid (Sitrep-stable) or diagonally hatched (provisional, subject to revision). The boundary is the constant `LAST_SITREP_STABLE_DATE` near the top of `src/generate_charts.py`. A row's Report Date later than this value is treated as provisional.
+
+Update this constant when a new WHO Weekly Sitrep lands. Set it to the new Sitrep's "as of" date and re-run the script. The hatching boundary will shift forward and any newly-stable rows will switch to solid bars.
+
+### Revision-range footnote
+
+The caption under each chart cites an observed range for upward revisions (currently "4-35%"). That range lives in `OBSERVED_REVISION_RANGE` near the top of `src/generate_charts.py`. After applying lookback revisions, scan `notes.md` for the actual percent change on each revised row. If the running history drifts outside the cited range, update the constant.
+
+Calculation: for each revision logged in NOTES, compute `(new − old) / old × 100`. The range in the footnote should bracket the observed values with a small margin.
+
+### Doubling-time chart (v1 scaffold)
+
+The doubling-time chart fits `log(cumulative confirmed cases) = a + b·t` over the trailing 7 days using closed-form OLS, then reports `T_d = ln(2) / b` per day. Windows with zero or non-positive growth are dropped.
+
+Reference lines: 2-day doubling (lower bound of fast spread) and 7-day doubling (threshold below which an outbreak is in exponential acceleration; only drawn when the y-axis range includes it).
+
+Constants in `src/generate_charts.py`:
+- `DOUBLING_WINDOW` (default 7) — trailing days used to fit the exponential.
+- `DOUBLING_FLOOR` (0.5d) and `DOUBLING_CEIL` (60d) — display clipping.
+
+Limitations to note when reading the chart:
+- Doubling time of a cumulative count, not a daily incidence count.
+- Sensitive to revisions and source switches.
+- Not the same as R(t). R(t) needs a serial-interval distribution and at least one full generation interval of data (~9-15 days for Bundibugyo). Plan to add R(t) once we have ~20-25 days of clean incidence.
+
+## End condition
+
+When WHO or DRC declares the event over, add a final row with terminal counts, note the declaration in `primary_source`, and stop. Leave the repo standing as a historical reference.

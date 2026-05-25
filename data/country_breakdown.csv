@@ -1,0 +1,23 @@
+date,country,suspected,confirmed,suspected_deaths,confirmed_deaths,primary_source,source_timestamp
+2026-05-15,DRC,246,7,80,,BNO / WHO DON / DRC MoH declaration,2026-05-15
+2026-05-15,Uganda,,1,,1,Uganda MoH (cross-referenced with main row source),2026-05-15
+2026-05-16,DRC,336,11,87,,BNO News (May 16) / Africa CDC,2026-05-16
+2026-05-16,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-16
+2026-05-17,DRC,336,11,87,,BNO News (May 17) / WHO PHEIC declaration,2026-05-17
+2026-05-17,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-17
+2026-05-18,DRC,528,31,132,,WHO AFRO Weekly Sitrep 01 (as of 18 May) + BNO News for confirmed,2026-05-18
+2026-05-18,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-18
+2026-05-19,DRC,516,31,131,,WHO / Wikipedia summary of WHO data,2026-05-19
+2026-05-19,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-19
+2026-05-20,DRC,600,49,139,,BNO News (May 20) / WHO Director-General briefing,2026-05-20
+2026-05-20,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-20
+2026-05-21,DRC,746,83,176,,"WHO DON603 (data as of 21 May, pub. 22 May)",2026-05-21
+2026-05-21,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-21
+2026-05-22,DRC,744,81,176,,CDC Situation Summary (May 22),2026-05-22
+2026-05-22,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-22
+2026-05-23,DRC,750,82,177,,"WHO Tedros briefing (May 22, via CIDRAP/ABC) + Uganda MoH (May 23, +3 cases)",2026-05-23
+2026-05-23,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-23
+2026-05-24,DRC,904,101,220,10,Cases per DRC govt Sunday update (Reuters/AP); suspected deaths per WHO DG Tedros remarks (May 25); no-dip rule,2026-05-24
+2026-05-24,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-24
+2026-05-25,DRC,904,101,220,10,DRC cases carry Sunday May 24 figures; suspected deaths per WHO DG Tedros (May 25); no-dip rule,2026-05-24
+2026-05-25,Uganda,,7,,1,"Uganda MoH press release (May 25): +2 confirmed health workers, Kampala",2026-05-25

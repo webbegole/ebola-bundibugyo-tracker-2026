@@ -1,0 +1,12 @@
+report_date,suspected_global,confirmed_global,total_global,suspected_deaths_global,uganda_confirmed,uganda_deaths,primary_source,source_timestamp
+2026-05-15,246,8,254,80,1,1,BNO / WHO DON / DRC MoH declaration,2026-05-15
+2026-05-16,336,13,349,87,2,1,BNO News (May 16) / Africa CDC,2026-05-16
+2026-05-17,336,13,349,87,2,1,BNO News (May 17) / WHO PHEIC declaration,2026-05-17
+2026-05-18,528,33,561,132,2,1,WHO AFRO Weekly Sitrep 01 (as of 18 May) + BNO News for confirmed,2026-05-18
+2026-05-19,516,33,549,131,2,1,WHO / Wikipedia summary of WHO data,2026-05-19
+2026-05-20,600,51,651,139,2,1,BNO News (May 20) / WHO Director-General briefing,2026-05-20
+2026-05-21,746,85,831,176,2,1,"WHO DON603 (data as of 21 May, pub. 22 May)",2026-05-21
+2026-05-22,744,83,827,176,2,1,CDC Situation Summary (May 22),2026-05-22
+2026-05-23,750,87,837,177,5,1,"WHO Tedros briefing (May 22, via CIDRAP/ABC) + Uganda MoH (May 23, +3 cases)",2026-05-23
+2026-05-24,904,106,1010,220,5,1,"DRC govt figures (Sunday May 24, via Reuters/AP/UN News/CNN) for cases; WHO DG Tedros (May 25 remarks) for suspected deaths ('at least 220'); no-dip rule applied",2026-05-24
+2026-05-25,904,108,1012,220,7,1,Uganda MoH (May 25): +2 confirmed (Kampala health workers); DRC cases carry Sunday May 24 govt figures (Reuters/AP); WHO DG Tedros (May 25 remarks) for suspected deaths ('at least 220'); no-dip rule applied,2026-05-25
