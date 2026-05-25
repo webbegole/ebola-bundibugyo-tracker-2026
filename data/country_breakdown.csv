@@ -7,15 +7,15 @@ date,country,suspected,confirmed,suspected_deaths,confirmed_deaths,primary_sourc
 2026-05-17,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-17
 2026-05-18,DRC,528,31,132,,WHO AFRO Weekly Sitrep 01 (as of 18 May) + BNO News for confirmed,2026-05-18
 2026-05-18,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-18
-2026-05-19,DRC,516,31,131,,WHO / Wikipedia summary of WHO data,2026-05-19
+2026-05-19,DRC,528,31,132,,WHO Sitrep 01 figures carried forward (no-dip rule); May 19 Wikipedia summary reported 516 sus / 131 deaths,2026-05-19
 2026-05-19,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-19
 2026-05-20,DRC,600,49,139,,BNO News (May 20) / WHO Director-General briefing,2026-05-20
 2026-05-20,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-20
 2026-05-21,DRC,746,83,176,,"WHO DON603 (data as of 21 May, pub. 22 May)",2026-05-21
 2026-05-21,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-21
-2026-05-22,DRC,744,81,176,,CDC Situation Summary (May 22),2026-05-22
+2026-05-22,DRC,746,83,176,,WHO DON603 figures carried forward (no-dip rule); May 22 CDC reported 744/81/176,2026-05-22
 2026-05-22,Uganda,,2,,1,Uganda MoH (cross-referenced with main row source),2026-05-22
-2026-05-23,DRC,750,82,177,,"WHO Tedros briefing (May 22, via CIDRAP/ABC) + Uganda MoH (May 23, +3 cases)",2026-05-23
+2026-05-23,DRC,750,83,177,,"WHO Tedros briefing (May 22, via CIDRAP/ABC) + Uganda MoH (May 23); DRC confirmed carried forward from revised May 22 (no-dip cascade); briefing reported 82",2026-05-23
 2026-05-23,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-23
 2026-05-24,DRC,904,101,220,10,Cases per DRC govt Sunday update (Reuters/AP); suspected deaths per WHO DG Tedros remarks (May 25); no-dip rule,2026-05-24
 2026-05-24,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-24
