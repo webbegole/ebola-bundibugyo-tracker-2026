@@ -331,12 +331,13 @@
             <th class="nowrap">First reported</th>
             <th>Status</th>
             <th>CDC advisory</th>
+            <th>CDC travel notice</th>
             <th>WHO status</th>
             <th>Notes</th>
           </tr>
         </thead>
         <tbody id="declarations-body">
-          <tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+          <tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -570,7 +571,7 @@
       const rows = parseCSV(text).filter(r => r.country);
       const body = document.getElementById("declarations-body");
       if (!rows.length) {
-        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">No countries listed.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">No countries listed.</td></tr>`;
         return;
       }
       body.innerHTML = "";
@@ -578,6 +579,9 @@
         const cdc = r.cdc_url
           ? `<a href="${r.cdc_url}">${r.cdc_advisory || "CDC advisory"}</a>`
           : (r.cdc_advisory || "");
+        const travel = r.cdc_travel_notice_url
+          ? `<a href="${r.cdc_travel_notice_url}">${r.cdc_travel_notice_level || "Travel notice"}</a>`
+          : (r.cdc_travel_notice_level || "");
         const who = r.who_url
           ? `<a href="${r.who_url}">${r.who_status || "WHO status"}</a>`
           : (r.who_status || "");
@@ -587,6 +591,7 @@
           <td class="nowrap">${r.first_report_date || ""}</td>
           <td>${r.case_status || ""}</td>
           <td>${cdc}</td>
+          <td>${travel}</td>
           <td>${who}</td>
           <td class="source">${r.notes || ""}</td>
         `;
@@ -596,7 +601,7 @@
     .catch(err => {
       console.error(err);
       document.getElementById("declarations-body").innerHTML =
-        `<tr><td colspan="6"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
+        `<tr><td colspan="7"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
     });
 
   // ----- Lightbox: click chart to enlarge ------------------------------------
