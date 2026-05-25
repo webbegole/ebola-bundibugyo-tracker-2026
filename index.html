@@ -136,6 +136,19 @@
     border-radius: 8px;
     padding: 16px;
   }
+  .chart-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    cursor: zoom-in;
+    border-radius: 4px;
+  }
+  .chart-trigger:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
   .chart img {
     width: 100%;
     height: auto;
@@ -147,6 +160,51 @@
     font-size: 13px;
     color: var(--color-subtle);
   }
+
+  /* Lightbox modal: enlarges a chart on click. Uses native <dialog> for
+     accessibility — Esc-to-close and focus management come for free. */
+  dialog.lightbox {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    inset: 0;
+  }
+  dialog.lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  dialog.lightbox::backdrop {
+    background: rgba(20, 25, 30, 0.92);
+  }
+  .lightbox-img {
+    display: block;
+    max-width: 96vw;
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    cursor: default;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 0;
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .lightbox-close:hover { background: rgba(255, 255, 255, 0.28); }
 
   table {
     width: 100%;
@@ -252,10 +310,14 @@
   <section class="charts" aria-label="Charts">
     <h2>Charts</h2>
     <figure class="chart">
-      <img src="outputs/latest-cases.png" alt="7-day rolling sum of new cases with cumulative total and confirmed lines">
+      <button type="button" class="chart-trigger" aria-label="Enlarge cases chart">
+        <img src="outputs/latest-cases.png" alt="7-day rolling sum of new cases with cumulative total and confirmed lines">
+      </button>
     </figure>
     <figure class="chart">
-      <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
+      <button type="button" class="chart-trigger" aria-label="Enlarge deaths chart">
+        <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
+      </button>
     </figure>
   </section>
 
@@ -300,6 +362,11 @@
       </table>
     </div>
   </section>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Enlarged chart">
+    <button type="button" class="lightbox-close" aria-label="Close">×</button>
+    <img class="lightbox-img" id="lightbox-img" alt="">
+  </dialog>
 
   <footer>
     <p>
@@ -531,6 +598,31 @@
       document.getElementById("declarations-body").innerHTML =
         `<tr><td colspan="6"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
     });
+
+  // ----- Lightbox: click chart to enlarge ------------------------------------
+  // Uses the native <dialog> element so Esc-to-close and focus trapping
+  // come from the browser. Click the backdrop or the close button to dismiss.
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  if (lightbox && lightboxImg && typeof lightbox.showModal === "function") {
+    document.querySelectorAll(".chart-trigger").forEach(trigger => {
+      trigger.addEventListener("click", () => {
+        const img = trigger.querySelector("img");
+        if (!img) return;
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.showModal();
+      });
+    });
+    const closeBtn = lightbox.querySelector(".lightbox-close");
+    if (closeBtn) closeBtn.addEventListener("click", () => lightbox.close());
+    // Backdrop click closes the dialog. The img has cursor:default so clicks
+    // on it don't bubble up as backdrop clicks.
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) lightbox.close();
+    });
+    lightbox.addEventListener("close", () => { lightboxImg.src = ""; });
+  }
 })();
 </script>
 
