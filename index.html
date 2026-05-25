@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 Ebola (Bundibugyo) Outbreak Tracker</title>
-<meta name="description" content="Daily time series of the 2026 Ebola (Bundibugyo) outbreak in DRC and Uganda, compiled from official public-health sources.">
+<meta name="description" content="Daily time series of the 2026 Ebola (Bundibugyo) outbreak, compiled from official public-health sources. Global aggregate counts.">
 <style>
   :root {
     --color-bg: #fafafa;
@@ -67,6 +67,27 @@
     border-bottom: 2px solid var(--color-border);
     padding-bottom: 8px;
   }
+
+  .story {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 22px 26px;
+  }
+  .story h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: -0.01em;
+  }
+  .story h3:not(:first-child) { margin-top: 22px; }
+  .story p { margin: 0 0 12px; line-height: 1.65; }
+  .story p:last-child { margin-bottom: 0; }
+  .story a { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .story a:hover { text-decoration-thickness: 2px; }
+  .story strong { color: var(--color-text); }
 
   .stats {
     display: grid;
@@ -189,11 +210,20 @@
   <header>
     <h1>2026 Ebola (Bundibugyo) Outbreak Tracker</h1>
     <p class="subtitle">
-      A daily time series of the outbreak in DRC and Uganda. Compiled from
+      A daily time series of the global outbreak. Compiled from
       WHO, CDC, Africa CDC, and established wire services. Aggregate counts only.
     </p>
-    <p class="updated">Last updated: <strong id="last-updated">loading…</strong></p>
+    <p class="updated">
+      Latest report date: <strong id="last-report-date">loading…</strong> ·
+      Data last updated: <strong id="last-updated">loading…</strong>
+    </p>
   </header>
+
+  <section aria-label="Story so far">
+    <div class="story" id="story">
+      <p style="color: var(--color-subtle);">loading…</p>
+    </div>
+  </section>
 
   <section class="stats" aria-label="Headline figures">
     <div class="stat-card suspected">
@@ -216,16 +246,6 @@
       <p class="big" id="stat-deaths">—</p>
       <p class="delta" id="delta-deaths">—</p>
     </div>
-    <div class="stat-card">
-      <h3>Uganda confirmed</h3>
-      <p class="big" id="stat-uganda-conf">—</p>
-      <p class="delta" id="delta-uganda-conf">—</p>
-    </div>
-    <div class="stat-card">
-      <h3>Uganda deaths</h3>
-      <p class="big" id="stat-uganda-deaths">—</p>
-      <p class="delta" id="delta-uganda-deaths">—</p>
-    </div>
   </section>
 
   <section class="charts" aria-label="Charts">
@@ -238,10 +258,27 @@
       <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
       <figcaption>7-day rolling sum of suspected deaths.</figcaption>
     </figure>
-    <figure class="chart">
-      <img src="outputs/latest-doubling-time.png" alt="Doubling time of lab-confirmed cases">
-      <figcaption>Trailing 7-day doubling time of lab-confirmed cases. Lower = faster spread.</figcaption>
-    </figure>
+  </section>
+
+  <section aria-label="Affected countries and official declarations">
+    <h2>Affected countries and declarations</h2>
+    <div class="table-scroll">
+      <table id="declarations-table">
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>First reported</th>
+            <th>Status</th>
+            <th>CDC advisory</th>
+            <th>WHO status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="declarations-body">
+          <tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section aria-label="Recent reporting">
@@ -255,13 +292,11 @@
             <th>Confirmed</th>
             <th>Total</th>
             <th>Susp. Deaths</th>
-            <th>Uganda Conf.</th>
-            <th>Uganda Deaths</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody id="recent-body">
-          <tr><td colspan="8" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+          <tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -344,10 +379,22 @@
 
   function renderError(message) {
     const body = document.getElementById("recent-body");
-    body.innerHTML = `<tr><td colspan="8"><div class="error">${message}</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="6"><div class="error">${message}</div></td></tr>`;
   }
 
-  function render(rows) {
+  function fmtTimestamp(httpDateString) {
+    if (!httpDateString) return null;
+    const d = new Date(httpDateString);
+    if (isNaN(d.getTime())) return null;
+    // Localize to the viewer's timezone with a short TZ label.
+    return d.toLocaleString(undefined, {
+      year: "numeric", month: "short", day: "2-digit",
+      hour: "2-digit", minute: "2-digit",
+      timeZoneName: "short",
+    });
+  }
+
+  function render(rows, lastModifiedHeader) {
     if (!rows.length) {
       renderError("No data rows found in data/timeseries.csv.");
       return;
@@ -355,15 +402,15 @@
     const latest = rows[rows.length - 1];
     const prior = rows.length >= 2 ? rows[rows.length - 2] : null;
 
-    setText("last-updated", latest.report_date);
+    setText("last-report-date", latest.report_date);
+    const ts = fmtTimestamp(lastModifiedHeader);
+    setText("last-updated", ts || "unknown");
 
     const fields = [
       ["suspected", "suspected_global"],
       ["confirmed", "confirmed_global"],
       ["total", "total_global"],
       ["deaths", "suspected_deaths_global"],
-      ["uganda-conf", "uganda_confirmed"],
-      ["uganda-deaths", "uganda_deaths"],
     ];
     fields.forEach(([slug, col]) => {
       setText(`stat-${slug}`, fmtNum(latest[col]));
@@ -382,26 +429,108 @@
         <td class="num">${fmtNum(r.confirmed_global)}</td>
         <td class="num">${fmtNum(r.total_global)}</td>
         <td class="num">${fmtNum(r.suspected_deaths_global)}</td>
-        <td class="num">${fmtNum(r.uganda_confirmed)}</td>
-        <td class="num">${fmtNum(r.uganda_deaths)}</td>
         <td class="source">${r.primary_source || ""}</td>
       `;
       body.appendChild(tr);
     });
   }
 
+  let lastModified = null;
   fetch("data/timeseries.csv", { cache: "no-store" })
     .then(res => {
       if (!res.ok) throw new Error(`HTTP ${res.status} fetching data/timeseries.csv`);
+      lastModified = res.headers.get("Last-Modified");
       return res.text();
     })
     .then(text => {
       const rows = parseCSV(text).filter(r => r.report_date && r.report_date.startsWith("2026-"));
-      render(rows);
+      render(rows, lastModified);
     })
     .catch(err => {
       console.error(err);
       renderError("Could not load data/timeseries.csv. If you are viewing this page locally, serve the folder over HTTP (e.g. <code>python3 -m http.server</code>).");
+    });
+
+  // ----- Story (data/story.md) ------------------------------------------------
+  // Tiny markdown converter: handles ## headings, paragraphs separated by
+  // blank lines, **bold**, *italic*, and [text](url) links. We deliberately
+  // do not pull in a full markdown library — the story file's vocabulary is
+  // small and predictable. If we ever need lists, tables, or images, swap
+  // this for marked.js loaded from cdnjs.
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function renderInline(text) {
+    let out = escapeHtml(text);
+    // Links: [text](url)
+    out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, u) => `<a href="${u}">${t}</a>`);
+    // Bold: **text**
+    out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    // Italic: *text*
+    out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return out;
+  }
+  function renderMarkdown(md) {
+    const blocks = md.replace(/\r\n?/g, "\n").trim().split(/\n{2,}/);
+    return blocks.map(b => {
+      const trimmed = b.trim();
+      if (trimmed.startsWith("## ")) return `<h3>${renderInline(trimmed.slice(3).trim())}</h3>`;
+      if (trimmed.startsWith("### ")) return `<h4>${renderInline(trimmed.slice(4).trim())}</h4>`;
+      return `<p>${renderInline(trimmed)}</p>`;
+    }).join("\n");
+  }
+
+  fetch("data/story.md", { cache: "no-store" })
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status} fetching data/story.md`);
+      return res.text();
+    })
+    .then(md => {
+      document.getElementById("story").innerHTML = renderMarkdown(md);
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("story").innerHTML =
+        `<div class="error">Could not load data/story.md.</div>`;
+    });
+
+  // ----- Declarations table (data/declarations.csv) --------------------------
+  fetch("data/declarations.csv", { cache: "no-store" })
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status} fetching data/declarations.csv`);
+      return res.text();
+    })
+    .then(text => {
+      const rows = parseCSV(text).filter(r => r.country);
+      const body = document.getElementById("declarations-body");
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">No countries listed.</td></tr>`;
+        return;
+      }
+      body.innerHTML = "";
+      rows.forEach(r => {
+        const cdc = r.cdc_url
+          ? `<a href="${r.cdc_url}">${r.cdc_advisory || "CDC advisory"}</a>`
+          : (r.cdc_advisory || "");
+        const who = r.who_url
+          ? `<a href="${r.who_url}">${r.who_status || "WHO status"}</a>`
+          : (r.who_status || "");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${r.country}</strong></td>
+          <td>${r.first_report_date || ""}</td>
+          <td>${r.case_status || ""}</td>
+          <td>${cdc}</td>
+          <td>${who}</td>
+          <td class="source">${r.notes || ""}</td>
+        `;
+        body.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("declarations-body").innerHTML =
+        `<tr><td colspan="6"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
     });
 })();
 </script>

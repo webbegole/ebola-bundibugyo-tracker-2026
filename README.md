@@ -8,8 +8,10 @@ Live site: [webbegole.github.io/ebola-bundibugyo-tracker-2026](https://webbegole
 
 ## What's in the repo
 
-- `data/timeseries.csv` — the main daily series. Global headline totals plus Uganda breakout. One row per Report Date.
-- `data/country_breakdown.csv` — per-country detail in long format. Grows as new countries report cases.
+- `data/timeseries.csv` — the main daily series. Global headline totals only. One row per Report Date.
+- `data/country_breakdown.csv` — per-country detail in long format (DRC, Uganda, future reporters). Grows as new countries report cases.
+- `data/declarations.csv` — per-country CDC advisory and WHO declaration status with primary-source URLs. Updates when declarations change or new countries are added.
+- `data/story.md` — narrative summary: "Story so far" plus "Latest update". Updated when material developments warrant.
 - `data/notes.md` — methodology decisions, source-conflict resolutions, and the revision log. Append-only and dated. The git history of this file is the canonical audit trail.
 - `METHODOLOGY.md` — the playbook: source preference order, lookback policy, no-dip rule, chart conventions.
 - `src/generate_charts.py` — reads the CSVs and renders the PNG charts.
@@ -22,9 +24,8 @@ The most recent charts are in `outputs/` with date-prefixed filenames:
 
 - `outputs/YYYY-MM-DD_ebola-cases-7d-rolling-sum.png`
 - `outputs/YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png`
-- `outputs/YYYY-MM-DD_ebola-doubling-time.png`
 
-Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`.
+Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`. A doubling-time chart is implemented in `src/generate_charts.py` but not currently published; early confirmed-case figures are heavily revised by WHO Sitrep reconciliation, which makes the trailing-window fit unstable. It will be re-enabled once the data is less provisional.
 
 ## Data schemas
 
@@ -37,10 +38,10 @@ Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`.
 | `confirmed_global` | int | Cumulative lab-confirmed cases (PCR at INRB or partner labs). |
 | `total_global` | int | `suspected_global + confirmed_global`. |
 | `suspected_deaths_global` | int | Cumulative suspected deaths across all reporting countries. |
-| `uganda_confirmed` | int | Uganda-specific confirmed cases (salient cross-border line). |
-| `uganda_deaths` | int | Uganda-specific deaths. |
 | `primary_source` | string | Short citation, including the source's "as of" date. |
 | `source_timestamp` | `YYYY-MM-DD` | The date the source itself uses for the data. Makes reporting lag visible. |
+
+Per-country figures (DRC, Uganda, future reporters) live in `country_breakdown.csv`.
 
 ### `country_breakdown.csv`
 

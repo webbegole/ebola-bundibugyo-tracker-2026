@@ -603,19 +603,23 @@ def main():
     dated_outputs = {
         "cases": OUTPUT_DIR / f"{latest}_ebola-cases-7d-rolling-sum.png",
         "deaths": OUTPUT_DIR / f"{latest}_ebola-deaths-7d-rolling-sum.png",
-        "doubling": OUTPUT_DIR / f"{latest}_ebola-doubling-time.png",
     }
     # Latest-* convenience copies so the GitHub Pages site can reference
     # stable filenames without needing to know today's date.
     latest_outputs = {
         "cases": OUTPUT_DIR / "latest-cases.png",
         "deaths": OUTPUT_DIR / "latest-deaths.png",
-        "doubling": OUTPUT_DIR / "latest-doubling-time.png",
     }
 
     render_cases_chart(deltas, dated_outputs["cases"])
     render_deaths_chart(deltas, dated_outputs["deaths"])
-    render_doubling_time_chart(deltas, dated_outputs["doubling"])
+    # Doubling-time chart is disabled in the publication path while early
+    # confirmed-case figures are still heavily revised by WHO Sitrep
+    # reconciliation. The chart code (render_doubling_time_chart and
+    # compute_doubling_times) is kept above for future re-enabling once
+    # data is less provisional. To re-enable, restore the dated + latest
+    # "doubling" entries above and add:
+    #     render_doubling_time_chart(deltas, dated_outputs["doubling"])
 
     for key, dated in dated_outputs.items():
         shutil.copyfile(dated, latest_outputs[key])

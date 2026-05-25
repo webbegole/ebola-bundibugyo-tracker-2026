@@ -6,10 +6,12 @@ A daily time series of the 2026 Ebola (Bundibugyo) outbreak, compiled from offic
 
 ## Data files
 
-The CSVs and `notes.md` in `data/` are the source of truth. The XLSX in `outputs/` is a convenience export; do not edit it.
+The CSVs, `story.md`, and `notes.md` in `data/` are the source of truth. The XLSX in `outputs/` is a convenience export; do not edit it.
 
-- `data/timeseries.csv` — main daily series. One row per Report Date. See `README.md` for the schema.
-- `data/country_breakdown.csv` — per-country detail in long format. Grows as new countries report cases.
+- `data/timeseries.csv` — main daily series, global totals only. One row per Report Date. See `README.md` for the schema.
+- `data/country_breakdown.csv` — per-country detail in long format (DRC, Uganda, future reporters). Grows as new countries report cases.
+- `data/declarations.csv` — per-country CDC advisory and WHO declaration status with primary-source URLs. Schema: `country, first_report_date, case_status, cdc_advisory, cdc_url, who_status, who_url, last_reviewed, notes`. Updates when declarations change or a new country starts reporting cases.
+- `data/story.md` — narrative summary. Markdown with two sections: "Story so far" (slow-moving context) and "Latest update" (the most recent material development, refreshed by the daily run when warranted). Rendered as the lead block on the site.
 - `data/notes.md` — append-only methodology and revision log.
 
 ## Adding a new country
@@ -106,13 +108,14 @@ The page is client-rendered. Plain `curl`/`requests` returns an empty body. Use 
 
 ## Charts
 
-Three PNGs are produced on every run, written to `outputs/`:
+Two PNGs are produced on every run, written to `outputs/`:
 
 1. `YYYY-MM-DD_ebola-cases-7d-rolling-sum.png` — stacked bars of suspected (bottom) and laboratory-confirmed (top) new cases summed over the trailing 7 days. Two cumulative lines on the right axis: cumulative TOTAL cases (bronze) and cumulative LAB-CONFIRMED cases (deep red). The gap between the two lines is the share of the running count still in clinical-suspicion-only status.
 2. `YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png` — bars of suspected deaths summed over the trailing 7 days, with cumulative suspected deaths on the right axis.
-3. `YYYY-MM-DD_ebola-doubling-time.png` — trailing 7-day exponential-fit doubling time of cumulative lab-confirmed cases.
 
 The `YYYY-MM-DD` prefix is the most recent Report Date in `timeseries.csv`.
+
+A doubling-time chart is also implemented (`render_doubling_time_chart` in `src/generate_charts.py`) but is **not currently rendered**. Early confirmed-case figures in this outbreak are heavily revised by WHO Sitrep reconciliation, which makes the trailing-window exponential fit move in ways that misrepresent the underlying transmission dynamics. The chart will be re-enabled once the data stabilizes — likely after two or three WHO Weekly Sitreps have published and the early-data reconciliation cycle has settled. The design and methodology of the chart are documented in the "Doubling-time chart (v1 scaffold)" subsection below.
 
 ### Rolling-sum methodology
 

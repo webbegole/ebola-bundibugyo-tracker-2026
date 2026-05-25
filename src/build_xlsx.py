@@ -83,17 +83,17 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
     # Title
     ws.cell(1, 1, value="2026 Ebola (Bundibugyo) Outbreak: Daily Case Counts (global)")
     ws.cell(1, 1).font = TITLE_FONT
-    ws.merge_cells("A1:I1")
+    ws.merge_cells("A1:G1")
 
     # Subtitle / description
     ws.cell(2, 1, value=(
         "Global outbreak totals (all reporting countries). Compiled from "
         "WHO AFRO Sitrep, WHO DON, CDC, Africa CDC, BNO News. "
-        "Uganda breakout in columns F-G."
+        "Per-country detail in the Country Breakdown sheet."
     ))
     ws.cell(2, 1).font = SUBTITLE_FONT
     ws.cell(2, 1).alignment = LEFT_WRAP
-    ws.merge_cells("A2:I2")
+    ws.merge_cells("A2:G2")
     ws.row_dimensions[2].height = 30
 
     # Headers (row 4)
@@ -103,12 +103,10 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
         "Confirmed Cases\n(Global)",
         "Total Cases\n(Global)",
         "Suspected Deaths\n(Global)",
-        "Uganda Confirmed",
-        "Uganda Deaths",
         "Primary Source",
         "Source Timestamp",
     ]
-    widths = [16, 16, 16, 16, 16, 16, 16, 48, 16]
+    widths = [16, 16, 16, 16, 16, 48, 16]
     write_headers(ws, headers, row=4, widths=widths)
 
     # Data rows (starting row 5)
@@ -122,12 +120,10 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
             ws.cell(row, 3, value=_int_or_none(r["confirmed_global"]))
             ws.cell(row, 4, value=_int_or_none(r["total_global"]))
             ws.cell(row, 5, value=_int_or_none(r["suspected_deaths_global"]))
-            ws.cell(row, 6, value=_int_or_none(r["uganda_confirmed"]))
-            ws.cell(row, 7, value=_int_or_none(r["uganda_deaths"]))
-            ws.cell(row, 8, value=r["primary_source"])
-            ws.cell(row, 9, value=r["source_timestamp"])
-            apply_data_style(ws, row, n_cols=9, is_alt=(i % 2 == 1),
-                             source_cols=(8, 9))
+            ws.cell(row, 6, value=r["primary_source"])
+            ws.cell(row, 7, value=r["source_timestamp"])
+            apply_data_style(ws, row, n_cols=7, is_alt=(i % 2 == 1),
+                             source_cols=(6, 7))
         last_data_row = data_start + i
 
     # NOTES block
@@ -145,7 +141,7 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
             ws.cell(notes_row, 1).font = NOTE_FONT
             ws.cell(notes_row, 1).alignment = LEFT_WRAP
             ws.merge_cells(start_row=notes_row, start_column=1,
-                           end_row=notes_row, end_column=9)
+                           end_row=notes_row, end_column=7)
             notes_row += 1
 
     ws.freeze_panes = "A5"
