@@ -172,6 +172,7 @@
   }
   td.num { text-align: right; font-variant-numeric: tabular-nums; }
   td.source { color: var(--color-subtle); font-size: 13px; }
+  td.nowrap, th.nowrap { white-space: nowrap; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: #f8f9fb; }
 
@@ -252,11 +253,9 @@
     <h2>Charts</h2>
     <figure class="chart">
       <img src="outputs/latest-cases.png" alt="7-day rolling sum of new cases with cumulative total and confirmed lines">
-      <figcaption>7-day rolling sum of new cases. Bronze line: cumulative total. Deep-red line: cumulative lab-confirmed.</figcaption>
     </figure>
     <figure class="chart">
       <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
-      <figcaption>7-day rolling sum of suspected deaths.</figcaption>
     </figure>
   </section>
 
@@ -267,7 +266,7 @@
         <thead>
           <tr>
             <th>Country</th>
-            <th>First reported</th>
+            <th class="nowrap">First reported</th>
             <th>Status</th>
             <th>CDC advisory</th>
             <th>WHO status</th>
@@ -287,7 +286,7 @@
       <table id="recent-table">
         <thead>
           <tr>
-            <th>Date</th>
+            <th class="nowrap">Date</th>
             <th>Suspected</th>
             <th>Confirmed</th>
             <th>Total</th>
@@ -424,7 +423,7 @@
     recent.forEach(r => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${r.report_date}</td>
+        <td class="nowrap">${r.report_date}</td>
         <td class="num">${fmtNum(r.suspected_global)}</td>
         <td class="num">${fmtNum(r.confirmed_global)}</td>
         <td class="num">${fmtNum(r.total_global)}</td>
@@ -518,7 +517,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${r.country}</strong></td>
-          <td>${r.first_report_date || ""}</td>
+          <td class="nowrap">${r.first_report_date || ""}</td>
           <td>${r.case_status || ""}</td>
           <td>${cdc}</td>
           <td>${who}</td>
