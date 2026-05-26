@@ -59,7 +59,7 @@ LAST_SITREP_STABLE_DATE = "2026-05-18"
 # of -41.7% was observed on May 24 suspected deaths when DRC MoH reclassified
 # non-Ebola deaths out of the suspected category; that event is logged in NOTES
 # but is not captured in this upward-revision range.)
-OBSERVED_REVISION_RANGE = "4-35%"
+OBSERVED_REVISION_RANGE = "<1-35%"
 # -----------------------------------------------------------------------------
 
 # --- Style -------------------------------------------------------------------

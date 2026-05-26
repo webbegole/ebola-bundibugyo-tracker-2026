@@ -19,5 +19,5 @@ date,country,suspected,confirmed,suspected_deaths,confirmed_deaths,primary_sourc
 2026-05-23,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-23
 2026-05-24,DRC,904,101,220,10,DRC govt Sunday update (Reuters/AP) for cases; WHO DG Tedros (May 25 Virtual Ministerial Briefing) reaffirms 220 sus deaths / 10 conf deaths; no-dip rule,2026-05-24
 2026-05-24,Uganda,,5,,1,Uganda MoH (cross-referenced with main row source),2026-05-24
-2026-05-25,DRC,904,101,220,10,WHO DG Tedros (May 25 Virtual Ministerial Briefing on Bundibugyo): 904 sus / 101 conf / 220 sus deaths / 10 conf deaths; no-dip rule,2026-05-25
+2026-05-25,DRC,906,105,223,10,BNO News @BNOFeed Daily Ebola Update (May 25 Situation Report): DRC 906 sus / 105 conf / 233 deaths (223 sus + 10 conf); supersedes WHO DG Tedros 25 May briefing figures (904/101/220) under upward-revision rule,2026-05-25
 2026-05-25,Uganda,,7,,1,"Uganda MoH press release (May 25): +2 confirmed health workers, Kampala",2026-05-25
