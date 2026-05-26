@@ -96,13 +96,13 @@ A single high-value source proposing a dip is **not** enough. The classic case i
 | Reuters | https://www.reuters.com | As events occur |
 | Wikipedia | https://en.wikipedia.org/wiki/2026_Ituri_Province_Ebola_epidemic | Ongoing |
 
-### Real-time signal (X / Twitter via xcancel)
+### Real-time signal (X / Twitter)
 
 Useful as a leading indicator for figures that haven't hit the wire yet (DRC MoH press statements, Uganda MoH press releases, WHO Director-General quotes from briefings).
 
-Search URL pattern: `https://xcancel.com/search?f=tweets&q=ebola`
+Search URL pattern: `https://x.com/search?q=ebola%20outbreak&src=typed_query&f=live`
 
-The page is client-rendered. Plain `curl`/`requests` returns an empty body. Use a headless browser if you need to script it.
+Use the Claude in Chrome MCP against Web's signed-in browser; x.com search results are gated for unauthenticated viewers and the xcancel mirror has been intermittently blocked by anti-bot challenges. The page is client-rendered, so plain `curl`/`requests` returns a shell — use `mcp__Claude_in_Chrome__navigate` + `get_page_text` (see SKILL.md "Unattended-run handling for Chrome MCP" for the browser-selection flow).
 
 **Filtering rules (strict)**: trust only primary public-health institutions, established wire services, and credentialed health journalists. Examples of trustworthy accounts: @WHO, @WHOAFRO, @DrTedros, @AfricaCDC, @CDCgov, @MinSanteRDC, @MinofHealthUG, @Reuters, @AP, @AFP, @BNODesk, @BNONews, @CIDRAP, @HelenBranswell, @KrutikaKuppalli, @MackayIM, @TulioDeOliveira. Ignore anonymous accounts, opinion-only accounts, conspiracy/anti-vax/pandemic-skeptic accounts, influencers, engagement-farming threads. A tweet from a credentialed source is a lead, not a citation: before logging a figure, follow the tweet's link or wait for the corresponding statement to appear on the institutional channel and cite that.
 
