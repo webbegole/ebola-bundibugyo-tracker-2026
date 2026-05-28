@@ -46,13 +46,13 @@ The WHO Sitrep can revise numbers down as well as up. That's a feature of better
 
 ## Lookback
 
-On every run, re-check the last 7 rows against the latest sources. When a higher-preference source publishes revised figures for a date already in the timeseries:
+On every run, re-check the last 3 rows against the latest sources. When a higher-preference source publishes revised figures for a date already in the timeseries:
 
 - Edit the row's numeric columns in place.
 - Refresh `primary_source` and `source_timestamp` on the revised row.
 - Append a dated bullet to `notes.md` naming the row, the fields changed, and the old → new values.
 
-This catches the common 1 to 3 day lag where BNO News figures get superseded by a WHO DON or Sitrep the next day. It also catches WHO's retroactive reclassifications (subject to the no-dip rule).
+The 3-day window is calibrated to the actual revision pattern observed: BNO News figures get superseded by a WHO DON or Sitrep within 1 to 3 days, and the WHO Sitrep gives a single "as of" date data point rather than revising a multi-day window. A 7-day lookback was used at the start of the outbreak and was reduced to 3 days on 2026-05-27 after a week of observed revisions confirmed the tighter window is sufficient.
 
 ## No-dip rule (cumulative figures)
 
