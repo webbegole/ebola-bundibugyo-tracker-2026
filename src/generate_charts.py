@@ -48,18 +48,27 @@ BYLINE = "Tracker: Web Begole · @web_begole · linkedin.com/in/webbegole"
 # date. Format: "YYYY-MM-DD".
 LAST_SITREP_STABLE_DATE = "2026-05-24"
 
-# Observed magnitude of upward revisions when WHO DON or Sitrep supersedes
-# same-day wire reports. Update this string when the running revision history
-# in the spreadsheet's NOTES block shifts outside the current range. As of
-# 2026-05-25 (PM run), the cumulative upward-revision history spans roughly
-# +4% to +34%: May 18 suspected +33.7%, May 18 deaths +24.5%, May 21 suspected
-# +11.2%, May 21 confirmed +32.8%, May 21 deaths +6.0%, May 24 suspected +4.3%,
-# May 24 confirmed +16.1%, May 25 confirmed +12.5%. The range below brackets
-# those upward values with a small margin. (A separate downward reclassification
-# of -41.7% was observed on May 24 suspected deaths when DRC MoH reclassified
-# non-Ebola deaths out of the suspected category; that event is logged in NOTES
-# but is not captured in this upward-revision range.)
-OBSERVED_REVISION_RANGE = "<1-35%"
+# Observed magnitude of revisions, split by direction. Upward revisions come
+# from WHO Sitrep / DON reconciliation when same-day wire counts undercount.
+# Downward revisions come from the MoH methodology-change carve-out
+# (METHODOLOGY.md): DRC MoH or Uganda MoH formally announce a definitional
+# cleanup such as removing suspected cases that tested negative for Ebola.
+# The two directions reflect different mechanisms so they're tracked separately.
+#
+# Update either constant when the running revision history in `data/notes.md`
+# drifts outside its range. Compute (new - old) / old * 100 for each revision.
+#
+# Upward history (as of 2026-05-31): May 18 sus +33.7%, May 18 deaths +24.5%,
+# May 21 sus +11.2%, May 21 conf +32.8%, May 21 deaths +6.0%, May 24 sus +4.3%,
+# May 24 conf +16.1%, May 25 conf +12.5%, May 25 sus +0.22%, May 25 total +0.59%.
+#
+# Downward history (as of 2026-05-31): 2026-05-30 DRC MoH methodology cleanup
+# applied to May 30 row — sus -61.5%, total -43.9%, sus_deaths -100% (column
+# zeroed when DRC MoH reclassified suspected deaths as non-Ebola). Same dip
+# carried into May 31 row (relative to the WHO DON605 baseline) — sus -50.7%,
+# total -34.5%, sus_deaths -100%.
+OBSERVED_UPWARD_REVISION_RANGE = "<1-35%"
+OBSERVED_DOWNWARD_REVISION_RANGE = "up to 100%"
 # -----------------------------------------------------------------------------
 
 # --- Style -------------------------------------------------------------------
@@ -354,8 +363,9 @@ def render_cases_chart(deltas, out_path: Path):
              "CDC Situation Summary, Africa CDC, BNO News.",
              fontsize=12, color=COLOR_SUBTLE)
     fig.text(0.07, 0.02,
-             f"Bars after {LAST_SITREP_STABLE_DATE} are provisional; WHO Sitrep "
-             f"reconciliation has historically revised these upward by {OBSERVED_REVISION_RANGE}.",
+             f"Bars after {LAST_SITREP_STABLE_DATE} are provisional; revisions have run "
+             f"+{OBSERVED_UPWARD_REVISION_RANGE} (Sitrep reconciliation) and "
+             f"{OBSERVED_DOWNWARD_REVISION_RANGE} downward (MoH definitional cleanups).",
              fontsize=12, color=COLOR_SUBTLE, style="italic")
 
     fig.subplots_adjust(left=0.08, right=0.92, top=0.80, bottom=0.20)
@@ -433,8 +443,9 @@ def render_deaths_chart(deltas, out_path: Path):
              "CDC Situation Summary, Africa CDC, BNO News.",
              fontsize=12, color=COLOR_SUBTLE)
     fig.text(0.07, 0.02,
-             f"Bars after {LAST_SITREP_STABLE_DATE} are provisional; WHO Sitrep "
-             f"reconciliation has historically revised these upward by {OBSERVED_REVISION_RANGE}.",
+             f"Bars after {LAST_SITREP_STABLE_DATE} are provisional; revisions have run "
+             f"+{OBSERVED_UPWARD_REVISION_RANGE} (Sitrep reconciliation) and "
+             f"{OBSERVED_DOWNWARD_REVISION_RANGE} downward (MoH definitional cleanups).",
              fontsize=12, color=COLOR_SUBTLE, style="italic")
 
     fig.subplots_adjust(left=0.08, right=0.92, top=0.80, bottom=0.20)

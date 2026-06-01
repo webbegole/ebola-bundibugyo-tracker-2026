@@ -72,7 +72,9 @@ A single high-value source proposing a dip is **not** enough. The classic case i
 
 **When a dip is eventually accepted** (because a second high-value source corroborates): apply the dip with a NOTES bullet that names both corroborating sources and the date the rule's two-source threshold was met.
 
-**Rationale**: cumulative drops confuse a general-audience reader (the chart looks like deaths are coming back to life). In this outbreak's data environment, most apparent drops are definitional reclassifications, not actual recoveries. The no-dip rule biases toward the higher figure until the lower one earns multi-source backing.
+**MoH methodology-change carve-out.** When the downward revision is a formally-announced definitional cleanup by the official surveillance source (DRC MoH or Uganda MoH) — for example, removing suspected cases that subsequently tested negative after a lab capacity ramp-up, or zeroing a suspected-deaths column as part of the same cleanup — the two-source threshold is waived and the dip is applied with the MoH announcement as the sole high-value source. This is distinct from the standard no-dip case: it applies only when the MoH itself announces the methodology change (and the wire is faithfully carrying the announcement, not paraphrasing an unreconciled recount). The 2026-05-30 DRC MoH ~700-case removal (lab capacity ramp-up; remaining cases tested negative for Ebola) is the prototypical case. The exemption is recorded explicitly in `src/validate.py`'s `NO_DIP_EXEMPTIONS` dict (date → exempt columns) so the no-dip validator skips the named columns on that date. Every such exemption gets a NOTES bullet citing the MoH announcement and the figures applied.
+
+**Rationale**: cumulative drops confuse a general-audience reader (the chart looks like deaths are coming back to life). In this outbreak's data environment, most apparent drops are definitional reclassifications, not actual recoveries. The no-dip rule biases toward the higher figure until the lower one earns multi-source backing. The MoH carve-out exists because a definitional cleanup announced by the surveillance authority *is* the reclassification — by definition — and waiting for WHO reconciliation in that case is a delay, not a correction.
 
 ## Rules
 
@@ -131,9 +133,11 @@ Update this constant when a new WHO Weekly Sitrep lands. Set it to the new Sitre
 
 ### Revision-range footnote
 
-The caption under each chart cites an observed range for upward revisions (currently "4-35%"). That range lives in `OBSERVED_REVISION_RANGE` near the top of `src/generate_charts.py`. After applying lookback revisions, scan `notes.md` for the actual percent change on each revised row. If the running history drifts outside the cited range, update the constant.
+The caption under each chart cites two observed ranges, one for upward revisions and one for downward revisions, kept in `OBSERVED_UPWARD_REVISION_RANGE` and `OBSERVED_DOWNWARD_REVISION_RANGE` near the top of `src/generate_charts.py`. After applying lookback revisions, scan `notes.md` for the actual percent change on each revised row. If the running history drifts outside the cited range on either side, update the matching constant.
 
 Calculation: for each revision logged in NOTES, compute `(new − old) / old × 100`. The range in the footnote should bracket the observed values with a small margin.
+
+Upward revisions are the WHO Sitrep / DON reconciliation pattern (same-day wire counts undercount; WHO catches up). Downward revisions are the MoH methodology-change carve-out (DRC MoH cleaned baseline on 2026-05-30, zeroing the suspected-deaths column and removing test-negative cases). The two directions are tracked separately because they reflect different mechanisms.
 
 ### Doubling-time chart (v1 scaffold)
 

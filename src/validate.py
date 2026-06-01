@@ -88,6 +88,26 @@ CUMULATIVE_BREAKDOWN_COLS = [
     "confirmed_deaths",
 ]
 
+# No-dip rule exemptions. Per METHODOLOGY.md "MoH methodology-change carve-out":
+# when the official surveillance source (DRC MoH / Uganda MoH) formally announces
+# a definitional cleanup (e.g., suspected cases that subsequently tested negative
+# are removed after a lab-capacity ramp-up), the two-source threshold is waived
+# and the dip is applied. The named columns are skipped by the no-dip check on
+# the named date, and the new lower baseline takes effect from that row onward.
+# Each entry must have a matching NOTES bullet documenting the announcement and
+# the figures applied.
+NO_DIP_EXEMPTIONS_TIMESERIES = {
+    # 2026-05-30: DRC MoH announced removal of ~700 suspected cases that tested
+    # negative for Ebola after lab capacity ramp-up; suspected-deaths column
+    # zeroed as part of the same cleanup. Source: BNO @BNOFeed Daily Ebola
+    # Update May 30 graphic carrying DRC MoH attribution.
+    "2026-05-30": {"suspected_global", "total_global", "suspected_deaths_global"},
+}
+NO_DIP_EXEMPTIONS_BREAKDOWN = {
+    # (date, country) -> set of exempt column names
+    ("2026-05-30", "DRC"): {"suspected", "suspected_deaths"},
+}
+
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -178,6 +198,9 @@ def validate_timeseries(failures: list) -> list[dict]:
                        "conf": conf, "total": total, "deaths": deaths})
 
     # Cumulative non-decreasing check (the no-dip rule).
+    # Rows listed in NO_DIP_EXEMPTIONS_TIMESERIES bypass the check on the named
+    # columns; the new lower baseline becomes the comparison point for subsequent
+    # rows. See METHODOLOGY.md "MoH methodology-change carve-out".
     for col_key, col_name in (("sus", "suspected_global"), ("conf", "confirmed_global"),
                               ("total", "total_global"), ("deaths", "suspected_deaths_global")):
         prev = None
@@ -188,11 +211,14 @@ def validate_timeseries(failures: list) -> list[dict]:
             v = p[col_key]
             if v is None:
                 continue
-            if prev is not None and v < prev:
+            exempt = col_name in NO_DIP_EXEMPTIONS_TIMESERIES.get(p["date"], set())
+            if prev is not None and v < prev and not exempt:
                 fail(failures, f"timeseries.csv row {p['row']} ({p['date']})",
                      f"{col_name} decreased from {prev} (row dated {prev_date}) to {v} — "
                      "no-dip rule. Hold higher value and log dip in notes.md until "
-                     "a second high-value source corroborates.")
+                     "a second high-value source corroborates, OR add an entry to "
+                     "NO_DIP_EXEMPTIONS_TIMESERIES if this is a MoH methodology-change "
+                     "carve-out per METHODOLOGY.md.")
             prev = v
             prev_date = p["date"]
 
@@ -242,6 +268,8 @@ def validate_breakdown(failures: list) -> list[dict]:
                        "sus": sus, "conf": conf, "sus_d": sus_d, "conf_d": conf_d})
 
     # Per-country cumulative non-decreasing.
+    # (date, country) pairs in NO_DIP_EXEMPTIONS_BREAKDOWN bypass the check on
+    # the named columns. See METHODOLOGY.md "MoH methodology-change carve-out".
     by_country = {}
     for p in parsed:
         if p is None:
@@ -257,10 +285,12 @@ def validate_breakdown(failures: list) -> list[dict]:
                 v = p[col_key]
                 if v is None:
                     continue
-                if prev is not None and v < prev:
+                exempt = col_name in NO_DIP_EXEMPTIONS_BREAKDOWN.get((p["date"], country), set())
+                if prev is not None and v < prev and not exempt:
                     fail(failures, f"country_breakdown.csv {country} row {p['row']} ({p['date']})",
                          f"{col_name} decreased from {prev} (dated {prev_date}) to {v} — "
-                         "per-country no-dip violation.")
+                         "per-country no-dip violation (add NO_DIP_EXEMPTIONS_BREAKDOWN entry "
+                         "if MoH methodology-change carve-out).")
                 prev = v
                 prev_date = p["date"]
 
