@@ -69,6 +69,26 @@ LAST_SITREP_STABLE_DATE = "2026-05-24"
 # total -34.5%, sus_deaths -100%.
 OBSERVED_UPWARD_REVISION_RANGE = "<1-35%"
 OBSERVED_DOWNWARD_REVISION_RANGE = "up to 100%"
+
+# Baseline-reset dates. When the official surveillance source (DRC MoH or
+# Uganda MoH) formally re-baselines the series via the MoH methodology-change
+# carve-out (METHODOLOGY.md), the row's cumulative values are a NEW starting
+# point — not a delta against the prior row's pre-cleanup baseline. Computing
+# `cum[i] - cum[i-1]` across that boundary produces a spurious negative delta
+# that would render as a negative bar on the rolling-sum chart.
+#
+# For each date listed here, the daily delta is forced to zero (the cleaned
+# baseline is the floor, not a downward delta). Cumulative lines still use
+# the row's actual cumulative value, so the drop is visible on the line but
+# the bars stay non-negative. The cumulative-line callout in render_cases_chart
+# annotates the reset visually so a viewer understands the drop is a cleanup,
+# not a reversal.
+#
+# Update this set when a new MoH cleanup is applied and a NO_DIP_EXEMPTIONS
+# entry is added in src/validate.py.
+BASELINE_RESET_DATES = {
+    "2026-05-30",  # DRC MoH ~700-case removal; lab capacity ramp-up cleanup.
+}
 # -----------------------------------------------------------------------------
 
 # --- Style -------------------------------------------------------------------
@@ -135,15 +155,25 @@ def load_data(csv_path: Path):
 
     # Baseline: May 14 = 0 across all metrics, so the first row's delta equals
     # its cumulative value.
+    #
+    # Reset-day handling: on a date in BASELINE_RESET_DATES the row's cumulative
+    # values are a NEW baseline produced by a MoH methodology cleanup, not a
+    # delta against the prior row. Computing cum[i] - cum[i-1] across the
+    # reset boundary would give a spurious negative daily delta and a negative
+    # bar on the rolling-sum chart. We force the daily delta to zero on the
+    # reset day; the cleaned baseline becomes prev for the next iteration so
+    # subsequent days compute normal positive deltas against it.
     baseline = {"sus": 0, "conf": 0, "deaths": 0}
     deltas = []
     prev = baseline
     for cur in rows:
+        is_reset = cur["date"] in BASELINE_RESET_DATES
         deltas.append({
             "date": cur["date"],
-            "d_sus": cur["sus"] - prev["sus"],
-            "d_conf": cur["conf"] - prev["conf"],
-            "d_deaths": cur["deaths"] - prev["deaths"],
+            "d_sus": 0 if is_reset else cur["sus"] - prev["sus"],
+            "d_conf": 0 if is_reset else cur["conf"] - prev["conf"],
+            "d_deaths": 0 if is_reset else cur["deaths"] - prev["deaths"],
+            "is_reset": is_reset,
             # Carry the cumulative running totals through so the renderers can
             # plot a secondary "cumulative outbreak total" line alongside the
             # 7-day rolling bars.
@@ -204,6 +234,24 @@ def annotate_stacked_totals(ax, xs, suspected, confirmed, fontsize=15):
 
 DEFAULT_CUMULATIVE_MARKERSIZE = 5.5
 DEFAULT_CUMULATIVE_LINEWIDTH = 1.6
+
+
+def mark_baseline_resets(ax, dates, label_text="MoH baseline reset"):
+    """Draw a thin vertical line at each baseline-reset date and label it.
+
+    The label sits at the top of the axis so it doesn't compete with the
+    bars. Use a muted gray so the marker reads as chart furniture, not data.
+    """
+    for i, d in enumerate(dates):
+        if d not in BASELINE_RESET_DATES:
+            continue
+        ax.axvline(i, color=COLOR_SUBTLE, linewidth=1.0,
+                   linestyle=(0, (4, 3)), zorder=1, alpha=0.7)
+        ymin, ymax = ax.get_ylim()
+        y = ymax - (ymax - ymin) * 0.045
+        ax.text(i + 0.15, y, label_text,
+                fontsize=11, color=COLOR_SUBTLE, style="italic",
+                ha="left", va="top", zorder=6)
 
 
 def overlay_cumulative_line(ax, xs, series, axis_label, axis_color=None):
@@ -314,6 +362,10 @@ def render_cases_chart(deltas, out_path: Path):
         axis_color=COLOR_CUMULATIVE,
     )
 
+    # Mark any MoH baseline-reset dates so the cumulative-line drop reads as
+    # a documented methodology cleanup, not as the outbreak reversing.
+    mark_baseline_resets(ax, dates)
+
     # Build a custom legend with Patch proxies so the hatched swatch renders.
     legend_handles = [
         Patch(facecolor=COLOR_CONFIRMED, edgecolor="white", label="Confirmed cases (7-day, left axis)"),
@@ -400,6 +452,10 @@ def render_deaths_chart(deltas, out_path: Path):
         series=[(cumulative_deaths, COLOR_CUMULATIVE)],
         axis_label="Cumulative suspected deaths",
     )
+
+    # Mark any MoH baseline-reset dates so the cumulative-line drop reads as
+    # a documented methodology cleanup, not as the outbreak reversing.
+    mark_baseline_resets(ax, dates)
 
     # Legend with Patch proxies so the hatched swatch renders, plus the line.
     legend_handles = [
