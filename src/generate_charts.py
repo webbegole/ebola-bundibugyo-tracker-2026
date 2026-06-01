@@ -249,8 +249,11 @@ DEFAULT_CUMULATIVE_LINEWIDTH = 1.6
 def mark_baseline_resets(ax, dates, label_text="MoH baseline reset"):
     """Draw a thin vertical line at each baseline-reset date and label it.
 
-    The label sits at the top of the axis so it doesn't compete with the
-    bars. Use a muted gray so the marker reads as chart furniture, not data.
+    Labels are rotated vertically so consecutive reset dates (e.g., 2026-05-30
+    and 2026-06-01, only two days apart) don't overlap each other or the
+    legend at the top of the chart. The label sits inside the chart area at
+    roughly mid-height, riding alongside the dashed vertical marker line.
+    Use a muted gray so the marker reads as chart furniture, not data.
     """
     for i, d in enumerate(dates):
         if d not in BASELINE_RESET_DATES:
@@ -258,10 +261,10 @@ def mark_baseline_resets(ax, dates, label_text="MoH baseline reset"):
         ax.axvline(i, color=COLOR_SUBTLE, linewidth=1.0,
                    linestyle=(0, (4, 3)), zorder=1, alpha=0.7)
         ymin, ymax = ax.get_ylim()
-        y = ymax - (ymax - ymin) * 0.045
-        ax.text(i + 0.15, y, label_text,
-                fontsize=11, color=COLOR_SUBTLE, style="italic",
-                ha="left", va="top", zorder=6)
+        y = ymin + (ymax - ymin) * 0.55
+        ax.text(i - 0.18, y, label_text,
+                fontsize=10, color=COLOR_SUBTLE, style="italic",
+                ha="right", va="center", rotation=90, zorder=6)
 
 
 def overlay_cumulative_line(ax, xs, series, axis_label, axis_color=None):
