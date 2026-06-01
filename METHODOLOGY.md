@@ -21,7 +21,26 @@ When a third country starts reporting cases:
 1. Add the new country's cases to the running global totals in `timeseries.csv`. `total_global = suspected_global + confirmed_global`.
 2. Add per-country rows for that date to `country_breakdown.csv` covering DRC, Uganda, and the new country. Use country-specific sources where available.
 3. If the new country becomes operationally significant (sustained transmission, regular WHO reporting), consider adding a per-country breakout column on the main timeseries alongside Uganda's `uganda_confirmed` and `uganda_deaths`.
-4. Log the scope change as a new bullet in `notes.md`.
+4. Add a row to `declarations.csv` if the country has its own CDC HAN, CDC Travel Health Notice, or WHO country-specific advisory for this outbreak (see "Adding a country to `declarations.csv`" below).
+5. Log the scope change as a new bullet in `notes.md`.
+
+## Adding a country to `declarations.csv`
+
+`declarations.csv` is country × CDC HAN / CDC Travel Health Notice / WHO declaration, scoped to this outbreak. Add a row when **any one** of the following becomes true for a country:
+
+- The country starts reporting confirmed or suspected cases (this also triggers timeseries.csv and country_breakdown.csv updates).
+- CDC issues a country-specific Travel Health Notice for this outbreak at any level (1 through 4).
+- CDC publishes a country-specific Health Alert Network notice for this outbreak, or a multi-country HAN explicitly names the country.
+- WHO issues a country-specific declaration, statement, or DON entry beyond the joint PHEIC.
+- A non-US national health authority (e.g., Public Health Agency of Canada, ECDC for individual EU members) issues its own outbreak-specific advisory for the country — *and* that advisory has a stable primary-source URL we can cite.
+
+Do **not** add a row solely because the country appears in another country's advisory or entry restriction. Example: South Sudan is named in the US entry restrictions for non-US passport holders who travelled to DRC, Uganda, or South Sudan, but South Sudan has no CDC HAN, no CDC Travel Health Notice, and no WHO country-specific advisory for this outbreak as of the runs through 2026-05-31. Its inclusion in other countries' advisories is captured in the affected countries' `notes` fields, not as its own row.
+
+Schema reminder: the columns are `country, first_report_date, case_status, cdc_advisory, cdc_url, cdc_travel_notice_level, cdc_travel_notice_url, who_status, who_url, notes`. There is no column for State Department travel advisories, non-US national advisories, Africa CDC PHECS, or other government measures; those live in the `notes` field. If a particular column becomes recurring enough to warrant structured cells (e.g., a `state_dept_advisory_level` column), extend the schema and migrate existing rows.
+
+### Verification protocol on each daily run
+
+When you mark "declarations.csv: no change" on a daily run, you must have actually **fetched the per-country CDC Travel Notice URL and verified the level on the page**, plus scanned the [CDC Travel Notices index](https://wwwnc.cdc.gov/travel/notices) for any new outbreak-related notices. A URL that resolves is not the same as the level being unchanged: CDC sometimes re-uses URLs from prior outbreaks (Uganda's `/level1/ebola-uganda` URL kept serving stale Sudan-virus content after CDC moved Uganda's BVD notice to `/level2/`). The lesson on 2026-05-31 (PM4): six consecutive daily runs recorded "no change" while CDC had in fact raised Uganda from Level 1 to Level 2 on May 27.
 
 ## Source preference order
 

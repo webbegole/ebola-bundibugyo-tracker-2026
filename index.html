@@ -305,6 +305,11 @@
       <p class="big" id="stat-deaths">—</p>
       <p class="delta" id="delta-deaths">—</p>
     </div>
+    <div class="stat-card confirmed">
+      <h3>Confirmed deaths</h3>
+      <p class="big" id="stat-conf-deaths">—</p>
+      <p class="delta" id="delta-conf-deaths">—</p>
+    </div>
   </section>
 
   <section class="charts" aria-label="Charts">
@@ -316,7 +321,7 @@
     </figure>
     <figure class="chart">
       <button type="button" class="chart-trigger" aria-label="Enlarge deaths chart">
-        <img src="outputs/latest-deaths.png" alt="7-day rolling sum of suspected deaths with cumulative line">
+        <img src="outputs/latest-deaths.png" alt="7-day rolling sum of new deaths (stacked confirmed and suspected) with cumulative total and confirmed lines">
       </button>
     </figure>
   </section>
@@ -354,11 +359,12 @@
             <th>Confirmed</th>
             <th>Total</th>
             <th>Susp. Deaths</th>
+            <th>Conf. Deaths</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody id="recent-body">
-          <tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+          <tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -446,7 +452,7 @@
 
   function renderError(message) {
     const body = document.getElementById("recent-body");
-    body.innerHTML = `<tr><td colspan="6"><div class="error">${message}</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="7"><div class="error">${message}</div></td></tr>`;
   }
 
   function fmtTimestamp(httpDateString) {
@@ -478,6 +484,7 @@
       ["confirmed", "confirmed_global"],
       ["total", "total_global"],
       ["deaths", "suspected_deaths_global"],
+      ["conf-deaths", "confirmed_deaths_global"],
     ];
     fields.forEach(([slug, col]) => {
       setText(`stat-${slug}`, fmtNum(latest[col]));
@@ -496,6 +503,7 @@
         <td class="num">${fmtNum(r.confirmed_global)}</td>
         <td class="num">${fmtNum(r.total_global)}</td>
         <td class="num">${fmtNum(r.suspected_deaths_global)}</td>
+        <td class="num">${fmtNum(r.confirmed_deaths_global)}</td>
         <td class="source">${r.primary_source || ""}</td>
       `;
       body.appendChild(tr);
