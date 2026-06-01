@@ -45,6 +45,7 @@ EXPECTED_TIMESERIES_COLS = [
     "confirmed_global",
     "total_global",
     "suspected_deaths_global",
+    "confirmed_deaths_global",
     "primary_source",
     "source_timestamp",
 ]
@@ -78,6 +79,7 @@ CUMULATIVE_TIMESERIES_COLS = [
     "confirmed_global",
     "total_global",
     "suspected_deaths_global",
+    "confirmed_deaths_global",
 ]
 
 # Columns in country_breakdown.csv that are cumulative per country.
@@ -181,12 +183,14 @@ def validate_timeseries(failures: list) -> list[dict]:
             conf = parse_int(r["confirmed_global"])
             total = parse_int(r["total_global"])
             deaths = parse_int(r["suspected_deaths_global"])
+            conf_deaths = parse_int(r["confirmed_deaths_global"])
         except ValueError as e:
             fail(failures, f"timeseries.csv row {i}", f"non-numeric in cumulative column: {e}")
             parsed.append(None)
             continue
         for label, v in (("suspected_global", sus), ("confirmed_global", conf),
-                         ("total_global", total), ("suspected_deaths_global", deaths)):
+                         ("total_global", total), ("suspected_deaths_global", deaths),
+                         ("confirmed_deaths_global", conf_deaths)):
             if v is not None and v < 0:
                 fail(failures, f"timeseries.csv row {i}", f"{label} is negative: {v}")
         # If all three of sus/conf/total are present, total must equal sus + conf.
@@ -195,14 +199,16 @@ def validate_timeseries(failures: list) -> list[dict]:
                 fail(failures, f"timeseries.csv row {i} ({r['report_date']})",
                      f"total_global ({total}) != suspected_global ({sus}) + confirmed_global ({conf})")
         parsed.append({"row": i, "date": r["report_date"], "sus": sus,
-                       "conf": conf, "total": total, "deaths": deaths})
+                       "conf": conf, "total": total, "deaths": deaths,
+                       "conf_deaths": conf_deaths})
 
     # Cumulative non-decreasing check (the no-dip rule).
     # Rows listed in NO_DIP_EXEMPTIONS_TIMESERIES bypass the check on the named
     # columns; the new lower baseline becomes the comparison point for subsequent
     # rows. See METHODOLOGY.md "MoH methodology-change carve-out".
     for col_key, col_name in (("sus", "suspected_global"), ("conf", "confirmed_global"),
-                              ("total", "total_global"), ("deaths", "suspected_deaths_global")):
+                              ("total", "total_global"), ("deaths", "suspected_deaths_global"),
+                              ("conf_deaths", "confirmed_deaths_global")):
         prev = None
         prev_date = None
         for p in parsed:

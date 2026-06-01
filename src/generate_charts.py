@@ -136,8 +136,9 @@ def load_data(csv_path: Path):
     """Load timeseries.csv and compute daily deltas + 7-day rolling sums.
 
     Returns a list of per-row dicts with keys: date, d_sus, d_conf, d_deaths,
-    cum_sus, cum_conf, cum_total_cases, cum_deaths, r7_sus, r7_conf,
-    r7_deaths, window_size.
+    d_conf_deaths, cum_sus, cum_conf, cum_total_cases, cum_deaths,
+    cum_conf_deaths, cum_total_deaths, r7_sus, r7_conf, r7_deaths,
+    r7_conf_deaths, window_size.
     """
     rows = []
     with open(csv_path, newline="") as f:
@@ -151,6 +152,7 @@ def load_data(csv_path: Path):
                 "sus": int(r["suspected_global"]) if r["suspected_global"] else 0,
                 "conf": int(r["confirmed_global"]) if r["confirmed_global"] else 0,
                 "deaths": int(r["suspected_deaths_global"]) if r["suspected_deaths_global"] else 0,
+                "conf_deaths": int(r["confirmed_deaths_global"]) if r["confirmed_deaths_global"] else 0,
             })
 
     # Baseline: May 14 = 0 across all metrics, so the first row's delta equals
@@ -163,7 +165,7 @@ def load_data(csv_path: Path):
     # bar on the rolling-sum chart. We force the daily delta to zero on the
     # reset day; the cleaned baseline becomes prev for the next iteration so
     # subsequent days compute normal positive deltas against it.
-    baseline = {"sus": 0, "conf": 0, "deaths": 0}
+    baseline = {"sus": 0, "conf": 0, "deaths": 0, "conf_deaths": 0}
     deltas = []
     prev = baseline
     for cur in rows:
@@ -173,6 +175,7 @@ def load_data(csv_path: Path):
             "d_sus": 0 if is_reset else cur["sus"] - prev["sus"],
             "d_conf": 0 if is_reset else cur["conf"] - prev["conf"],
             "d_deaths": 0 if is_reset else cur["deaths"] - prev["deaths"],
+            "d_conf_deaths": 0 if is_reset else cur["conf_deaths"] - prev["conf_deaths"],
             "is_reset": is_reset,
             # Carry the cumulative running totals through so the renderers can
             # plot a secondary "cumulative outbreak total" line alongside the
@@ -181,6 +184,8 @@ def load_data(csv_path: Path):
             "cum_conf": cur["conf"],
             "cum_total_cases": cur["sus"] + cur["conf"],
             "cum_deaths": cur["deaths"],
+            "cum_conf_deaths": cur["conf_deaths"],
+            "cum_total_deaths": cur["deaths"] + cur["conf_deaths"],
         })
         prev = cur
 
@@ -190,6 +195,7 @@ def load_data(csv_path: Path):
         row["r7_sus"] = sum(w["d_sus"] for w in window)
         row["r7_conf"] = sum(w["d_conf"] for w in window)
         row["r7_deaths"] = sum(w["d_deaths"] for w in window)
+        row["r7_conf_deaths"] = sum(w["d_conf_deaths"] for w in window)
         row["window_size"] = len(window)
 
     return deltas
@@ -426,52 +432,90 @@ def render_cases_chart(deltas, out_path: Path):
 
 
 def render_deaths_chart(deltas, out_path: Path):
+    """Deaths chart, structurally identical to the cases chart.
+
+    Stacked bars: confirmed deaths (bottom, the lab-attributed certain layer)
+    + suspected deaths (top, clinical-suspicion-only). Hatched on provisional
+    dates. Two cumulative lines on the right axis: total deaths (bronze) and
+    confirmed deaths (deep red). The gap between the two lines is the share
+    of the running death count still in clinical-suspicion-only status.
+
+    The original deaths chart only showed suspected deaths. After DRC MoH
+    zeroed the suspected-deaths column in the 2026-05-30 cleanup, "suspected
+    deaths" stopped being a useful headline metric: real deaths are still
+    accumulating, just on the confirmed side. Mirroring the cases chart's
+    structure puts both layers on screen and keeps the death story honest.
+    """
     dates = [d["date"] for d in deltas]
     short_dates = [d[5:] for d in dates]
-    deaths = [d["r7_deaths"] for d in deltas]
-    cumulative_deaths = [d["cum_deaths"] for d in deltas]
+    sus_deaths = [d["r7_deaths"] for d in deltas]
+    conf_deaths = [d["r7_conf_deaths"] for d in deltas]
+    cumulative_total_deaths = [d["cum_total_deaths"] for d in deltas]
+    cumulative_conf_deaths = [d["cum_conf_deaths"] for d in deltas]
     provisional = [d > LAST_SITREP_STABLE_DATE for d in dates]
     hatches = ["////" if p else "" for p in provisional]
 
     fig, ax = plt.subplots(figsize=(16, 9), dpi=100)
     xs = list(range(len(dates)))
 
-    ax.bar(xs, deaths, color=COLOR_DEATHS, width=0.68,
-           edgecolor="white", linewidth=0.8, hatch=hatches)
+    # Stacked bars: confirmed deaths on bottom (the certain layer), suspected
+    # deaths on top. Mirrors the cases chart's confirmed-cases-on-bottom
+    # convention so a viewer can read both charts the same way.
+    ax.bar(xs, conf_deaths, color=COLOR_CONFIRMED, width=0.68,
+           label="Confirmed deaths", edgecolor="white", linewidth=0.8,
+           hatch=hatches)
+    ax.bar(xs, sus_deaths, bottom=conf_deaths, color=COLOR_SUSPECTED,
+           width=0.68, label="Suspected deaths", edgecolor="white",
+           linewidth=0.8, hatch=hatches)
 
-    # Headroom above the tallest bar so the legend (anchored upper-left)
-    # doesn't collide with the data.
-    if deaths:
-        bar_max = max(deaths)
+    # Headroom above the tallest stacked bar so the legend (anchored
+    # upper-left) doesn't collide with the data.
+    stacked_tops = [s + c for s, c in zip(sus_deaths, conf_deaths)]
+    if stacked_tops:
+        bar_max = max(stacked_tops)
         if bar_max > 0:
             ax.set_ylim(top=bar_max * 1.35)
 
-    # Overlay: cumulative suspected deaths on a secondary axis.
+    # Overlay: two cumulative lines on the secondary axis. The bronze line
+    # is cumulative TOTAL deaths (suspected + confirmed). The deeper-red line
+    # is cumulative LAB-CONFIRMED deaths. The gap between them is the share
+    # of the running death count still in clinical-suspicion-only status.
     ax2 = overlay_cumulative_line(
         ax, xs,
-        series=[(cumulative_deaths, COLOR_CUMULATIVE)],
-        axis_label="Cumulative suspected deaths",
+        series=[
+            (cumulative_total_deaths, COLOR_CUMULATIVE),
+            (cumulative_conf_deaths, COLOR_CUMULATIVE_CONF,
+             {"markersize": 9.5, "linewidth": 2.0}),
+        ],
+        axis_label="Cumulative deaths (global)",
+        axis_color=COLOR_CUMULATIVE,
     )
 
     # Mark any MoH baseline-reset dates so the cumulative-line drop reads as
     # a documented methodology cleanup, not as the outbreak reversing.
     mark_baseline_resets(ax, dates)
 
-    # Legend with Patch proxies so the hatched swatch renders, plus the line.
+    # Build a custom legend with Patch proxies so the hatched swatch renders.
     legend_handles = [
-        Patch(facecolor=COLOR_DEATHS, edgecolor="white",
-              label="Sitrep-stable (7-day, left axis)"),
+        Patch(facecolor=COLOR_CONFIRMED, edgecolor="white", label="Confirmed deaths (7-day, left axis)"),
+        Patch(facecolor=COLOR_SUSPECTED, edgecolor="white", label="Suspected deaths (7-day, left axis)"),
     ]
     if any(provisional):
         legend_handles.append(
-            Patch(facecolor=COLOR_DEATHS, edgecolor="white", hatch="////",
+            Patch(facecolor="white", edgecolor=COLOR_AXIS, hatch="////",
                   label="Provisional (subject to revision)")
         )
     legend_handles.append(
         Line2D([0], [0], color=COLOR_CUMULATIVE, linewidth=1.8,
                marker="o", markersize=6, markerfacecolor=COLOR_CUMULATIVE,
                markeredgecolor="white",
-               label="Cumulative suspected deaths (right axis)")
+               label="Cumulative total deaths (right axis)")
+    )
+    legend_handles.append(
+        Line2D([0], [0], color=COLOR_CUMULATIVE_CONF, linewidth=2.2,
+               marker="o", markersize=10, markerfacecolor=COLOR_CUMULATIVE_CONF,
+               markeredgecolor="white",
+               label="Cumulative lab-confirmed deaths (right axis)")
     )
     leg = ax.legend(handles=legend_handles, loc="upper left", frameon=False,
                     fontsize=13, handlelength=1.8, handleheight=1.2, ncol=3)
@@ -481,15 +525,15 @@ def render_deaths_chart(deltas, out_path: Path):
     ax.set_xticks(xs)
     ax.set_xticklabels(short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
-    ax.set_ylabel("Suspected deaths reported in the previous 7 days", labelpad=12)
+    ax.set_ylabel("Deaths reported in the previous 7 days", labelpad=12)
 
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{int(x):,}"))
     ax.grid(axis="x", visible=False)
     ax.axhline(0, color=COLOR_AXIS, linewidth=0.8)
 
-    fig.suptitle("Ebola (Bundibugyo): 7-day rolling sum of suspected deaths",
+    fig.suptitle("Ebola (Bundibugyo): 7-day rolling sum of new deaths",
                  fontsize=26, fontweight="bold", color=COLOR_TEXT, x=0.07, ha="left", y=0.96)
-    ax.set_title("Bars: new suspected deaths in the trailing 7 days. Line: cumulative suspected deaths at each date.",
+    ax.set_title("Bars: new deaths in the trailing 7 days. Lines: cumulative outbreak deaths at each date.",
                  fontsize=17, fontweight="normal", color=COLOR_SUBTLE,
                  loc="left", pad=16)
 

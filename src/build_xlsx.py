@@ -83,7 +83,7 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
     # Title
     ws.cell(1, 1, value="2026 Ebola (Bundibugyo) Outbreak: Daily Case Counts (global)")
     ws.cell(1, 1).font = TITLE_FONT
-    ws.merge_cells("A1:G1")
+    ws.merge_cells("A1:H1")
 
     # Subtitle / description
     ws.cell(2, 1, value=(
@@ -93,7 +93,7 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
     ))
     ws.cell(2, 1).font = SUBTITLE_FONT
     ws.cell(2, 1).alignment = LEFT_WRAP
-    ws.merge_cells("A2:G2")
+    ws.merge_cells("A2:H2")
     ws.row_dimensions[2].height = 30
 
     # Headers (row 4)
@@ -103,10 +103,11 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
         "Confirmed Cases\n(Global)",
         "Total Cases\n(Global)",
         "Suspected Deaths\n(Global)",
+        "Confirmed Deaths\n(Global)",
         "Primary Source",
         "Source Timestamp",
     ]
-    widths = [16, 16, 16, 16, 16, 48, 16]
+    widths = [16, 16, 16, 16, 16, 16, 48, 16]
     write_headers(ws, headers, row=4, widths=widths)
 
     # Data rows (starting row 5)
@@ -120,10 +121,11 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
             ws.cell(row, 3, value=_int_or_none(r["confirmed_global"]))
             ws.cell(row, 4, value=_int_or_none(r["total_global"]))
             ws.cell(row, 5, value=_int_or_none(r["suspected_deaths_global"]))
-            ws.cell(row, 6, value=r["primary_source"])
-            ws.cell(row, 7, value=r["source_timestamp"])
-            apply_data_style(ws, row, n_cols=7, is_alt=(i % 2 == 1),
-                             source_cols=(6, 7))
+            ws.cell(row, 6, value=_int_or_none(r["confirmed_deaths_global"]))
+            ws.cell(row, 7, value=r["primary_source"])
+            ws.cell(row, 8, value=r["source_timestamp"])
+            apply_data_style(ws, row, n_cols=8, is_alt=(i % 2 == 1),
+                             source_cols=(7, 8))
         last_data_row = data_start + i
 
     # NOTES block
@@ -141,7 +143,7 @@ def build_main_sheet(wb, ts_csv: Path, notes_md: Path):
             ws.cell(notes_row, 1).font = NOTE_FONT
             ws.cell(notes_row, 1).alignment = LEFT_WRAP
             ws.merge_cells(start_row=notes_row, start_column=1,
-                           end_row=notes_row, end_column=7)
+                           end_row=notes_row, end_column=8)
             notes_row += 1
 
     ws.freeze_panes = "A5"
@@ -155,7 +157,7 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
 
     ws.cell(1, 1, value="7-day rolling sums of daily changes (global)")
     ws.cell(1, 1).font = TITLE_FONT
-    ws.merge_cells("A1:H1")
+    ws.merge_cells("A1:J1")
 
     ws.cell(2, 1, value=(
         "Derived from the main timeseries. Charts live as PNG files in "
@@ -163,19 +165,21 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
     ))
     ws.cell(2, 1).font = SUBTITLE_FONT
     ws.cell(2, 1).alignment = LEFT_WRAP
-    ws.merge_cells("A2:H2")
+    ws.merge_cells("A2:J2")
 
     headers = [
         "Date",
         "Daily Δ Suspected",
         "Daily Δ Confirmed",
         "Daily Δ Suspected Deaths",
+        "Daily Δ Confirmed Deaths",
         "Suspected cases (7-day sum)",
         "Confirmed cases (7-day sum)",
         "Suspected deaths (7-day sum)",
+        "Confirmed deaths (7-day sum)",
         "Window (days)",
     ]
-    widths = [14, 18, 18, 22, 24, 24, 24, 14]
+    widths = [14, 18, 18, 22, 22, 24, 24, 24, 24, 14]
     write_headers(ws, headers, row=4, widths=widths)
 
     # Compute deltas + rolling sums from CSV
@@ -188,9 +192,10 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
                 "sus": int(r["suspected_global"] or 0),
                 "conf": int(r["confirmed_global"] or 0),
                 "deaths": int(r["suspected_deaths_global"] or 0),
+                "conf_deaths": int(r["confirmed_deaths_global"] or 0),
             })
 
-    prev = {"sus": 0, "conf": 0, "deaths": 0}
+    prev = {"sus": 0, "conf": 0, "deaths": 0, "conf_deaths": 0}
     deltas = []
     for cur in rows:
         deltas.append({
@@ -198,6 +203,7 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
             "d_sus": cur["sus"] - prev["sus"],
             "d_conf": cur["conf"] - prev["conf"],
             "d_deaths": cur["deaths"] - prev["deaths"],
+            "d_conf_deaths": cur["conf_deaths"] - prev["conf_deaths"],
         })
         prev = cur
 
@@ -206,6 +212,7 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
         row["r7_sus"] = sum(w["d_sus"] for w in win)
         row["r7_conf"] = sum(w["d_conf"] for w in win)
         row["r7_deaths"] = sum(w["d_deaths"] for w in win)
+        row["r7_conf_deaths"] = sum(w["d_conf_deaths"] for w in win)
         row["window"] = len(win)
 
         r = 5 + i
@@ -213,11 +220,13 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
         ws.cell(r, 2, value=row["d_sus"])
         ws.cell(r, 3, value=row["d_conf"])
         ws.cell(r, 4, value=row["d_deaths"])
-        ws.cell(r, 5, value=row["r7_sus"])
-        ws.cell(r, 6, value=row["r7_conf"])
-        ws.cell(r, 7, value=row["r7_deaths"])
-        ws.cell(r, 8, value=row["window"])
-        apply_data_style(ws, r, n_cols=8, is_alt=(i % 2 == 1))
+        ws.cell(r, 5, value=row["d_conf_deaths"])
+        ws.cell(r, 6, value=row["r7_sus"])
+        ws.cell(r, 7, value=row["r7_conf"])
+        ws.cell(r, 8, value=row["r7_deaths"])
+        ws.cell(r, 9, value=row["r7_conf_deaths"])
+        ws.cell(r, 10, value=row["window"])
+        apply_data_style(ws, r, n_cols=10, is_alt=(i % 2 == 1))
 
     return ws
 
