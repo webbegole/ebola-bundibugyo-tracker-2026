@@ -104,10 +104,20 @@ NO_DIP_EXEMPTIONS_TIMESERIES = {
     # zeroed as part of the same cleanup. Source: BNO @BNOFeed Daily Ebola
     # Update May 30 graphic carrying DRC MoH attribution.
     "2026-05-30": {"suspected_global", "total_global", "suspected_deaths_global"},
+    # 2026-06-01: continuation of the DRC MoH lab-capacity ramp-up cleanup.
+    # BNO @BNOFeed Daily Ebola Update June 1 graphic (sourced to MoH DR Congo,
+    # MoH Uganda, WHO) splits DRC into 343 conf + 116 sus for the first time on
+    # the cleaned baseline. Suspected total drops from 447 (May 31) to 116; BNO
+    # follow-up tweet documents the methodology: "Because the number of suspected
+    # cases is constantly changing, and not always available, our updates will
+    # now focus on confirmed cases. The number of suspected cases is still shown
+    # in the graphic." Carve-out applies to the suspected-cases columns.
+    "2026-06-01": {"suspected_global", "total_global"},
 }
 NO_DIP_EXEMPTIONS_BREAKDOWN = {
     # (date, country) -> set of exempt column names
     ("2026-05-30", "DRC"): {"suspected", "suspected_deaths"},
+    ("2026-06-01", "DRC"): {"suspected"},
 }
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")

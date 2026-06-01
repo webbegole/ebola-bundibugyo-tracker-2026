@@ -88,6 +88,10 @@ OBSERVED_DOWNWARD_REVISION_RANGE = "up to 100%"
 # entry is added in src/validate.py.
 BASELINE_RESET_DATES = {
     "2026-05-30",  # DRC MoH ~700-case removal; lab capacity ramp-up cleanup.
+    "2026-06-01",  # Continued DRC MoH cleanup: -293 DRC suspected as cases move
+                   # from suspected to confirmed and test-negatives are removed.
+                   # BNO @BNOFeed June 1 graphic and follow-up tweet document the
+                   # ongoing methodology shift to confirmed-cases-first reporting.
 }
 # -----------------------------------------------------------------------------
 
