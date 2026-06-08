@@ -328,6 +328,25 @@ def overlay_cumulative_line(ax, xs, series, axis_label, axis_color=None):
     return ax2
 
 
+def set_thinned_date_axis(ax, xs, short_dates, target_labels=11):
+    """Label the x-axis at a thinned cadence so daily ticks stay readable as
+    the series grows. Every bar keeps its tick position, but only a subset of
+    dates are labeled. Labels are chosen counting back from the most recent
+    date, so the latest day is always shown and the cadence stays even.
+    """
+    ax.set_xticks(xs)
+    n = len(xs)
+    if n <= target_labels:
+        ax.set_xticklabels(short_dates)
+        return
+    step = math.ceil(n / target_labels)
+    labels = [
+        short_dates[i] if (n - 1 - i) % step == 0 else ""
+        for i in range(n)
+    ]
+    ax.set_xticklabels(labels)
+
+
 def render_cases_chart(deltas, out_path: Path):
     dates = [d["date"] for d in deltas]
     short_dates = [d[5:] for d in dates]  # MM-DD
@@ -402,8 +421,7 @@ def render_cases_chart(deltas, out_path: Path):
                label="Cumulative lab-confirmed cases (right axis)")
     )
 
-    ax.set_xticks(xs)
-    ax.set_xticklabels(short_dates)
+    set_thinned_date_axis(ax, xs, short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
     ax.set_ylabel("Cases reported in the previous 7 days", labelpad=12)
 
@@ -529,8 +547,7 @@ def render_deaths_chart(deltas, out_path: Path):
     for txt in leg.get_texts():
         txt.set_color(COLOR_TEXT)
 
-    ax.set_xticks(xs)
-    ax.set_xticklabels(short_dates)
+    set_thinned_date_axis(ax, xs, short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
     ax.set_ylabel("Deaths reported in the previous 7 days", labelpad=12)
 
@@ -655,8 +672,7 @@ def render_doubling_time_chart(deltas, out_path: Path):
 
     # X axis: align to the full date range (not just the plotted points) so
     # the chart context matches the other two PNGs.
-    ax.set_xticks(xs)
-    ax.set_xticklabels(short_dates)
+    set_thinned_date_axis(ax, xs, short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
     ax.set_ylabel("Doubling time (days)", labelpad=12)
 
