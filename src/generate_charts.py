@@ -46,7 +46,7 @@ BYLINE = "Tracker: Web Begole · @web_begole · linkedin.com/in/webbegole"
 #
 # Update this when a new WHO Weekly Sitrep lands. Set to the Sitrep's "as of"
 # date. Format: "YYYY-MM-DD".
-LAST_SITREP_STABLE_DATE = "2026-05-24"
+LAST_SITREP_STABLE_DATE = "2026-05-31"
 
 # Observed magnitude of revisions, split by direction. Upward revisions come
 # from WHO Sitrep / DON reconciliation when same-day wire counts undercount.
@@ -61,13 +61,15 @@ LAST_SITREP_STABLE_DATE = "2026-05-24"
 # Upward history (as of 2026-05-31): May 18 sus +33.7%, May 18 deaths +24.5%,
 # May 21 sus +11.2%, May 21 conf +32.8%, May 21 deaths +6.0%, May 24 sus +4.3%,
 # May 24 conf +16.1%, May 25 conf +12.5%, May 25 sus +0.22%, May 25 total +0.59%.
+# 2026-06-08 WHO Sitrep 03 reconciliation of the May 31 row: conf +41.0% (global
+# 234->330; DRC component +42.7%, 225->321), which set the upper bound to 43%.
 #
 # Downward history (as of 2026-05-31): 2026-05-30 DRC MoH methodology cleanup
 # applied to May 30 row — sus -61.5%, total -43.9%, sus_deaths -100% (column
 # zeroed when DRC MoH reclassified suspected deaths as non-Ebola). Same dip
 # carried into May 31 row (relative to the WHO DON605 baseline) — sus -50.7%,
 # total -34.5%, sus_deaths -100%.
-OBSERVED_UPWARD_REVISION_RANGE = "<1-35%"
+OBSERVED_UPWARD_REVISION_RANGE = "<1-43%"
 OBSERVED_DOWNWARD_REVISION_RANGE = "up to 100%"
 
 # Baseline-reset dates. When the official surveillance source (DRC MoH or
@@ -88,10 +90,12 @@ OBSERVED_DOWNWARD_REVISION_RANGE = "up to 100%"
 # entry is added in src/validate.py.
 BASELINE_RESET_DATES = {
     "2026-05-30",  # DRC MoH ~700-case removal; lab capacity ramp-up cleanup.
-    "2026-06-01",  # Continued DRC MoH cleanup: -293 DRC suspected as cases move
-                   # from suspected to confirmed and test-negatives are removed.
-                   # BNO @BNOFeed June 1 graphic and follow-up tweet document the
-                   # ongoing methodology shift to confirmed-cases-first reporting.
+    "2026-05-31",  # Completion of the cleanup, dated to WHO Weekly Sitrep 03
+                   # (data as of 31 May 2026): DRC reconciled to 321 confirmed /
+                   # 48 deaths / 116 suspected. Reconciled 2026-06-08 (Web-directed)
+                   # from the prior BNO running count (225 conf / 447 sus). This
+                   # is the cleanup's true Sitrep date; June 1 now holds the same
+                   # post-cleanup level, so the reset moved here from 2026-06-01.
 }
 # -----------------------------------------------------------------------------
 

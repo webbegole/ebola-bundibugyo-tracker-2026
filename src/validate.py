@@ -104,20 +104,20 @@ NO_DIP_EXEMPTIONS_TIMESERIES = {
     # zeroed as part of the same cleanup. Source: BNO @BNOFeed Daily Ebola
     # Update May 30 graphic carrying DRC MoH attribution.
     "2026-05-30": {"suspected_global", "total_global", "suspected_deaths_global"},
-    # 2026-06-01: continuation of the DRC MoH lab-capacity ramp-up cleanup.
-    # BNO @BNOFeed Daily Ebola Update June 1 graphic (sourced to MoH DR Congo,
-    # MoH Uganda, WHO) splits DRC into 343 conf + 116 sus for the first time on
-    # the cleaned baseline. Suspected total drops from 447 (May 31) to 116; BNO
-    # follow-up tweet documents the methodology: "Because the number of suspected
-    # cases is constantly changing, and not always available, our updates will
-    # now focus on confirmed cases. The number of suspected cases is still shown
-    # in the graphic." Carve-out applies to the suspected-cases columns.
-    "2026-06-01": {"suspected_global", "total_global"},
+    # 2026-05-31: completion of the DRC MoH lab-capacity ramp-up cleanup, dated to
+    # WHO Weekly Sitrep 03 (data as of 31 May 2026), which reconciles DRC to 321
+    # confirmed / 48 deaths / 116 suspected. Reconciled 2026-06-08 (Web-directed)
+    # from the prior BNO running count (225 conf / 447 sus); the suspected total
+    # drops from 349 (May 30) to 116 as test-negatives are removed and cases move
+    # from suspected to confirmed. WHO Weekly Sitrep is source #1 (gold standard).
+    # This carve-out moved here from 2026-06-01, which now holds the same
+    # post-cleanup level (no dip) after the reconciliation.
+    "2026-05-31": {"suspected_global", "total_global"},
 }
 NO_DIP_EXEMPTIONS_BREAKDOWN = {
     # (date, country) -> set of exempt column names
     ("2026-05-30", "DRC"): {"suspected", "suspected_deaths"},
-    ("2026-06-01", "DRC"): {"suspected"},
+    ("2026-05-31", "DRC"): {"suspected"},
 }
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
