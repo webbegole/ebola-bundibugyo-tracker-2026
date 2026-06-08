@@ -63,6 +63,22 @@ The WHO Sitrep can revise numbers down as well as up. That's a feature of better
 5. Regenerate the chart PNGs: `python3 src/generate_charts.py`.
 6. Regenerate the XLSX export if needed: `python3 src/build_xlsx.py`.
 
+## Backfilling missed days
+
+The tracker targets **one row per calendar day**. A day can go un-rowed for two reasons: the scheduled run did not fire (machine offline, as on 2026-06-04 and 2026-06-06), or an earlier run folded the date into a later "catch-up" row. Both leave a calendar gap. On every run, close those gaps before appending today's row.
+
+Procedure:
+
+1. **Detect the gap.** Read the last Report Date in `timeseries.csv`. List every calendar date from that date+1 through today that has no row.
+2. **Source each missing date.** For each gap date, pull that date's figure. The BNO `@BNOFeed` Daily Ebola Update graphic is published daily and is the primary backfill source (scroll the `@BNOFeed` timeline back to the dated graphic). Apply WHO/CDC-reconciled figures for any component where a reconciled "as of" value covers that date (e.g. a WHO DON dated on or after the gap date supersedes the BNO running count for the dates it reconciles).
+3. **Insert in date order.** Add the row in its correct chronological position (the file stays sorted by date). Add matching per-country rows to `country_breakdown.csv`. This is the one sanctioned mid-history insertion; it is not a revision of any existing row.
+4. **Flag it.** Prefix the row's `primary_source` with `BACKFILL (added YYYY-MM-DD run, daily-row policy):` and log a `notes.md` bullet naming the gap dates, the source per date, and the reason the gap existed.
+5. **Respect the rules.** The no-dip rule and cumulative monotonicity apply across the now-denser series exactly as for appended rows. BVD-style instrument gaps (a WHO-reconciled day sitting between two higher BNO running-count days) stay monotonic and are noted, not smoothed.
+
+A backfilled BNO row carries the same provisional status and downward-reconciliation risk as any same-day BNO row (the running count has overshot later WHO reconciliation by ~15-18%). When WHO later reconciles a backfilled date, apply the change under the normal lookback/no-dip path.
+
+The fold convention (collapsing a multi-day gap into a single "as of" row) is retired for routine gaps in favour of one row per day. It may still be used when no daily source exists for the intermediate dates; record that choice in `notes.md`.
+
 ## Lookback
 
 On every run, re-check the last 3 rows against the latest sources. When a higher-preference source publishes revised figures for a date already in the timeseries:
@@ -97,7 +113,7 @@ A single high-value source proposing a dip is **not** enough. The classic case i
 
 ## Rules
 
-- Only append at the bottom of the data block in `timeseries.csv`. No mid-history insertions.
+- Append new dates at the bottom of `timeseries.csv`. The file is kept in chronological order. Mid-history **insertion is allowed only to backfill a missed calendar date** under the "Backfilling missed days" policy below; you still never re-sequence or rewrite an existing row outside the lookback policy.
 - Existing rows only change under the lookback policy. Every change goes in `notes.md`.
 - If no new numbers and no revisions, skip the day.
 - Always cumulative, never daily increments. The deltas are derived by `generate_charts.py`.
