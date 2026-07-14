@@ -46,7 +46,7 @@ BYLINE = "Tracker: Web Begole · @web_begole · linkedin.com/in/webbegole"
 #
 # Update this when a new WHO Weekly Sitrep lands. Set to the Sitrep's "as of"
 # date. Format: "YYYY-MM-DD".
-LAST_SITREP_STABLE_DATE = "2026-07-05"
+LAST_SITREP_STABLE_DATE = "2026-07-12"
 
 # Observed magnitude of revisions, split by direction. Upward revisions come
 # from WHO Sitrep / DON reconciliation when same-day wire counts undercount.
