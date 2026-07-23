@@ -125,6 +125,8 @@
   .stat-card.suspected .big { color: var(--color-suspected); }
   .stat-card.confirmed .big { color: var(--color-confirmed); }
   .stat-card.deaths    .big { color: var(--color-deaths); }
+  .stat-card.recovered .big { color: #3B8C6E; }
+  .stat-card.active    .big { color: #5B4B8A; }
 
   .charts {
     display: grid;
@@ -285,25 +287,25 @@
   </section>
 
   <section class="stats" aria-label="Headline figures">
-    <div class="stat-card suspected">
-      <h3>Suspected (global)</h3>
-      <p class="big" id="stat-suspected">—</p>
-      <p class="delta" id="delta-suspected">—</p>
-    </div>
     <div class="stat-card confirmed">
-      <h3>Lab-confirmed (global)</h3>
+      <h3>Confirmed cases (global)</h3>
       <p class="big" id="stat-confirmed">—</p>
       <p class="delta" id="delta-confirmed">—</p>
     </div>
-    <div class="stat-card">
-      <h3>Total cases (global)</h3>
-      <p class="big" id="stat-total">—</p>
-      <p class="delta" id="delta-total">—</p>
+    <div class="stat-card recovered">
+      <h3>Confirmed recoveries (global)</h3>
+      <p class="big" id="stat-recovered">—</p>
+      <p class="delta" id="delta-recovered">—</p>
     </div>
-    <div class="stat-card confirmed">
-      <h3>Confirmed deaths</h3>
+    <div class="stat-card deaths">
+      <h3>Confirmed deaths (global)</h3>
       <p class="big" id="stat-conf-deaths">—</p>
       <p class="delta" id="delta-conf-deaths">—</p>
+    </div>
+    <div class="stat-card active">
+      <h3>Active cases (global)</h3>
+      <p class="big" id="stat-active">—</p>
+      <p class="delta" id="delta-active">—</p>
     </div>
   </section>
 
@@ -483,15 +485,26 @@
     setText("last-updated", ts || "unknown");
 
     const fields = [
-      ["suspected", "suspected_global"],
       ["confirmed", "confirmed_global"],
-      ["total", "total_global"],
+      ["recovered", "recovered_global"],
       ["conf-deaths", "confirmed_deaths_global"],
     ];
     fields.forEach(([slug, col]) => {
       setText(`stat-${slug}`, fmtNum(latest[col]));
       setText(`delta-${slug}`, prior ? fmtDelta(latest[col], prior[col]) : "");
     });
+
+    // Active ("live") cases = confirmed - recovered - confirmed deaths
+    // (confirmed basis). Undefined when the day has no recovered figure.
+    const activeOf = (r) => {
+      if (!r || r.recovered_global === "" || r.recovered_global == null) return null;
+      const a = Number(r.confirmed_global) - Number(r.recovered_global) - Number(r.confirmed_deaths_global);
+      return Number.isFinite(a) ? a : null;
+    };
+    const actLatest = activeOf(latest);
+    const actPrior = activeOf(prior);
+    setText("stat-active", actLatest == null ? "—" : fmtNum(actLatest));
+    setText("delta-active", (actLatest != null && actPrior != null) ? fmtDelta(actLatest, actPrior) : "");
 
     // Recent rows: last 10, most recent first.
     const recent = rows.slice(-10).reverse();
