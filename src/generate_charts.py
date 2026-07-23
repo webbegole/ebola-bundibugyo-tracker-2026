@@ -738,6 +738,135 @@ def render_active_cases_chart(deltas, out_path: Path):
     plt.close(fig)
 
 
+# --- Week-over-week active-cases chart ---------------------------------------
+# Growth rate of the active ("live") caseload, smoothed. Each point compares
+# the mean active level over the trailing 7 days to the mean over the prior 7
+# days. Averaging both windows damps the day-to-day spikes that come from the
+# backfill/forward-fill mechanics and BNO batch-reporting, so the line reads as
+# a trend in the size of the active pool rather than daily noise.
+
+WOW_WINDOW = 7  # days in each averaging window (current vs. prior)
+
+
+def compute_active_wow(active, window=WOW_WINDOW):
+    """Week-over-week percent change of the active caseload.
+
+    For each index i with enough history, compare mean(active) over the current
+    `window` days (i-window+1 .. i) to mean(active) over the immediately prior
+    `window` days (i-2*window+1 .. i-window). Returns a list the same length as
+    `active`, with None where there isn't enough history or the prior-window
+    mean is non-positive (percent change undefined).
+    """
+    out = [None] * len(active)
+    for i in range(len(active)):
+        if i < 2 * window - 1:
+            continue
+        cur = active[i - window + 1: i + 1]
+        prior = active[i - 2 * window + 1: i - window + 1]
+        mean_prior = sum(prior) / window
+        if mean_prior <= 0:
+            continue
+        mean_cur = sum(cur) / window
+        out[i] = (mean_cur / mean_prior - 1.0) * 100.0
+    return out
+
+
+def render_active_wow_chart(deltas, out_path: Path):
+    """Week-over-week percent change in active ("live") cases.
+
+    Line on a single axis: the smoothed growth rate of the active pool. Above
+    zero, the active caseload is larger than a week ago (the outbreak is still
+    outrunning recoveries and deaths); below zero, it is shrinking. The two
+    seven-day averages smooth out the spikes, so this reads as a trend line.
+    """
+    dates = [d["date"] for d in deltas]
+    short_dates = [d[5:] for d in dates]
+    active = [d["cum_active"] for d in deltas]
+    wow = compute_active_wow(active)
+
+    # Contiguous run of defined points (active is defined every day, so once we
+    # have 2*WOW_WINDOW days of history the series has no internal gaps).
+    pxs = [i for i, v in enumerate(wow) if v is not None]
+    pys = [wow[i] for i in pxs]
+
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=100)
+    xs = list(range(len(dates)))
+
+    if not pys:
+        ax.text(0.5, 0.5,
+                f"Week-over-week needs at least {2 * WOW_WINDOW} days of active-case history.\n"
+                "Not enough data yet.",
+                ha="center", va="center", fontsize=20, color=COLOR_SUBTLE,
+                transform=ax.transAxes)
+        ax.set_axis_off()
+        fig.savefig(out_path, dpi=100, facecolor="white")
+        plt.close(fig)
+        return
+
+    # Shade above/below zero so direction reads at a glance: warm where the
+    # active pool is growing week-over-week, green where it is shrinking.
+    ax.fill_between(pxs, pys, 0, where=[y >= 0 for y in pys],
+                    color=COLOR_CONFIRMED, alpha=0.16, interpolate=True)
+    ax.fill_between(pxs, pys, 0, where=[y <= 0 for y in pys],
+                    color=COLOR_RECOVERED, alpha=0.18, interpolate=True)
+    ax.plot(pxs, pys, color=COLOR_ACTIVE, linewidth=2.4, marker="o",
+            markersize=4.5, markerfacecolor=COLOR_ACTIVE,
+            markeredgecolor="white", markeredgewidth=0.7, zorder=5)
+
+    ax.axhline(0, color=COLOR_AXIS, linewidth=1.0, zorder=4)
+
+    # Provisional shading: any date after the last Sitrep-stable date depends on
+    # still-unreconciled recent figures. Shade that span and note it.
+    provisional_start = next((i for i, d in enumerate(dates)
+                              if d > LAST_SITREP_STABLE_DATE), None)
+    if provisional_start is not None and provisional_start <= xs[-1]:
+        ax.axvspan(provisional_start - 0.5, xs[-1] + 0.5,
+                   color=COLOR_SUBTLE, alpha=0.08, zorder=0)
+        ax.text(provisional_start, ax.get_ylim()[1], "  provisional",
+                fontsize=11, color=COLOR_SUBTLE, style="italic",
+                va="top", ha="left")
+
+    # Callout on the most recent value.
+    if pys:
+        last_v = pys[-1]
+        ax.annotate(f"{last_v:+.1f}% w/w",
+                    xy=(pxs[-1], last_v),
+                    xytext=(-8, 16 if last_v >= 0 else -18),
+                    textcoords="offset points", ha="right",
+                    va="bottom" if last_v >= 0 else "top",
+                    fontsize=14, fontweight="bold", color=COLOR_ACTIVE)
+
+    mark_baseline_resets(ax, dates)
+
+    set_thinned_date_axis(ax, xs, short_dates)
+    ax.set_xlabel("Report date (2026)", labelpad=12)
+    ax.set_ylabel("Week-over-week change in active cases", labelpad=12)
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x:+.0f}%"))
+    ax.grid(axis="x", visible=False)
+
+    fig.suptitle("Ebola (Bundibugyo): week-over-week change in active cases",
+                 fontsize=26, fontweight="bold", color=COLOR_TEXT,
+                 x=0.07, ha="left", y=0.96)
+    ax.set_title(
+        "Mean active cases over the last 7 days vs. the prior 7 days. "
+        "Above zero = the live caseload is still growing.",
+        fontsize=17, fontweight="normal", color=COLOR_SUBTLE, loc="left", pad=16)
+
+    fig.text(0.07, 0.075, BYLINE, fontsize=12, color=COLOR_SUBTLE)
+    fig.text(0.07, 0.045,
+             "Active = confirmed cases minus recovered minus confirmed deaths. "
+             "Source: WHO, CDC, Africa CDC, BNO News daily graphic (recovered).",
+             fontsize=12, color=COLOR_SUBTLE)
+    fig.text(0.07, 0.015,
+             f"Each point: mean active over days t-6..t against days t-13..t-7 "
+             f"(two adjacent {WOW_WINDOW}-day windows), which smooths daily spikes.",
+             fontsize=12, color=COLOR_SUBTLE, style="italic")
+
+    fig.subplots_adjust(left=0.08, right=0.95, top=0.80, bottom=0.20)
+    fig.savefig(out_path, dpi=100, facecolor="white")
+    plt.close(fig)
+
+
 # --- Doubling-time chart -----------------------------------------------------
 # Scaffold (v1). Computes trailing-window exponential-fit doubling time for
 # cumulative lab-confirmed cases. R(t) proper needs more data and a serial-
@@ -899,6 +1028,7 @@ def main():
         "cases": OUTPUT_DIR / f"{latest}_ebola-cases-7d-rolling-sum.png",
         "deaths": OUTPUT_DIR / f"{latest}_ebola-deaths-7d-rolling-sum.png",
         "active": OUTPUT_DIR / f"{latest}_ebola-active-cases.png",
+        "active_wow": OUTPUT_DIR / f"{latest}_ebola-active-wow.png",
     }
     # Latest-* convenience copies so the GitHub Pages site can reference
     # stable filenames without needing to know today's date.
@@ -906,11 +1036,13 @@ def main():
         "cases": OUTPUT_DIR / "latest-cases.png",
         "deaths": OUTPUT_DIR / "latest-deaths.png",
         "active": OUTPUT_DIR / "latest-active.png",
+        "active_wow": OUTPUT_DIR / "latest-active-wow.png",
     }
 
     render_cases_chart(deltas, dated_outputs["cases"])
     render_deaths_chart(deltas, dated_outputs["deaths"])
     render_active_cases_chart(deltas, dated_outputs["active"])
+    render_active_wow_chart(deltas, dated_outputs["active_wow"])
     # Doubling-time chart is disabled in the publication path while early
     # confirmed-case figures are still heavily revised by WHO Sitrep
     # reconciliation. The chart code (render_doubling_time_chart and

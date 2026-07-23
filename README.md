@@ -26,6 +26,7 @@ The most recent charts are in `outputs/` with date-prefixed filenames:
 - `outputs/YYYY-MM-DD_ebola-cases-7d-rolling-sum.png`
 - `outputs/YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png`
 - `outputs/YYYY-MM-DD_ebola-active-cases.png` — daily new confirmed cases (up) against recoveries and deaths (down), with a cumulative active ("live") cases line: confirmed minus recovered minus confirmed deaths.
+- `outputs/YYYY-MM-DD_ebola-active-wow.png` — week-over-week percent change in active cases: the mean active level over the last 7 days versus the mean over the prior 7 days. Above zero, the live caseload is still growing; the two averaging windows smooth out daily spikes.
 
 Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`. A doubling-time chart is implemented in `src/generate_charts.py` but not currently published; early confirmed-case figures are heavily revised by WHO Sitrep reconciliation, which makes the trailing-window fit unstable. It will be re-enabled once the data is less provisional.
 
@@ -69,7 +70,7 @@ Plain markdown list. Each bullet is dated and attributed. New bullets are append
 
 ```bash
 pip install -r requirements.txt   # or: pip install -e .
-python3 src/generate_charts.py    # regenerates the three PNGs in outputs/
+python3 src/generate_charts.py    # regenerates the four PNGs in outputs/
 python3 src/build_xlsx.py         # regenerates outputs/ebola_timeseries.xlsx
 ```
 

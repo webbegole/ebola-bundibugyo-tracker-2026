@@ -159,17 +159,18 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
 
     ws.cell(1, 1, value="Daily changes, 7-day rolling sums, and active cases (global)")
     ws.cell(1, 1).font = TITLE_FONT
-    ws.merge_cells("A1:M1")
+    ws.merge_cells("A1:N1")
 
     ws.cell(2, 1, value=(
         "Derived from the main timeseries. Charts live as PNG files in "
         "outputs/ — this table is the data behind them. Active (\"live\") cases = "
         "cumulative confirmed minus recovered minus confirmed deaths; recovered "
-        "is forward-filled across days with no published figure."
+        "is forward-filled across days with no published figure. Active w/w % = "
+        "mean active over days t-6..t vs. days t-13..t-7."
     ))
     ws.cell(2, 1).font = SUBTITLE_FONT
     ws.cell(2, 1).alignment = LEFT_WRAP
-    ws.merge_cells("A2:M2")
+    ws.merge_cells("A2:N2")
 
     headers = [
         "Date",
@@ -184,9 +185,10 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
         "Confirmed deaths (7-day sum)",
         "Recovered (cumulative)",
         "Active \"live\" cases (cumulative)",
+        "Active w/w % (7-day avg)",
         "Window (days)",
     ]
-    widths = [14, 18, 18, 22, 22, 18, 24, 24, 24, 24, 20, 24, 14]
+    widths = [14, 18, 18, 22, 22, 18, 24, 24, 24, 24, 20, 24, 22, 14]
     write_headers(ws, headers, row=4, widths=widths)
 
     # Compute deltas + rolling sums from CSV
@@ -228,6 +230,19 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
         })
         prev = cur
 
+    # Active series and its week-over-week percent change (mean of trailing 7
+    # days vs. the prior 7 days), matching render_active_wow_chart.
+    active = [d["cum_active"] for d in deltas]
+
+    def active_wow(i, w=window):
+        if i < 2 * w - 1:
+            return None
+        mean_prior = sum(active[i - 2 * w + 1: i - w + 1]) / w
+        if mean_prior <= 0:
+            return None
+        mean_cur = sum(active[i - w + 1: i + 1]) / w
+        return round((mean_cur / mean_prior - 1.0) * 100.0, 1)
+
     for i, row in enumerate(deltas):
         win = deltas[max(0, i - (window - 1)): i + 1]
         row["r7_sus"] = sum(w["d_sus"] for w in win)
@@ -249,8 +264,9 @@ def build_charts_sheet(wb, ts_csv: Path, window: int = 7):
         ws.cell(r, 10, value=row["r7_conf_deaths"])
         ws.cell(r, 11, value=row["cum_recovered"])
         ws.cell(r, 12, value=row["cum_active"])
-        ws.cell(r, 13, value=row["window"])
-        apply_data_style(ws, r, n_cols=13, is_alt=(i % 2 == 1))
+        ws.cell(r, 13, value=active_wow(i))
+        ws.cell(r, 14, value=row["window"])
+        apply_data_style(ws, r, n_cols=14, is_alt=(i % 2 == 1))
 
     return ws
 

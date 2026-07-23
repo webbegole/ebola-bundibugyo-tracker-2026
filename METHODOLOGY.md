@@ -145,11 +145,12 @@ Use the Claude in Chrome MCP against Web's signed-in browser; x.com search resul
 
 ## Charts
 
-Three PNGs are produced on every run, written to `outputs/`:
+Four PNGs are produced on every run, written to `outputs/`:
 
 1. `YYYY-MM-DD_ebola-cases-7d-rolling-sum.png` — stacked bars of suspected (bottom) and laboratory-confirmed (top) new cases summed over the trailing 7 days. Two cumulative lines on the right axis: cumulative TOTAL cases (bronze) and cumulative LAB-CONFIRMED cases (deep red). The gap between the two lines is the share of the running count still in clinical-suspicion-only status.
 2. `YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png` — bars of suspected deaths summed over the trailing 7 days, with cumulative suspected deaths on the right axis.
 3. `YYYY-MM-DD_ebola-active-cases.png` — active ("live") cases. Daily bars: new confirmed cases drawn upward (inflow), new recoveries and new confirmed deaths drawn downward and stacked (outflow). Right-axis line: cumulative active cases = cumulative confirmed − cumulative recovered − cumulative confirmed deaths. When the downward bars exceed the upward bar on a day, the active line falls (the outbreak is resolving faster than it grows). See "Recovered and active cases" below.
+4. `YYYY-MM-DD_ebola-active-wow.png` — week-over-week percent change in active cases. For each date, the mean active level over the trailing 7 days (t-6..t) is compared to the mean over the immediately prior 7 days (t-13..t-7); the point is `(current_mean / prior_mean − 1) × 100`. Two adjacent 7-day averaging windows smooth the daily spikes so the line reads as a growth-rate trend: above zero the active pool is still expanding week-over-week, below zero it is contracting. Undefined until 14 days of active-case history exist, and skipped on any date where the prior-window mean is non-positive. Implemented as `compute_active_wow` + `render_active_wow_chart` in `src/generate_charts.py`.
 
 The `YYYY-MM-DD` prefix is the most recent Report Date in `timeseries.csv`.
 
