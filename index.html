@@ -360,16 +360,14 @@
         <thead>
           <tr>
             <th class="nowrap">Date</th>
-            <th>Suspected</th>
-            <th>Confirmed</th>
-            <th>Total</th>
-            <th>Susp. Deaths</th>
-            <th>Conf. Deaths</th>
+            <th>Confirmed cases</th>
+            <th>Confirmed recoveries</th>
+            <th>Confirmed deaths</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody id="recent-body">
-          <tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+          <tr><td colspan="5" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -457,7 +455,7 @@
 
   function renderError(message) {
     const body = document.getElementById("recent-body");
-    body.innerHTML = `<tr><td colspan="7"><div class="error">${message}</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="5"><div class="error">${message}</div></td></tr>`;
   }
 
   function fmtTimestamp(httpDateString) {
@@ -503,10 +501,8 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="nowrap">${r.report_date}</td>
-        <td class="num">${fmtNum(r.suspected_global)}</td>
         <td class="num">${fmtNum(r.confirmed_global)}</td>
-        <td class="num">${fmtNum(r.total_global)}</td>
-        <td class="num">${fmtNum(r.suspected_deaths_global)}</td>
+        <td class="num">${fmtNum(r.recovered_global)}</td>
         <td class="num">${fmtNum(r.confirmed_deaths_global)}</td>
         <td class="source">${r.primary_source || ""}</td>
       `;
