@@ -8,8 +8,8 @@ A daily time series of the 2026 Ebola (Bundibugyo) outbreak, compiled from offic
 
 The CSVs, `story.md`, and `notes.md` in `data/` are the source of truth. The XLSX in `outputs/` is a convenience export; do not edit it.
 
-- `data/timeseries.csv` — main daily series, global totals only. One row per Report Date. See `README.md` for the schema.
-- `data/country_breakdown.csv` — per-country detail in long format (DRC, Uganda, future reporters). Grows as new countries report cases.
+- `data/timeseries.csv` — main daily series, global totals only. One row per Report Date. Includes `recovered_global` (cumulative recovered confirmed cases; see "Recovered and active cases"). See `README.md` for the schema.
+- `data/country_breakdown.csv` — per-country detail in long format (DRC, Uganda, future reporters), including a per-country `recovered` column. Grows as new countries report cases.
 - `data/declarations.csv` — per-country CDC advisory, CDC travel notice, and WHO declaration status with primary-source URLs. Schema: `country, first_report_date, case_status, cdc_advisory, cdc_url, cdc_travel_notice_level, cdc_travel_notice_url, who_status, who_url, notes`. The CDC fields cover two distinct advisory systems: HAN (clinician-facing alerts in `cdc_advisory`/`cdc_url`) and Travel Health Notices (traveler-facing per-country level in `cdc_travel_notice_level`/`cdc_travel_notice_url`, drawn from wwwnc.cdc.gov/travel/notices). Travel notice levels run 1 (Practice Usual Precautions) through 4 (Avoid All Travel). Updates when declarations change, a travel-notice level shifts, or a new country starts reporting cases.
 - `data/story.md` — narrative summary. Markdown with two sections: "Story so far" (slow-moving context) and "Latest update" (the most recent material development, refreshed by the daily run when warranted). Rendered as the lead block on the site.
 - `data/notes.md` — append-only methodology and revision log.
@@ -145,10 +145,11 @@ Use the Claude in Chrome MCP against Web's signed-in browser; x.com search resul
 
 ## Charts
 
-Two PNGs are produced on every run, written to `outputs/`:
+Three PNGs are produced on every run, written to `outputs/`:
 
 1. `YYYY-MM-DD_ebola-cases-7d-rolling-sum.png` — stacked bars of suspected (bottom) and laboratory-confirmed (top) new cases summed over the trailing 7 days. Two cumulative lines on the right axis: cumulative TOTAL cases (bronze) and cumulative LAB-CONFIRMED cases (deep red). The gap between the two lines is the share of the running count still in clinical-suspicion-only status.
 2. `YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png` — bars of suspected deaths summed over the trailing 7 days, with cumulative suspected deaths on the right axis.
+3. `YYYY-MM-DD_ebola-active-cases.png` — active ("live") cases. Daily bars: new confirmed cases drawn upward (inflow), new recoveries and new confirmed deaths drawn downward and stacked (outflow). Right-axis line: cumulative active cases = cumulative confirmed − cumulative recovered − cumulative confirmed deaths. When the downward bars exceed the upward bar on a day, the active line falls (the outbreak is resolving faster than it grows). See "Recovered and active cases" below.
 
 The `YYYY-MM-DD` prefix is the most recent Report Date in `timeseries.csv`.
 
@@ -173,6 +174,20 @@ The caption under each chart cites two observed ranges, one for upward revisions
 Calculation: for each revision logged in NOTES, compute `(new − old) / old × 100`. The range in the footnote should bracket the observed values with a small margin.
 
 Upward revisions are the WHO Sitrep / DON reconciliation pattern (same-day wire counts undercount; WHO catches up). Downward revisions are the MoH methodology-change carve-out (DRC MoH cleaned baseline on 2026-05-30, zeroing the suspected-deaths column and removing test-negative cases). The two directions are tracked separately because they reflect different mechanisms.
+
+### Recovered and active cases
+
+`recovered_global` in `timeseries.csv` and `recovered` in `country_breakdown.csv` track cumulative recovered/discharged **confirmed** cases. The source is the BNO `@BNOFeed` Daily Ebola Update graphic, which reports Confirmed / Recovered / Deaths per country and a global total; the graphic's own totals and the tracker's other citations are used to fill the column. Recovered figures are transcribed the same way case and death figures are.
+
+Basis and definition. BNO reports recovered and deaths against **confirmed** cases, so the active ("live") case count is confirmed-basis: `active = confirmed_global − recovered_global − confirmed_deaths_global`. Suspected cases are excluded (there is no recovered/deaths breakdown for suspected). Active is a derived quantity, computed in `generate_charts.py`, not stored in the CSV.
+
+Monotonicity. Cumulative recovered is monotonically non-decreasing and is covered by the no-dip rule in `validate.py` exactly like the other cumulative columns. Active cases are *not* monotonic by design — the whole point of the chart is that active can fall.
+
+Gaps and forward-fill. Recovered is left **blank** on any date where no source published a figure (a BNO publication gap, or a WHO/wire day that gave cases and deaths but not recovered). Blanks are not guessed or interpolated in the CSV. For the active-case chart only, `generate_charts.py` forward-fills cumulative recovered (carries the last known value) so the active line stays defined; on a forward-filled day the recovery outflow reads as zero and the accumulated recoveries land as a catch-up bar on the next day a figure was published. The validator's latest-date country-sum cross-check for recovered is skipped on any day a country's recovered cell is blank.
+
+Early baseline. BNO began carrying a Recovered figure on 2026-06-03 (DRC 6). Earlier dates (2026-05-15 through 2026-06-02) are treated as recovered = 0, consistent with the outbreak's 2026-05-14 zero baseline: recoveries in the first weeks of a high-CFR Bundibugyo outbreak were effectively nil, and no source reported otherwise. This is a documented baseline assumption, not a sourced figure.
+
+Backfill provenance. The recovered series was backfilled in one pass on 2026-07-23 from (a) per-country recovered figures already transcribed into `country_breakdown.csv` and `timeseries.csv` primary_source citations across the run history, (b) the BNO `@BNOFeed` daily graphics read via Chrome for the July gap dates, and (c) the France rule (0 until the single imported case was discharged on 2026-07-04, then 1). Residual blank dates: 2026-06-05, 06-07, 06-14, 06-21, 06-22 (deep-June daily graphics not re-scraped) and 2026-07-15 through 07-18 (BNO publication gap; no daily graphic exists). These forward-fill in the chart and can be hard-filled later from a deeper `@BNOFeed` scrape or a WHO Sitrep that reconciles recovered.
 
 ### Doubling-time chart (v1 scaffold)
 

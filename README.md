@@ -25,6 +25,7 @@ The most recent charts are in `outputs/` with date-prefixed filenames:
 
 - `outputs/YYYY-MM-DD_ebola-cases-7d-rolling-sum.png`
 - `outputs/YYYY-MM-DD_ebola-deaths-7d-rolling-sum.png`
+- `outputs/YYYY-MM-DD_ebola-active-cases.png` — daily new confirmed cases (up) against recoveries and deaths (down), with a cumulative active ("live") cases line: confirmed minus recovered minus confirmed deaths.
 
 Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`. A doubling-time chart is implemented in `src/generate_charts.py` but not currently published; early confirmed-case figures are heavily revised by WHO Sitrep reconciliation, which makes the trailing-window fit unstable. It will be re-enabled once the data is less provisional.
 
@@ -39,6 +40,8 @@ Where `YYYY-MM-DD` is the most recent Report Date in `data/timeseries.csv`. A do
 | `confirmed_global` | int | Cumulative lab-confirmed cases (PCR at INRB or partner labs). |
 | `total_global` | int | `suspected_global + confirmed_global`. |
 | `suspected_deaths_global` | int | Cumulative suspected deaths across all reporting countries. |
+| `confirmed_deaths_global` | int | Cumulative lab-confirmed deaths across all reporting countries. |
+| `recovered_global` | int (nullable) | Cumulative recovered/discharged confirmed cases across all reporting countries. Blank on days no source published a figure; charts forward-fill those gaps. Not part of `total_global`. |
 | `primary_source` | string | Short citation, including the source's "as of" date. |
 | `source_timestamp` | `YYYY-MM-DD` | The date the source itself uses for the data. Makes reporting lag visible. |
 
@@ -54,6 +57,7 @@ Per-country figures (DRC, Uganda, future reporters) live in `country_breakdown.c
 | `confirmed` | int (nullable) | Country-specific cumulative confirmed cases. |
 | `suspected_deaths` | int (nullable) | Country-specific cumulative suspected deaths. |
 | `confirmed_deaths` | int (nullable) | Country-specific cumulative confirmed deaths. Blank if not broken out. |
+| `recovered` | int (nullable) | Country-specific cumulative recovered/discharged confirmed cases. Blank if the source didn't publish a figure that day. |
 | `primary_source` | string | Country-level source citation. |
 | `source_timestamp` | `YYYY-MM-DD` | Source's "as of" date. |
 

@@ -109,6 +109,8 @@ COLOR_DEATHS = "#2C3E50"           # dark neutral
 COLOR_CUMULATIVE = "#8B5A2B"       # sienna/bronze — cumulative total running line
 COLOR_CUMULATIVE_CONF = "#7A2C2C"  # deeper red — cumulative lab-confirmed line
 COLOR_DOUBLING = "#2D5F5D"         # dark teal — doubling-time line (separate metric)
+COLOR_RECOVERED = "#3B8C6E"        # muted green — recoveries (outflow, drawn downward)
+COLOR_ACTIVE = "#5B4B8A"           # indigo — cumulative active ("live") cases line
 COLOR_AXIS = "#444444"
 COLOR_GRID = "#DDDDDD"
 COLOR_TEXT = "#222222"
@@ -161,7 +163,28 @@ def load_data(csv_path: Path):
                 "conf": int(r["confirmed_global"]) if r["confirmed_global"] else 0,
                 "deaths": int(r["suspected_deaths_global"]) if r["suspected_deaths_global"] else 0,
                 "conf_deaths": int(r["confirmed_deaths_global"]) if r["confirmed_deaths_global"] else 0,
+                # Cumulative recovered may be blank on days where no source
+                # reported a fresh recovered figure (a BNO publication gap, or
+                # a WHO/wire day that gave cases and deaths but not recovered).
+                # Keep None here; the forward-fill pass below carries the last
+                # known cumulative forward so the active-case line stays defined.
+                "recovered": int(r["recovered_global"]) if r.get("recovered_global") else None,
             })
+
+    # Forward-fill cumulative recovered across gap dates. A blank cell means
+    # "no fresh recovered figure that day," not zero, so carry the last known
+    # cumulative forward. This keeps the derived active-case count monotonic in
+    # its inputs and defined on every date. Flag the filled days so a renderer
+    # could style them differently if needed.
+    last_rec = 0
+    for cur in rows:
+        if cur["recovered"] is None:
+            cur["rec_ffill"] = last_rec
+            cur["rec_is_ffill"] = True
+        else:
+            cur["rec_ffill"] = cur["recovered"]
+            last_rec = cur["recovered"]
+            cur["rec_is_ffill"] = False
 
     # Baseline: May 14 = 0 across all metrics, so the first row's delta equals
     # its cumulative value.
@@ -173,7 +196,7 @@ def load_data(csv_path: Path):
     # bar on the rolling-sum chart. We force the daily delta to zero on the
     # reset day; the cleaned baseline becomes prev for the next iteration so
     # subsequent days compute normal positive deltas against it.
-    baseline = {"sus": 0, "conf": 0, "deaths": 0, "conf_deaths": 0}
+    baseline = {"sus": 0, "conf": 0, "deaths": 0, "conf_deaths": 0, "rec_ffill": 0}
     deltas = []
     prev = baseline
     for cur in rows:
@@ -184,7 +207,9 @@ def load_data(csv_path: Path):
             "d_conf": 0 if is_reset else cur["conf"] - prev["conf"],
             "d_deaths": 0 if is_reset else cur["deaths"] - prev["deaths"],
             "d_conf_deaths": 0 if is_reset else cur["conf_deaths"] - prev["conf_deaths"],
+            "d_recovered": 0 if is_reset else cur["rec_ffill"] - prev["rec_ffill"],
             "is_reset": is_reset,
+            "rec_is_ffill": cur["rec_is_ffill"],
             # Carry the cumulative running totals through so the renderers can
             # plot a secondary "cumulative outbreak total" line alongside the
             # 7-day rolling bars.
@@ -194,6 +219,12 @@ def load_data(csv_path: Path):
             "cum_deaths": cur["deaths"],
             "cum_conf_deaths": cur["conf_deaths"],
             "cum_total_deaths": cur["deaths"] + cur["conf_deaths"],
+            "cum_recovered": cur["rec_ffill"],
+            # Active ("live") lab-confirmed cases still under care: confirmed
+            # cases minus those who recovered minus those who died. Confirmed
+            # basis (BNO reports recovered and deaths against confirmed cases),
+            # so suspected cases are excluded here.
+            "cum_active": cur["conf"] - cur["rec_ffill"] - cur["conf_deaths"],
         })
         prev = cur
 
@@ -581,6 +612,132 @@ def render_deaths_chart(deltas, out_path: Path):
     plt.close(fig)
 
 
+def render_active_cases_chart(deltas, out_path: Path):
+    """Active ("live") cases chart.
+
+    The question this answers: of all the lab-confirmed cases, how many are
+    still under care right now, versus already resolved (recovered or died)?
+
+    Bars (left axis), daily flow:
+      - new confirmed cases, drawn upward (inflow to the active pool),
+      - new recoveries, drawn downward (outflow),
+      - new deaths, drawn downward (outflow), stacked below recoveries.
+    Line (right axis): cumulative active cases = cumulative confirmed minus
+    cumulative recovered minus cumulative confirmed deaths. When the downward
+    bars (recoveries + deaths) on a day exceed the upward bar (new cases), the
+    active line falls: the outbreak is resolving faster than it is growing.
+
+    Confirmed basis: BNO reports recovered and deaths against confirmed cases,
+    so suspected cases are excluded. Recovered is forward-filled across gap
+    dates (see load_data), so on a gap day the recovery outflow shows as zero
+    and lands as a catch-up bar on the next day a figure was published.
+    """
+    dates = [d["date"] for d in deltas]
+    short_dates = [d[5:] for d in dates]
+    new_conf = [d["d_conf"] for d in deltas]
+    new_rec = [d["d_recovered"] for d in deltas]
+    new_dth = [d["d_conf_deaths"] for d in deltas]
+    cum_active = [d["cum_active"] for d in deltas]
+    provisional = [d > LAST_SITREP_STABLE_DATE for d in dates]
+    hatches = ["////" if p else "" for p in provisional]
+
+    # Downward bars are the resolved outflow: plot recoveries and deaths as
+    # negative values, stacked, so the column below zero is the total leaving
+    # the active pool that day.
+    neg_rec = [-v for v in new_rec]
+    neg_dth = [-v for v in new_dth]
+
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=100)
+    xs = list(range(len(dates)))
+
+    ax.bar(xs, new_conf, color=COLOR_CONFIRMED, width=0.68,
+           label="New confirmed cases", edgecolor="white", linewidth=0.8,
+           hatch=hatches)
+    ax.bar(xs, neg_rec, color=COLOR_RECOVERED, width=0.68,
+           label="Recoveries", edgecolor="white", linewidth=0.8,
+           hatch=hatches)
+    ax.bar(xs, neg_dth, bottom=neg_rec, color=COLOR_DEATHS, width=0.68,
+           label="Deaths", edgecolor="white", linewidth=0.8,
+           hatch=hatches)
+
+    # Symmetric-ish y headroom around zero so both the up and down bars breathe
+    # and the upper-left legend clears the tallest positive bar.
+    up_max = max(new_conf) if new_conf else 1
+    down_max = max((r + d) for r, d in zip(neg_rec, neg_dth)) if neg_rec else 0
+    down_min = min((r + d) for r, d in zip(neg_rec, neg_dth)) if neg_rec else -1
+    ax.set_ylim(down_min * 1.25 if down_min < 0 else -1, up_max * 1.55)
+
+    # Overlay: cumulative active ("live") cases on the right axis.
+    ax2 = overlay_cumulative_line(
+        ax, xs,
+        series=[(cum_active, COLOR_ACTIVE, {"markersize": 6.5, "linewidth": 2.2})],
+        axis_label="Cumulative active (\"live\") cases",
+        axis_color=COLOR_ACTIVE,
+    )
+
+    # Callout on the most recent active value so the headline number is legible.
+    if cum_active:
+        ax2.annotate(f"{cum_active[-1]:,} active",
+                     xy=(xs[-1], cum_active[-1]),
+                     xytext=(-10, 14), textcoords="offset points",
+                     ha="right", va="bottom", fontsize=14, fontweight="bold",
+                     color=COLOR_ACTIVE)
+
+    mark_baseline_resets(ax, dates)
+
+    legend_handles = [
+        Patch(facecolor=COLOR_CONFIRMED, edgecolor="white", label="New confirmed cases (daily, up)"),
+        Patch(facecolor=COLOR_RECOVERED, edgecolor="white", label="Recoveries (daily, down)"),
+        Patch(facecolor=COLOR_DEATHS, edgecolor="white", label="Deaths (daily, down)"),
+    ]
+    if any(provisional):
+        legend_handles.append(
+            Patch(facecolor="white", edgecolor=COLOR_AXIS, hatch="////",
+                  label="Provisional (subject to revision)")
+        )
+    legend_handles.append(
+        Line2D([0], [0], color=COLOR_ACTIVE, linewidth=2.4,
+               marker="o", markersize=7, markerfacecolor=COLOR_ACTIVE,
+               markeredgecolor="white",
+               label="Active \"live\" cases (right axis)")
+    )
+
+    set_thinned_date_axis(ax, xs, short_dates)
+    ax.set_xlabel("Report date (2026)", labelpad=12)
+    ax.set_ylabel("Daily change in confirmed cases", labelpad=12)
+
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{int(x):,}"))
+    ax.grid(axis="x", visible=False)
+    ax.axhline(0, color=COLOR_AXIS, linewidth=0.9)
+
+    fig.suptitle("Ebola (Bundibugyo): active cases still under care",
+                 fontsize=26, fontweight="bold", color=COLOR_TEXT, x=0.07, ha="left", y=0.96)
+    ax.set_title("Bars: daily new confirmed cases (up), recoveries and deaths (down). "
+                 "Line: cumulative active cases.",
+                 fontsize=17, fontweight="normal", color=COLOR_SUBTLE,
+                 loc="left", pad=16)
+
+    leg = ax.legend(handles=legend_handles, loc="upper left", frameon=False,
+                    fontsize=13, handlelength=1.8, handleheight=1.2, ncol=3)
+    for txt in leg.get_texts():
+        txt.set_color(COLOR_TEXT)
+
+    fig.text(0.07, 0.09, BYLINE, fontsize=12, color=COLOR_SUBTLE)
+    fig.text(0.07, 0.055,
+             "Active = cumulative confirmed cases minus recovered minus confirmed deaths "
+             "(confirmed basis). Source: WHO, CDC, Africa CDC, BNO News daily graphic (recovered).",
+             fontsize=12, color=COLOR_SUBTLE)
+    fig.text(0.07, 0.02,
+             f"Bars after {LAST_SITREP_STABLE_DATE} are provisional. Recovered is "
+             "forward-filled across days with no published figure, so some recovery "
+             "outflow lands as a catch-up bar.",
+             fontsize=12, color=COLOR_SUBTLE, style="italic")
+
+    fig.subplots_adjust(left=0.08, right=0.92, top=0.80, bottom=0.20)
+    fig.savefig(out_path, dpi=100, facecolor="white")
+    plt.close(fig)
+
+
 # --- Doubling-time chart -----------------------------------------------------
 # Scaffold (v1). Computes trailing-window exponential-fit doubling time for
 # cumulative lab-confirmed cases. R(t) proper needs more data and a serial-
@@ -741,16 +898,19 @@ def main():
     dated_outputs = {
         "cases": OUTPUT_DIR / f"{latest}_ebola-cases-7d-rolling-sum.png",
         "deaths": OUTPUT_DIR / f"{latest}_ebola-deaths-7d-rolling-sum.png",
+        "active": OUTPUT_DIR / f"{latest}_ebola-active-cases.png",
     }
     # Latest-* convenience copies so the GitHub Pages site can reference
     # stable filenames without needing to know today's date.
     latest_outputs = {
         "cases": OUTPUT_DIR / "latest-cases.png",
         "deaths": OUTPUT_DIR / "latest-deaths.png",
+        "active": OUTPUT_DIR / "latest-active.png",
     }
 
     render_cases_chart(deltas, dated_outputs["cases"])
     render_deaths_chart(deltas, dated_outputs["deaths"])
+    render_active_cases_chart(deltas, dated_outputs["active"])
     # Doubling-time chart is disabled in the publication path while early
     # confirmed-case figures are still heavily revised by WHO Sitrep
     # reconciliation. The chart code (render_doubling_time_chart and

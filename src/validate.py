@@ -46,6 +46,7 @@ EXPECTED_TIMESERIES_COLS = [
     "total_global",
     "suspected_deaths_global",
     "confirmed_deaths_global",
+    "recovered_global",
     "primary_source",
     "source_timestamp",
 ]
@@ -56,6 +57,7 @@ EXPECTED_BREAKDOWN_COLS = [
     "confirmed",
     "suspected_deaths",
     "confirmed_deaths",
+    "recovered",
     "primary_source",
     "source_timestamp",
 ]
@@ -80,6 +82,7 @@ CUMULATIVE_TIMESERIES_COLS = [
     "total_global",
     "suspected_deaths_global",
     "confirmed_deaths_global",
+    "recovered_global",
 ]
 
 # Columns in country_breakdown.csv that are cumulative per country.
@@ -88,6 +91,7 @@ CUMULATIVE_BREAKDOWN_COLS = [
     "confirmed",
     "suspected_deaths",
     "confirmed_deaths",
+    "recovered",
 ]
 
 # No-dip rule exemptions. Per METHODOLOGY.md "MoH methodology-change carve-out":
@@ -194,23 +198,33 @@ def validate_timeseries(failures: list) -> list[dict]:
             total = parse_int(r["total_global"])
             deaths = parse_int(r["suspected_deaths_global"])
             conf_deaths = parse_int(r["confirmed_deaths_global"])
+            recovered = parse_int(r["recovered_global"])
         except ValueError as e:
             fail(failures, f"timeseries.csv row {i}", f"non-numeric in cumulative column: {e}")
             parsed.append(None)
             continue
         for label, v in (("suspected_global", sus), ("confirmed_global", conf),
                          ("total_global", total), ("suspected_deaths_global", deaths),
-                         ("confirmed_deaths_global", conf_deaths)):
+                         ("confirmed_deaths_global", conf_deaths),
+                         ("recovered_global", recovered)):
             if v is not None and v < 0:
                 fail(failures, f"timeseries.csv row {i}", f"{label} is negative: {v}")
         # If all three of sus/conf/total are present, total must equal sus + conf.
+        # (recovered is tracked separately and is NOT part of total_global.)
         if sus is not None and conf is not None and total is not None:
             if total != sus + conf:
                 fail(failures, f"timeseries.csv row {i} ({r['report_date']})",
                      f"total_global ({total}) != suspected_global ({sus}) + confirmed_global ({conf})")
+        # Recovered plus confirmed deaths cannot exceed confirmed cases: you
+        # cannot have resolved more cases than were ever confirmed.
+        if recovered is not None and conf is not None and conf_deaths is not None:
+            if recovered + conf_deaths > conf:
+                fail(failures, f"timeseries.csv row {i} ({r['report_date']})",
+                     f"recovered_global ({recovered}) + confirmed_deaths_global ({conf_deaths}) "
+                     f"exceeds confirmed_global ({conf}) — implies negative active cases")
         parsed.append({"row": i, "date": r["report_date"], "sus": sus,
                        "conf": conf, "total": total, "deaths": deaths,
-                       "conf_deaths": conf_deaths})
+                       "conf_deaths": conf_deaths, "recovered": recovered})
 
     # Cumulative non-decreasing check (the no-dip rule).
     # Rows listed in NO_DIP_EXEMPTIONS_TIMESERIES bypass the check on the named
@@ -218,7 +232,8 @@ def validate_timeseries(failures: list) -> list[dict]:
     # rows. See METHODOLOGY.md "MoH methodology-change carve-out".
     for col_key, col_name in (("sus", "suspected_global"), ("conf", "confirmed_global"),
                               ("total", "total_global"), ("deaths", "suspected_deaths_global"),
-                              ("conf_deaths", "confirmed_deaths_global")):
+                              ("conf_deaths", "confirmed_deaths_global"),
+                              ("recovered", "recovered_global")):
         prev = None
         prev_date = None
         for p in parsed:
@@ -272,16 +287,19 @@ def validate_breakdown(failures: list) -> list[dict]:
             conf = parse_int(r["confirmed"])
             sus_d = parse_int(r["suspected_deaths"])
             conf_d = parse_int(r["confirmed_deaths"])
+            rec = parse_int(r["recovered"])
         except ValueError as e:
             fail(failures, f"country_breakdown.csv row {i}", f"non-numeric: {e}")
             parsed.append(None)
             continue
         for label, v in (("suspected", sus), ("confirmed", conf),
-                         ("suspected_deaths", sus_d), ("confirmed_deaths", conf_d)):
+                         ("suspected_deaths", sus_d), ("confirmed_deaths", conf_d),
+                         ("recovered", rec)):
             if v is not None and v < 0:
                 fail(failures, f"country_breakdown.csv row {i}", f"{label} is negative: {v}")
         parsed.append({"row": i, "date": r["date"], "country": r["country"].strip(),
-                       "sus": sus, "conf": conf, "sus_d": sus_d, "conf_d": conf_d})
+                       "sus": sus, "conf": conf, "sus_d": sus_d, "conf_d": conf_d,
+                       "rec": rec})
 
     # Per-country cumulative non-decreasing.
     # (date, country) pairs in NO_DIP_EXEMPTIONS_BREAKDOWN bypass the check on
@@ -294,7 +312,8 @@ def validate_breakdown(failures: list) -> list[dict]:
     for country, prows in by_country.items():
         prows.sort(key=lambda x: x["date"])
         for col_key, col_name in (("sus", "suspected"), ("conf", "confirmed"),
-                                  ("sus_d", "suspected_deaths"), ("conf_d", "confirmed_deaths")):
+                                  ("sus_d", "suspected_deaths"), ("conf_d", "confirmed_deaths"),
+                                  ("rec", "recovered")):
             prev = None
             prev_date = None
             for p in prows:
@@ -323,6 +342,7 @@ def cross_check_latest_date(ts_rows: list[dict], bd_parsed: list[dict], failures
     try:
         global_sus = parse_int(last_ts["suspected_global"])
         global_conf = parse_int(last_ts["confirmed_global"])
+        global_rec = parse_int(last_ts["recovered_global"])
     except ValueError:
         return
 
@@ -346,6 +366,17 @@ def cross_check_latest_date(ts_rows: list[dict], bd_parsed: list[dict], failures
         fail(failures, f"cross-check {last_date}",
              f"confirmed sum across countries ({sum_conf}: {countries}) "
              f"!= timeseries confirmed_global ({global_conf})")
+    # Recovered cross-check: only enforce when every country on the latest date
+    # carries a recovered figure. A blank on any country means the global total
+    # can't be reconstructed from the breakdown that day, so skip rather than
+    # false-alarm (recovered has documented backfill gaps on some earlier days).
+    if global_rec is not None and all(p["rec"] is not None for p in bd_on_date):
+        sum_rec = sum(p["rec"] for p in bd_on_date)
+        if sum_rec != global_rec:
+            countries = ", ".join(f"{p['country']}={p['rec']}" for p in bd_on_date)
+            fail(failures, f"cross-check {last_date}",
+                 f"recovered sum across countries ({sum_rec}: {countries}) "
+                 f"!= timeseries recovered_global ({global_rec})")
 
 
 def validate_declarations(failures: list) -> None:
