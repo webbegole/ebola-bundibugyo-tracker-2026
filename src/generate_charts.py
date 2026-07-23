@@ -803,15 +803,23 @@ def render_active_wow_chart(deltas, out_path: Path):
         plt.close(fig)
         return
 
-    # Shade above/below zero so direction reads at a glance: warm where the
-    # active pool is growing week-over-week, green where it is shrinking.
-    ax.fill_between(pxs, pys, 0, where=[y >= 0 for y in pys],
-                    color=COLOR_CONFIRMED, alpha=0.16, interpolate=True)
-    ax.fill_between(pxs, pys, 0, where=[y <= 0 for y in pys],
-                    color=COLOR_RECOVERED, alpha=0.18, interpolate=True)
     ax.plot(pxs, pys, color=COLOR_ACTIVE, linewidth=2.4, marker="o",
             markersize=4.5, markerfacecolor=COLOR_ACTIVE,
             markeredgecolor="white", markeredgewidth=0.7, zorder=5)
+
+    # Symlog y-axis: the w/w rate runs from +200% down to single digits, so a
+    # linear axis crushes the recent months into the baseline. Symlog keeps the
+    # whole range readable and, unlike a plain log axis, still renders the day
+    # the line crosses below zero (active pool shrinking). Linear within +/-10%.
+    ax.set_yscale("symlog", linthresh=10, linscale=0.9)
+    # Gridlines only at the requested levels: 0, 10, 20, 30, 50, then jump to
+    # 100, then 200 (mirrored on the negative side for when w/w goes negative).
+    ytick_levels = [-200, -100, -50, -30, -20, -10, 0, 10, 20, 30, 50, 100, 200]
+    ax.yaxis.set_major_locator(mticker.FixedLocator(ytick_levels))
+    ax.yaxis.set_minor_locator(mticker.NullLocator())
+    ax.yaxis.set_major_formatter(
+        mticker.FuncFormatter(lambda v, _: "0%" if v == 0 else f"{v:+.0f}%"))
+    ax.set_ylim(min(0, min(pys)) - 3, max(pys) * 1.35)
 
     ax.axhline(0, color=COLOR_AXIS, linewidth=1.0, zorder=4)
 
@@ -840,9 +848,9 @@ def render_active_wow_chart(deltas, out_path: Path):
 
     set_thinned_date_axis(ax, xs, short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
-    ax.set_ylabel("Week-over-week change in active cases", labelpad=12)
-    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x:+.0f}%"))
+    ax.set_ylabel("Week-over-week change in active cases (symlog)", labelpad=12)
     ax.grid(axis="x", visible=False)
+    ax.grid(axis="y", which="major", color=COLOR_GRID, linewidth=0.7)
 
     fig.suptitle("Ebola (Bundibugyo): week-over-week change in active cases",
                  fontsize=26, fontweight="bold", color=COLOR_TEXT,
