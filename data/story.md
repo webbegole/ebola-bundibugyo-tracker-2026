@@ -8,6 +8,20 @@ The response is operating under acute constraints: armed conflict in the affecte
 
 ## Latest update
 
+**July 30.** The DRC government released data on Thursday showing **3,442 confirmed cases and 1,521 deaths** as of Tuesday. With Uganda and France that is **3,463 confirmed and 1,523 deaths** globally. Deaths are up about 50 percent in a week.
+
+Two numbers in that release explain each other. Contact tracing is running at roughly 78 percent of known contacts. The threshold health officials use for interrupting transmission is 95 percent. That gap is not a reporting problem, it is the mechanism. Every untraced contact is a chain you find later, as a case, or as a community death.
+
+And the tracing rate is falling out of something concrete. On July 15 a hospital and a treatment centre in Ituri's Nyakunde health zone were attacked after a patient died there. WHO, Africa CDC, Samaritan's Purse and Mercy Corps pulled out. Surveillance, contact tracing and supply lines went with them. The chief medical officer for the zone says what stock remains is almost depleted. Africa CDC says teams could go back as soon as next week. So the response withdrew from the place that most needed it, for reasons that had nothing to do with epidemiology, and the tracing number moved accordingly.
+
+At 3,463 confirmed the outbreak is within about twenty cases of the 2018-2020 Kivu outbreak, which recorded 3,481. It is already the largest Bundibugyo virus outbreak ever recorded. It is about to be the second largest Ebola outbreak of any species.
+
+The countermeasure pipeline moved this week too, in the other direction. Oxford dosed the first volunteer in a phase 1 trial of a Bundibugyo vaccine (ChAdOx1 BDBV) on July 24, and Tedros welcomed it on July 27. DRC's Institut National de Recherche Biomedicale started a post-exposure prophylaxis trial in Ituri on July 28, testing whether an antiviral can stop infection in high-risk contacts before symptoms appear. On July 30 [CEPI awarded Hilleman Laboratories up to $8.5 million](https://cepi.net/hilleman-laboratories-develop-and-produce-cepi-backed-bundibugyo-ebolavirus-vaccine-doses-clinical) to manufacture clinical doses of a second candidate, this one on the rVSV platform, the same backbone as the licensed Zaire vaccine. Roughly six and a half months to make the doses.
+
+That is the shape of it. The tools are arriving on a research clock. The outbreak is running on a transmission clock. The two are not the same length.
+
+---
+
 **July 28.** Two things happened at once, pointing opposite directions. Uganda declared its outbreak over. DRC posted its worst weekly reconciliation yet.
 
 Start with Uganda. On July 28 the Ministry of Health said the country is Ebola-free. Final count: 20 cases, 18 recovered, two deaths. The last patient was discharged on July 16, so the standard 42-day countdown had another two and a half weeks to run. Uganda declared early anyway, and the reasoning is worth looking at, because it is a methodological argument and not a political one.
