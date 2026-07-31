@@ -8,6 +8,18 @@ The response is operating under acute constraints: armed conflict in the affecte
 
 ## Latest update
 
+**July 31.** DRC's communications ministry posted the day's figures on Friday: **3,532 confirmed cases and 1,556 deaths**. With Uganda and France that is **3,553 confirmed and 1,558 deaths** globally. That number crosses a line. The 2018-2020 Kivu outbreak ended at 3,481 cases. This one has passed it in eleven weeks. It is now the [second-largest Ebola outbreak of any species ever recorded](https://www.cnbcafrica.com/2026/congos-ebola-outbreak-now-second-largest-on-record-data-shows), behind only West Africa in 2014-2016, which took 28,616 cases and about two years to get there.
+
+Africa CDC's Jean Kaseya gave the mechanism at his briefing on Thursday, in two numbers. More than 80 percent of new cases in Ituri are not linked to anyone on an existing contact list. More than 60 percent of deaths happen in the community, not in a treatment centre. Put those together and you get a picture of what the surveillance system is actually seeing. It is not tracking transmission chains, it is finding their downstream ends. A case that was never on a contact list is a chain that ran to completion unobserved. A death at home is a case that was never counted as a case, plus a burial that becomes its own exposure event.
+
+So the reported curve is not the epidemic. It is the part of the epidemic that intersected a clinic or a burial team. WHO said earlier this month the true scale could be up to four times the official figures. Kaseya would not say the outbreak is under control.
+
+The constraints around it did not loosen this week. Africa CDC put the containment requirement at $1.4 billion in June; the May-August response plan has $213.9 million declared against $242.4 million planned. Armed groups continue to operate across the affected provinces, and attacks on health facilities keep pulling responders out of the zones with the most transmission. A US order blocking American citizens in DRC from boarding commercial flights home means Samaritan's Purse, which runs treatment centres and staffs them with US responders, says it will have to scale back.
+
+The outbreak is the fastest-growing on record and it is now the second-largest on record. Those are two different facts. The first is about slope. The second is about the fact that nothing has yet changed the slope.
+
+---
+
 **July 30.** The DRC government released data on Thursday showing **3,442 confirmed cases and 1,521 deaths** as of Tuesday. With Uganda and France that is **3,463 confirmed and 1,523 deaths** globally. Deaths are up about 50 percent in a week.
 
 Two numbers in that release explain each other. Contact tracing is running at roughly 78 percent of known contacts. The threshold health officials use for interrupting transmission is 95 percent. That gap is not a reporting problem, it is the mechanism. Every untraced contact is a chain you find later, as a case, or as a community death.
