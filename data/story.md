@@ -8,6 +8,18 @@ The response is operating under acute constraints: armed conflict in the affecte
 
 ## Latest update
 
+**July 31 (evening).** BNO's evening situation report puts DRC at **3,605 confirmed cases, 1,587 deaths and 651 recovered**, which with Uganda and France is **3,626 confirmed and 1,589 deaths** globally. Seventy-three cases and thirty-one deaths on the day. Routine, by the standard this outbreak has set.
+
+The thing that moved today is not the count. [Science reported](https://www.science.org/content/article/exclusive-congo-s-ebola-epidemic-started-least-4-months-it-was-detected) an unpublished investigation that interviewed 97 people in and around Mongbwalu, a gold-mining town in Ituri. The conclusion is that the epidemic started on Mongbwalu's outskirts in January, or earlier. The declaration came on May 15. So the outbreak ran for at least four months before anyone declared it, and the investigators identified more than 500 suspected cases in that window that were never counted.
+
+Look at what that does to the numbers on this page. The tracker's baseline is May 14, treated as zero. Every chart here measures growth from a starting point that was chosen by a declaration, not by the virus. If the real curve starts in January with 500 cases already on it, then the slope everyone keeps calling the fastest on record is being fit to the visible tail of something that had a four-month head start.
+
+It also lines up with what Kaseya described this week. More than 80 percent of new Ituri cases not linked to any listed contact. More than 60 percent of deaths in the community. Those two figures say the surveillance system is finding chains at their ends rather than following them forward. The Mongbwalu finding says the system was doing that from the beginning, because the beginning happened before the system was watching.
+
+I have not folded the 500 into the suspected column. It is a retrospective investigative estimate, not an INSP surveillance figure, and mixing the two would break what the column means. It sits here instead, as the size of the hole.
+
+---
+
 **July 31.** DRC's communications ministry posted the day's figures on Friday: **3,532 confirmed cases and 1,556 deaths**. With Uganda and France that is **3,553 confirmed and 1,558 deaths** globally. That number crosses a line. The 2018-2020 Kivu outbreak ended at 3,481 cases. This one has passed it in eleven weeks. It is now the [second-largest Ebola outbreak of any species ever recorded](https://www.cnbcafrica.com/2026/congos-ebola-outbreak-now-second-largest-on-record-data-shows), behind only West Africa in 2014-2016, which took 28,616 cases and about two years to get there.
 
 Africa CDC's Jean Kaseya gave the mechanism at his briefing on Thursday, in two numbers. More than 80 percent of new cases in Ituri are not linked to anyone on an existing contact list. More than 60 percent of deaths happen in the community, not in a treatment centre. Put those together and you get a picture of what the surveillance system is actually seeing. It is not tracking transmission chains, it is finding their downstream ends. A case that was never on a contact list is a chain that ran to completion unobserved. A death at home is a case that was never counted as a case, plus a burial that becomes its own exposure event.
