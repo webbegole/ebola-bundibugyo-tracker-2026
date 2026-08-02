@@ -8,6 +8,22 @@ The response is operating under acute constraints: armed conflict in the affecte
 
 ## Latest update
 
+**August 1.** No new count landed for August 1 or August 2. BNO has published no daily graphic since July 31, no wire carried an as-of figure for either day, and WHO's next Weekly Situation Report is not out. The tracker holds at **3,626 confirmed and 1,589 deaths** globally, with 670 recovered. Two calendar days sit as gaps rather than as interpolated rows.
+
+What did land is [WHO's Disease Outbreak News 614](https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON614), published August 1 with data as of July 30. It reconciles DRC at **3,605 confirmed, 1,587 deaths, 651 recovered**, which matches the figures already on this page exactly. So the reconciliation added no cases. It added a frame.
+
+The frame is that this is now the largest Ebola outbreak ever recorded in DRC. The previous largest was Kivu in 2018-2020, at 3,317 confirmed by WHO's count. This one passed it in eleven weeks. And epidemiological week 30, the last complete reporting week, was the worst week of the outbreak so far: 567 cases and 296 deaths.
+
+Two figures in DON614 say where the response is losing. Contact follow-up is running at 75.5 percent in Ituri, 74.6 in North Kivu, against 17,863 contacts identified. And 151 health workers have been infected, with 44 dead. Health worker infections are the diagnostic here. They are not a separate tragedy sitting alongside the outbreak, they are a measurement of how well infection control is holding inside the facilities that are supposed to be the safe end of the system. When the treatment centre is a transmission site, the incentive for a sick person to go to one drops, and the community-death share climbs. Which is what Kaseya described last week at 60 percent.
+
+DON614 also corrects something I had wrong about Uganda. I wrote on July 28 that Uganda declared early, ahead of the 42-day window. WHO's account is different. The 42 days ran from June 16, the discharge of the last locally transmitted case, and that clock was complete on July 28. The July 16 discharge was of the most recent imported case, and WHO is running a separate 42-day watch from that date. So Uganda did not stop the clock early. It ran the clock on local transmission and started a second one on importation. The bet I described is still a bet, it is just a narrower one than I made it out to be.
+
+One more thing worth noting, because it does not appear in any per-country column. DON614 says two cases diagnosed in DRC were subsequently treated in Germany. They stay counted under DRC, so Germany does not enter this tracker as a reporting country. It is a medical evacuation, not a new chain.
+
+The IHR Emergency Committee meets again on August 18.
+
+---
+
 **July 31 (evening).** BNO's evening situation report puts DRC at **3,605 confirmed cases, 1,587 deaths and 651 recovered**, which with Uganda and France is **3,626 confirmed and 1,589 deaths** globally. Seventy-three cases and thirty-one deaths on the day. Routine, by the standard this outbreak has set.
 
 The thing that moved today is not the count. [Science reported](https://www.science.org/content/article/exclusive-congo-s-ebola-epidemic-started-least-4-months-it-was-detected) an unpublished investigation that interviewed 97 people in and around Mongbwalu, a gold-mining town in Ituri. The conclusion is that the epidemic started on Mongbwalu's outskirts in January, or earlier. The declaration came on May 15. So the outbreak ran for at least four months before anyone declared it, and the investigators identified more than 500 suspected cases in that window that were never counted.
