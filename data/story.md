@@ -8,9 +8,9 @@ The response is operating under acute constraints: armed conflict in the affecte
 
 ## Latest update
 
-**August 1.** No new count landed for August 1 or August 2. BNO has published no daily graphic since July 31, no wire carried an as-of figure for either day, and WHO's next Weekly Situation Report is not out. The tracker holds at **3,626 confirmed and 1,589 deaths** globally, with 670 recovered. Two calendar days sit as gaps rather than as interpolated rows.
+**August 1.** BNO's August 1 situation report landed late, posted the afternoon of August 2. It puts DRC at **3,674 confirmed cases, 1,621 deaths and 666 recovered**, which with Uganda and France is **3,695 confirmed and 1,623 deaths** globally. Sixty-nine cases and thirty-four deaths on the day. August 2 stays a gap on this page until a figure for that date exists.
 
-What did land is [WHO's Disease Outbreak News 614](https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON614), published August 1 with data as of July 30. It reconciles DRC at **3,605 confirmed, 1,587 deaths, 651 recovered**, which matches the figures already on this page exactly. So the reconciliation added no cases. It added a frame.
+The other thing on the table is [WHO's Disease Outbreak News 614](https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON614), published August 1 with data as of July 30. It reconciles DRC at **3,605 confirmed, 1,587 deaths, 651 recovered**, which matches the July 31 row on this page exactly. So the reconciliation added no cases. It added a frame.
 
 The frame is that this is now the largest Ebola outbreak ever recorded in DRC. The previous largest was Kivu in 2018-2020, at 3,317 confirmed by WHO's count. This one passed it in eleven weeks. And epidemiological week 30, the last complete reporting week, was the worst week of the outbreak so far: 567 cases and 296 deaths.
 
