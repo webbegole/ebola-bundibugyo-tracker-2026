@@ -97,6 +97,27 @@ BASELINE_RESET_DATES = {
                    # is the cleanup's true Sitrep date; June 1 now holds the same
                    # post-cleanup level, so the reset moved here from 2026-06-01.
 }
+
+# Surveillance-reconciliation events. Distinct from BASELINE_RESET_DATES: a
+# reset is a DOWNWARD definitional cleanup that re-baselines the series, while
+# a reconciliation is an UPWARD one-day integration of cases that were detected
+# earlier but only entered the national database on this date. The cumulative
+# total is correct from the event date forward. What is NOT a real observation
+# is the daily delta on the event date: it is a reporting artifact carrying an
+# unknown number of prior days' cases.
+#
+# These are annotated, never smoothed into the CSVs. The reason is that WHO
+# books them on report date too. Sitrep 10 published on 28 July, five days
+# after the 23 July INSP provincial data review, and still reported DR Congo
+# 2,423 confirmed as of 19 July; the whole increment lands in the 20-26 July
+# week of Sitrep 11. Redistributing in the CSVs would put this tracker out of
+# line with every WHO Sitrep on every date before the event, and no source
+# publishes the onset window the redistribution would need.
+#
+# See METHODOLOGY.md "Surveillance-reconciliation events".
+RECONCILIATION_EVENTS = {
+    "2026-07-23": "INSP provincial data reconciliation",
+}
 # -----------------------------------------------------------------------------
 
 # --- Style -------------------------------------------------------------------
@@ -302,6 +323,34 @@ def mark_baseline_resets(ax, dates, label_text="MoH baseline reset"):
                 ha="right", va="center", rotation=90, zorder=6)
 
 
+def mark_reconciliation_events(ax, dates, y_frac=0.32):
+    """Draw a vertical marker at each surveillance-reconciliation date.
+
+    Same visual furniture as `mark_baseline_resets`, deliberately, because both
+    are "this bar is an artifact of how the data was reported, not a day of
+    transmission" flags. Sits lower in the chart area (default 0.32 vs 0.55) so
+    the two never collide if a reset and a reconciliation land close together.
+
+    The label text comes from RECONCILIATION_EVENTS so each event can name its
+    own cause rather than sharing one generic string.
+    """
+    for i, d in enumerate(dates):
+        label = RECONCILIATION_EVENTS.get(d)
+        if not label:
+            continue
+        ax.axvline(i, color=COLOR_SUBTLE, linewidth=1.0,
+                   linestyle=(0, (1, 2)), zorder=1, alpha=0.8)
+        ymin, ymax = ax.get_ylim()
+        y = ymin + (ymax - ymin) * y_frac
+        # Unlike a reset, a reconciliation lands mid-chart on the tallest bar
+        # in the series, so the label needs a background to stay legible.
+        ax.text(i - 0.18, y, label,
+                fontsize=10, color=COLOR_SUBTLE, style="italic",
+                ha="right", va="center", rotation=90, zorder=7,
+                bbox=dict(facecolor="white", edgecolor="none",
+                          alpha=0.78, pad=1.5))
+
+
 def overlay_cumulative_line(ax, xs, series, axis_label, axis_color=None):
     """Add a secondary y-axis with one or more lines tracing cumulative
     running totals.
@@ -432,6 +481,7 @@ def render_cases_chart(deltas, out_path: Path):
     # Mark any MoH baseline-reset dates so the cumulative-line drop reads as
     # a documented methodology cleanup, not as the outbreak reversing.
     mark_baseline_resets(ax, dates)
+    mark_reconciliation_events(ax, dates)
 
     # Build a custom legend with Patch proxies so the hatched swatch renders.
     legend_handles = [
@@ -554,6 +604,7 @@ def render_deaths_chart(deltas, out_path: Path):
     # Mark any MoH baseline-reset dates so the cumulative-line drop reads as
     # a documented methodology cleanup, not as the outbreak reversing.
     mark_baseline_resets(ax, dates)
+    mark_reconciliation_events(ax, dates)
 
     # Build a custom legend with Patch proxies so the hatched swatch renders.
     legend_handles = [
@@ -684,6 +735,7 @@ def render_active_cases_chart(deltas, out_path: Path):
                      color=COLOR_ACTIVE)
 
     mark_baseline_resets(ax, dates)
+    mark_reconciliation_events(ax, dates)
 
     legend_handles = [
         Patch(facecolor=COLOR_CONFIRMED, edgecolor="white", label="New confirmed cases (daily, up)"),
@@ -771,6 +823,120 @@ def compute_active_wow(active, window=WOW_WINDOW):
     return out
 
 
+RECONCILIATION_BASELINE_SPAN = 5   # days either side used to estimate a normal day
+RECONCILIATION_BACKLOG_DAYS = 21   # days the backlog is assumed to have built over
+
+
+def _median(vals):
+    s = sorted(vals)
+    n = len(s)
+    if not n:
+        return 0.0
+    mid = n // 2
+    return float(s[mid]) if n % 2 else (s[mid - 1] + s[mid]) / 2.0
+
+
+def compute_reconciliation_adjusted_active(deltas):
+    """Active-case series with a reconciliation spike spread back over the days
+    it plausibly accumulated across.
+
+    A reconciliation date books an unknown number of prior days' cases in one
+    delta. This builds a counterfactual: estimate a normal day from the days
+    around the event, treat the remainder as backlog, and spread that backlog
+    evenly over the RECONCILIATION_BACKLOG_DAYS ending on the event date.
+    Everything before that window and everything after the event is untouched,
+    so the adjusted series rejoins the reported one at both ends.
+
+    THE ASSUMPTIONS, stated plainly, because neither is published anywhere:
+
+    1. The 21-day window. No source gives the onset span of the backlog.
+       Bloomberg describes the 23 July event as a harmonization of provincial
+       and national databases in Ituri and North Kivu plus 300+ newly reported
+       cases, with no dates attached. 21 days is chosen as roughly the interval
+       since the prior reconciliation and is a round number, not a finding.
+    2. Even allocation across that window. Real under-reporting is lumpier.
+
+    An earlier version of this spread the backlog proportionally across the
+    ENTIRE prior series. That was rejected: it perturbed the May and June
+    history, where the Ituri and North Kivu database gap has no bearing, and it
+    implied a constant outbreak-long under-detection rate that nothing supports.
+
+    Both constants are deliberately easy to change so the sensitivity can be
+    checked by re-running. This drives a clearly-labelled secondary line only,
+    never the primary series and never the CSVs.
+
+    The normal-day estimate is a MEDIAN of daily deltas over
+    RECONCILIATION_BASELINE_SPAN days either side, excluding the event itself,
+    baseline-reset days, other reconciliation dates, and zero-delta
+    carry-forward days (such as 27 July), all of which would drag a mean down
+    and overstate the backlog.
+
+    Returns (adjusted_active, notes), or (None, []) when no event is in range.
+    """
+    dates = [d["date"] for d in deltas]
+    rec = [d["cum_recovered"] for d in deltas]
+
+    # Work on the CUMULATIVE series, not by re-accumulating deltas. On a
+    # baseline-reset date load_data deliberately forces the daily delta to zero
+    # while the cumulative steps, so deltas do not sum back to cumulative and
+    # re-accumulating would corrupt the whole May-June history.
+    adj_conf = [float(d["cum_conf"]) for d in deltas]
+    adj_death = [float(d["cum_conf_deaths"]) for d in deltas]
+    notes = []
+
+    for date in sorted(RECONCILIATION_EVENTS):
+        if date not in dates:
+            continue
+        i = dates.index(date)
+        if i == 0:
+            continue
+
+        lo = max(1, i - RECONCILIATION_BASELINE_SPAN)
+        hi = min(len(deltas), i + RECONCILIATION_BASELINE_SPAN + 1)
+        nbr = [j for j in range(lo, hi)
+               if j != i
+               and not deltas[j]["is_reset"]
+               and dates[j] not in RECONCILIATION_EVENTS
+               and deltas[j]["d_conf"] > 0]
+
+        base_conf = _median([deltas[j]["d_conf"] for j in nbr])
+        base_death = _median([deltas[j]["d_conf_deaths"] for j in nbr])
+
+        excess_conf = max(0.0, deltas[i]["d_conf"] - base_conf)
+        excess_death = max(0.0, deltas[i]["d_conf_deaths"] - base_death)
+
+        start = max(0, i - RECONCILIATION_BACKLOG_DAYS + 1)
+        span = i - start + 1
+        if span <= 1:
+            continue
+
+        # Raise the cumulative inside the window only. Date j carries the share
+        # of the backlog that would already have been reported by then. The
+        # event date itself is left alone: the reported cumulative there already
+        # contains the whole backlog, so the adjustment is zero and the two
+        # series rejoin. Before the window nothing changes either, so the
+        # counterfactual is bounded at both ends.
+        for j in range(start, i):
+            adj_conf[j] += excess_conf * (j - start + 1) / span
+            adj_death[j] += excess_death * (j - start + 1) / span
+
+        notes.append({
+            "date": date,
+            "label": RECONCILIATION_EVENTS[date],
+            "d_conf": deltas[i]["d_conf"],
+            "d_conf_deaths": deltas[i]["d_conf_deaths"],
+            "excess_conf": excess_conf,
+            "excess_death": excess_death,
+            "window_days": span,
+            "window_start": dates[start],
+        })
+
+    if not notes:
+        return None, []
+
+    return [c - r - d for c, r, d in zip(adj_conf, rec, adj_death)], notes
+
+
 def render_active_wow_chart(deltas, out_path: Path):
     """Week-over-week percent change in active ("live") cases.
 
@@ -784,10 +950,21 @@ def render_active_wow_chart(deltas, out_path: Path):
     active = [d["cum_active"] for d in deltas]
     wow = compute_active_wow(active)
 
+    # Reconciliation-adjusted counterfactual (see
+    # compute_reconciliation_adjusted_active for the method and its assumption).
+    adj_active, recon_notes = compute_reconciliation_adjusted_active(deltas)
+    wow_adj = compute_active_wow(adj_active) if adj_active else None
+
     # Contiguous run of defined points (active is defined every day, so once we
     # have 2*WOW_WINDOW days of history the series has no internal gaps).
     pxs = [i for i, v in enumerate(wow) if v is not None]
     pys = [wow[i] for i in pxs]
+
+    # Span where the two series visibly diverge: the stretch the event inflates.
+    # Derived rather than hardcoded, so it tracks the data as rows are added.
+    affected = [i for i in pxs
+                if wow_adj and wow_adj[i] is not None
+                and abs(wow_adj[i] - wow[i]) > 0.05]
 
     fig, ax = plt.subplots(figsize=(16, 9), dpi=100)
     xs = list(range(len(dates)))
@@ -803,9 +980,27 @@ def render_active_wow_chart(deltas, out_path: Path):
         plt.close(fig)
         return
 
+    y_all = list(pys)  # every y value plotted, for the axis-limit calculation
+
+    # Shade the inflated stretch first so both lines draw over it.
+    if affected:
+        ax.axvspan(affected[0] - 0.5, affected[-1] + 0.5,
+                   color=COLOR_CONFIRMED, alpha=0.07, zorder=0)
+
     ax.plot(pxs, pys, color=COLOR_ACTIVE, linewidth=2.4, marker="o",
             markersize=4.5, markerfacecolor=COLOR_ACTIVE,
             markeredgecolor="white", markeredgewidth=0.7, zorder=5)
+
+    # Secondary line: same computation on the counterfactual series. Dashed and
+    # unmarked so the reported series stays the headline; this one is an
+    # estimate and should not read as an equal-status measurement.
+    if wow_adj:
+        axs_ = [i for i in pxs if wow_adj[i] is not None]
+        ays_ = [wow_adj[i] for i in axs_]
+        if ays_:
+            ax.plot(axs_, ays_, color=COLOR_SUBTLE, linewidth=1.8,
+                    linestyle=(0, (5, 3)), zorder=4)
+            y_all = y_all + ays_  # y-limits must bracket both series
 
     # Symlog y-axis: the w/w rate runs from +200% down to single digits, so a
     # linear axis crushes the recent months into the baseline. Symlog keeps the
@@ -819,7 +1014,7 @@ def render_active_wow_chart(deltas, out_path: Path):
     ax.yaxis.set_minor_locator(mticker.NullLocator())
     ax.yaxis.set_major_formatter(
         mticker.FuncFormatter(lambda v, _: "0%" if v == 0 else f"{v:+.0f}%"))
-    ax.set_ylim(min(0, min(pys)) - 3, max(pys) * 1.35)
+    ax.set_ylim(min(0, min(y_all)) - 3, max(y_all) * 1.35)
 
     ax.axhline(0, color=COLOR_AXIS, linewidth=1.0, zorder=4)
 
@@ -845,6 +1040,28 @@ def render_active_wow_chart(deltas, out_path: Path):
                     fontsize=14, fontweight="bold", color=COLOR_ACTIVE)
 
     mark_baseline_resets(ax, dates)
+    mark_reconciliation_events(ax, dates)
+
+    # Legend only exists once there is a second line to distinguish.
+    if wow_adj and affected:
+        handles = [
+            Line2D([], [], color=COLOR_ACTIVE, linewidth=2.4, marker="o",
+                   markersize=4.5, markerfacecolor=COLOR_ACTIVE,
+                   markeredgecolor="white", markeredgewidth=0.7,
+                   label="As reported"),
+            Line2D([], [], color=COLOR_SUBTLE, linewidth=1.8,
+                   linestyle=(0, (5, 3)),
+                   label="Adjusted for the 23 July reconciliation (estimate)"),
+            Patch(facecolor=COLOR_CONFIRMED, alpha=0.07,
+                  label="Stretch the reconciliation distorts"),
+        ]
+        # Lower left: the line runs high-left to low-right, and the upper right
+        # is where the event marker's rotated label sits.
+        # Opaque background: the legend sits in the empty lower-left quadrant,
+        # which the zero line and a gridline run through.
+        ax.legend(handles=handles, loc="lower left", frameon=True,
+                  facecolor="white", edgecolor="none", framealpha=0.92,
+                  fontsize=12, handlelength=2.6).set_zorder(8)
 
     set_thinned_date_axis(ax, xs, short_dates)
     ax.set_xlabel("Report date (2026)", labelpad=12)
@@ -860,17 +1077,25 @@ def render_active_wow_chart(deltas, out_path: Path):
         "Above zero = the live caseload is still growing.",
         fontsize=17, fontweight="normal", color=COLOR_SUBTLE, loc="left", pad=16)
 
-    fig.text(0.07, 0.075, BYLINE, fontsize=12, color=COLOR_SUBTLE)
-    fig.text(0.07, 0.045,
+    fig.text(0.07, 0.105, BYLINE, fontsize=12, color=COLOR_SUBTLE)
+    fig.text(0.07, 0.076,
              "Active = confirmed cases minus recovered minus confirmed deaths. "
              "Source: WHO, CDC, Africa CDC, BNO News daily graphic (recovered).",
              fontsize=12, color=COLOR_SUBTLE)
-    fig.text(0.07, 0.015,
+    fig.text(0.07, 0.047,
              f"Each point: mean active over days t-6..t against days t-13..t-7 "
              f"(two adjacent {WOW_WINDOW}-day windows), which smooths daily spikes.",
              fontsize=12, color=COLOR_SUBTLE, style="italic")
+    if recon_notes and affected:
+        n = recon_notes[0]
+        fig.text(0.07, 0.018,
+                 f"Dashed: {n['date'][5:]} booked +{n['d_conf']} cases / "
+                 f"+{n['d_conf_deaths']} deaths at once, ~{n['excess_conf']:.0f} and "
+                 f"~{n['excess_death']:.0f} above a normal day, respread over the "
+                 f"prior {n['window_days']} days (assumed window, not published).",
+                 fontsize=12, color=COLOR_SUBTLE, style="italic")
 
-    fig.subplots_adjust(left=0.08, right=0.95, top=0.80, bottom=0.20)
+    fig.subplots_adjust(left=0.08, right=0.95, top=0.80, bottom=0.23)
     fig.savefig(out_path, dpi=100, facecolor="white")
     plt.close(fig)
 

@@ -111,6 +111,35 @@ A single high-value source proposing a dip is **not** enough. The classic case i
 
 **Rationale**: cumulative drops confuse a general-audience reader (the chart looks like deaths are coming back to life). In this outbreak's data environment, most apparent drops are definitional reclassifications, not actual recoveries. The no-dip rule biases toward the higher figure until the lower one earns multi-source backing. The MoH carve-out exists because a definitional cleanup announced by the surveillance authority *is* the reclassification — by definition — and waiting for WHO reconciliation in that case is a delay, not a correction.
 
+## Surveillance-reconciliation events
+
+Distinct from a baseline reset. A **reset** is a downward definitional cleanup that re-baselines the series (the 30 May DRC MoH cleanup). A **reconciliation** is an upward one-day integration of cases that were detected earlier but only entered the national database on that date.
+
+The known event is **2026-07-23**: +369 confirmed and +236 deaths in a single day, against a neighbourhood of roughly 80 cases and 37 deaths. [Bloomberg, 24 July](https://www.bloomberg.com/news/articles/2026-07-24/ebola-cases-near-3-000-in-congo-after-provincial-data-review) attributes it to a DRC INSP review harmonizing provincial and national databases in Ituri and North Kivu, plus 300+ newly reported cases.
+
+**These are annotated on the charts, never smoothed into the CSVs.** Three reasons:
+
+1. **WHO books them on report date too.** Weekly Sitrep 10 published on 28 July, five days *after* the review, and still reported DR Congo 2,423 confirmed as of 19 July. The whole increment lands in the 20-26 July week of Sitrep 11. Redistributing in the CSVs would put this tracker out of line with every WHO Sitrep on every date before the event, and the exact-match property against Sitreps 10, 12 and 13 is the tracker's main audit asset.
+2. **No source publishes the onset window** a redistribution would need. The Bloomberg description names the databases merged, not the dates the cases fall on.
+3. The series is by **report date**, not onset date, and that contract is what makes it checkable.
+
+What the event *does* invalidate is the daily delta on 23 July, which carries an unknown number of prior days' cases, and the two adjacent seven-day windows that delta feeds. On the tracker's data the distortion runs **3 July to 4 August** on the week-over-week chart and is fully washed out by 5 August. The current reading is unaffected.
+
+### Chart handling
+
+`RECONCILIATION_EVENTS` in `src/generate_charts.py` maps each event date to its label. All four charts draw a dotted vertical marker with that label (`mark_reconciliation_events`), matching the existing `mark_baseline_resets` furniture, because both say the same thing: this bar is an artifact of how the data was reported, not a day of transmission.
+
+The week-over-week chart additionally carries a shaded band over the distorted stretch and a dashed **reconciliation-adjusted** line (`compute_reconciliation_adjusted_active`). The adjusted line estimates a normal day from the median of daily deltas over `RECONCILIATION_BASELINE_SPAN` days either side (excluding the event, reset days, other reconciliation dates, and zero-delta carry-forward days such as 27 July), treats the remainder as backlog, and raises the cumulative across the `RECONCILIATION_BACKLOG_DAYS` window ending on the event date. The event date itself is untouched, so the two series rejoin there and before the window, bounding the counterfactual at both ends.
+
+Two assumptions, both stated on the chart itself and neither published anywhere:
+
+- **The 21-day window.** Chosen as roughly the interval since the prior reconciliation. A round number, not a finding.
+- **Even allocation across it.** Real under-reporting is lumpier.
+
+An earlier implementation spread the backlog proportionally across the entire prior series. It was rejected: it perturbed the May and June history, where the Ituri and North Kivu database gap has no bearing, and it implied a constant outbreak-long under-detection rate that nothing supports. Both constants are kept easy to change so the sensitivity can be re-run.
+
+The reported line stays the headline series. The adjusted line is dashed, unmarked and labelled an estimate, so it cannot be read as an equal-status measurement.
+
 ## Rules
 
 - Append new dates at the bottom of `timeseries.csv`. The file is kept in chronological order. Mid-history **insertion is allowed only to backfill a missed calendar date** under the "Backfilling missed days" policy below; you still never re-sequence or rewrite an existing row outside the lookback policy.
