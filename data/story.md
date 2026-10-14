@@ -14,14 +14,16 @@ On September 27 **Marie-Célestin Karondwa**, an official of the ruling UDPS par
 
 ## Latest update
 
-**October 12.** DRC's national institute posted three situation reports in one batch on October 11 and the tracker caught up with them. [SitRep 147](https://insp.cd/sitrep-n147-mve-bdbv-08-10-2026/), [148](https://insp.cd/sitrep-n148-mve-bdbv-09-10-2026/) and [149](https://insp.cd/sitrep-n149-mve-bdbv-10-10-2026/) cover October 8, 9 and 10. October 9, October 10 and October 11 now have rows.
+**October 14.** DRC's national institute has published nothing since October 11. [SitRep 149](https://insp.cd/sitrep-n149-mve-bdbv-10-10-2026/) was the last one and the archive has not moved since. That is three days of silence from the primary source. The only INSP post in the window is a weekly meeting bulletin with no case figures in it.
 
-The outbreak has passed **9,000 confirmed cases**. The October 11 row stands at 9,000 confirmed, 4,339 confirmed deaths and 2,375 recovered worldwide. DRC carries 8,978 cases and 4,336 deaths. Three days added 191 cases and 94 deaths.
+So the wire carries this row. [WBC24 and BNO](https://x.com/WBC24News) published a situation report graphic dated October 12. It gives DRC 9,066 confirmed cases, 4,381 deaths and 2,389 recovered. Adding Uganda, France and Kenya, the global total is **9,088 confirmed, 4,384 deaths and 2,408 recovered**. October 12 now has a row. The daily graphic is back after a two day gap, which answers the question the last entry left open.
 
-The three days ran hot and then eased. October 8 brought 69 new confirmed cases and 40 deaths, the worst death count of the stretch. Positivity climbed to 16.0 percent on 431 samples. Contact follow-up moved between 80 and 83.5 percent and never reached the 95 percent the response sets for itself. Case fatality sits at 48.4 percent. Ituri has passed 6,600 cases and 3,000 deaths. Nord-Kivu has passed 1,850 cases at a 57.3 percent fatality rate, the highest of any province.
+[AP filed the same figures on October 13](https://www.washingtonpost.com/world/2026/10/13/congo-ebola-death-toll-latest/8e66fb5a-c72c-11f1-aefb-abe4112d087e_story.html) from health ministry data released that day. The two sources agree cell for cell. AP adds two things no column can hold. Officials say confirmed cases account for about **a third** of all cases, so the real number is roughly three times what this tracker plots. And the outbreak is on course to pass the 2014-16 West Africa epidemic, which killed about 11,000 people.
 
-The wire changed shape. [WBC24 and BNO](https://x.com/WBC24News/status/2109450681543217556) skipped their daily graphics on October 10 and 11 and published one weekend report covering October 9 to 11 instead. Its totals match the SitRep arithmetic cell for cell. Watch whether the daily cadence returns.
+The day itself set a record. 88 new confirmed cases in 24 hours, against 64, 69, 63 and 59 on the four days before it. Deaths rose 45 and recoveries rose 33. The footprint holds at 65 health zones across seven provinces.
 
-**October 4 is still open.** SitRep 142 has never been published and the archive still jumps from 141 to 143. The October 11 batch did not fill it. The tracker does not interpolate. WHO's weekly external situation report is still number 21, data as of October 4, and the twenty-second is overdue.
+**October 13 and October 14 have no source and stay empty.** October 4 is still open as well, now for the tenth run running. SitRep 142 was never published and the archive still jumps from 141 to 143. The tracker does not interpolate.
 
-Kenya has finished its contact trace. The health ministry said on October 11 that all **122 contacts** are identified and verified, 108 of them in quarantine and monitored daily, with none showing symptoms. It has tested 293 samples from 289 alerts and found one positive, the index case. The cohort more than doubled from the 57 reported a day earlier. The October 24 window still decides it. CDC has not opened a Kenya travel notice, six days after WHO AFRO's statement.
+WHO's weekly external situation report is still number 21, data as of October 4. The twenty-second is ten days overdue. Eight bars on the charts carry provisional hatching because of it.
+
+Kenya is quiet. No secondary case, and the October 24 window decides it. CDC has still not opened a Kenya travel notice, eight days after WHO AFRO's statement.
