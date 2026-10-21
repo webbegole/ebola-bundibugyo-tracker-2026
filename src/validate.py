@@ -399,12 +399,59 @@ def validate_declarations(failures: list) -> None:
                  f"first_report_date not YYYY-MM-DD: {d!r}")
 
 
+# --- Site text rules (METHODOLOGY.md "Site text rules") ----------------------
+STORY = DATA / "story.md"
+STORY_LIMITS = {"Story so far": (400, 6), "Latest update": (150, 3)}
+DISPLAY_FIELDS = ["case_status", "cdc_advisory", "cdc_travel_notice_level", "who_status"]
+DISPLAY_MAX = 60
+ALLCAPS_RE = re.compile(r"\b[A-Z]{4,}\b")
+ALLCAPS_OK = {"PHEIC", "PHECS", "BDBV", "INRB", "INSP", "ECDC", "NCDC", "CIDRAP", "UDPS", "AFRO"}
+
+
+def validate_site_text(failures: list) -> None:
+    if STORY.exists():
+        text = STORY.read_text(encoding="utf-8")
+        sections, cur = {}, None
+        for line in text.splitlines():
+            if line.startswith("## "):
+                cur = line[3:].strip()
+                sections[cur] = []
+            elif cur is not None:
+                sections[cur].append(line)
+        for name, (max_words, max_paras) in STORY_LIMITS.items():
+            if name not in sections:
+                fail(failures, "story.md", f"missing section '## {name}'")
+                continue
+            body = "\n".join(sections[name]).strip()
+            paras = [p for p in re.split(r"\n\s*\n", body) if p.strip()]
+            prose = re.sub(r"\]\([^)]*\)", "]", body)  # don't count URLs
+            words = len(prose.split())
+            if words > max_words:
+                fail(failures, f"story.md '{name}'", f"{words} words; limit {max_words}")
+            if len(paras) > max_paras:
+                fail(failures, f"story.md '{name}'", f"{len(paras)} paragraphs; limit {max_paras}")
+        if "\u2014" in text:
+            fail(failures, "story.md", "contains an em dash; rewrite the sentence")
+        caps = sorted({w for w in ALLCAPS_RE.findall(re.sub(r"\([^)]*\)", "", text)) if w not in ALLCAPS_OK})
+        if caps:
+            fail(failures, "story.md", f"ALL-CAPS words: {', '.join(caps)}")
+    if DECLARATIONS.exists():
+        _, rows = read_csv(DECLARATIONS)
+        for r in rows:
+            for f in DISPLAY_FIELDS:
+                val = (r.get(f) or "").strip()
+                if len(val) > DISPLAY_MAX:
+                    fail(failures, f"declarations.csv ({r.get('country')}) {f}",
+                         f"{len(val)} chars; limit {DISPLAY_MAX}. Move detail to the notes column.")
+
+
 def main() -> int:
     failures: list[str] = []
     ts_rows = validate_timeseries(failures)
     bd_parsed = validate_breakdown(failures)
     cross_check_latest_date(ts_rows, bd_parsed, failures)
     validate_declarations(failures)
+    validate_site_text(failures)
 
     if failures:
         print("VALIDATION FAILED", file=sys.stderr)

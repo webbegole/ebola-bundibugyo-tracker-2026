@@ -230,7 +230,8 @@
     letter-spacing: 0.04em;
     color: var(--color-subtle);
   }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td a { color: var(--color-accent); }
   td.source { color: var(--color-subtle); font-size: 13px; }
   td.nowrap, th.nowrap { white-space: nowrap; }
   tbody tr:last-child td { border-bottom: none; }
@@ -271,12 +272,12 @@
   <header>
     <h1>2026 Ebola (Bundibugyo) Outbreak Tracker</h1>
     <p class="subtitle">
-      A daily time series of the global outbreak. Compiled from
-      WHO, CDC, Africa CDC, and established wire services. Aggregate counts only.
+      Daily case counts for all affected countries, compiled from WHO, CDC,
+      Africa CDC and wire services.
     </p>
     <p class="updated">
-      Latest report date: <strong id="last-report-date">loading…</strong> ·
-      Data last updated: <strong id="last-updated">loading…</strong>
+      Data through <strong id="last-report-date">loading…</strong> ·
+      Updated <strong id="last-updated">loading…</strong>
     </p>
   </header>
 
@@ -288,22 +289,22 @@
 
   <section class="stats" aria-label="Headline figures">
     <div class="stat-card confirmed">
-      <h3>Confirmed cases (global)</h3>
+      <h3>Confirmed cases</h3>
       <p class="big" id="stat-confirmed">—</p>
       <p class="delta" id="delta-confirmed">—</p>
     </div>
     <div class="stat-card recovered">
-      <h3>Confirmed recoveries (global)</h3>
+      <h3>Recovered</h3>
       <p class="big" id="stat-recovered">—</p>
       <p class="delta" id="delta-recovered">—</p>
     </div>
     <div class="stat-card deaths">
-      <h3>Confirmed deaths (global)</h3>
+      <h3>Confirmed deaths</h3>
       <p class="big" id="stat-conf-deaths">—</p>
       <p class="delta" id="delta-conf-deaths">—</p>
     </div>
     <div class="stat-card active">
-      <h3>Active cases (global)</h3>
+      <h3>Active cases</h3>
       <p class="big" id="stat-active">—</p>
       <p class="delta" id="delta-active">—</p>
     </div>
@@ -334,37 +335,36 @@
   </section>
 
   <section aria-label="Affected countries and official declarations">
-    <h2>Affected countries and declarations</h2>
+    <h2>Countries</h2>
     <div class="table-scroll">
       <table id="declarations-table">
         <thead>
           <tr>
             <th>Country</th>
-            <th class="nowrap">First reported</th>
+            <th class="nowrap">First case</th>
             <th>Status</th>
-            <th>CDC advisory</th>
+            <th>CDC alert</th>
             <th>CDC travel notice</th>
-            <th>WHO status</th>
-            <th>Notes</th>
+            <th>WHO</th>
           </tr>
         </thead>
         <tbody id="declarations-body">
-          <tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
+          <tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">loading…</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <section aria-label="Recent reporting">
-    <h2>Recent reporting</h2>
+    <h2>Recent days</h2>
     <div class="table-scroll">
       <table id="recent-table">
         <thead>
           <tr>
             <th class="nowrap">Date</th>
-            <th>Confirmed cases</th>
-            <th>Confirmed recoveries</th>
-            <th>Confirmed deaths</th>
+            <th class="num">Cases</th>
+            <th class="num">Recovered</th>
+            <th class="num">Deaths</th>
             <th>Source</th>
           </tr>
         </thead>
@@ -388,16 +388,13 @@
       <a href="https://github.com/webbegole/ebola-bundibugyo-tracker-2026">GitHub</a>
     </p>
     <p>
-      Methodology: <a href="METHODOLOGY.md">METHODOLOGY.md</a> ·
-      Data: <a href="data/timeseries.csv">timeseries.csv</a>,
-      <a href="data/country_breakdown.csv">country_breakdown.csv</a>,
-      <a href="data/notes.md">notes.md</a> ·
-      <a href="README.md">README</a>
+      <a href="METHODOLOGY.md">Methodology</a> ·
+      Data: <a href="data/timeseries.csv">daily totals</a>,
+      <a href="data/country_breakdown.csv">by country</a>,
+      <a href="data/declarations.csv">declarations</a>,
+      <a href="data/notes.md">revision log</a>
     </p>
-    <p>
-      Data licensed CC BY 4.0. Code licensed MIT.
-      Compiled from WHO AFRO Sitrep, WHO Disease Outbreak News, CDC, Africa CDC, BNO News, Reuters, AP.
-    </p>
+    <p>Data CC BY 4.0 · Code MIT · Not medical advice.</p>
   </footer>
 
 </div>
@@ -445,9 +442,33 @@
     const c = Number(curr), p = Number(prev);
     if (!Number.isFinite(c) || !Number.isFinite(p)) return "";
     const d = c - p;
-    if (d === 0) return "no change vs. prior day";
+    if (d === 0) return "no change from prior day";
     const sign = d > 0 ? "+" : "";
-    return `${sign}${d.toLocaleString("en-US")} vs. prior day`;
+    return `${sign}${d.toLocaleString("en-US")} from prior day`;
+  }
+
+  // "2026-10-19" -> "Oct 19, 2026" (or "Oct 19" with short=true).
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function fmtDate(iso, short) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+    if (!m) return iso || "";
+    const base = `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}`;
+    return short ? base : `${base}, ${m[1]}`;
+  }
+
+  // primary_source cells carry full provenance (often a long paragraph).
+  // The site shows only a short label: the first markdown link, else the
+  // first clause. Full text stays in data/timeseries.csv.
+  function shortSource(src) {
+    let s = (src || "").replace(/^BACKFILL \([^)]*\):\s*/i, "").trim();
+    const link = /\[([^\]]+)\]\((https?:[^)\s]+)\)/.exec(s);
+    if (link) {
+      const label = link[1].replace(/\/MVE-BDBV\/.*$/, "").replace(/N°\s*/, "");
+      return `<a href="${link[2]}">${escapeHtml(label)}</a>`;
+    }
+    s = s.split(/[;.(]/)[0].trim();
+    if (s.length > 60) s = s.slice(0, 57).trim() + "…";
+    return escapeHtml(s);
   }
 
   function setText(id, value) {
@@ -480,7 +501,7 @@
     const latest = rows[rows.length - 1];
     const prior = rows.length >= 2 ? rows[rows.length - 2] : null;
 
-    setText("last-report-date", latest.report_date);
+    setText("last-report-date", fmtDate(latest.report_date));
     const ts = fmtTimestamp(lastModifiedHeader);
     setText("last-updated", ts || "unknown");
 
@@ -513,11 +534,11 @@
     recent.forEach(r => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="nowrap">${r.report_date}</td>
+        <td class="nowrap">${fmtDate(r.report_date, true)}</td>
         <td class="num">${fmtNum(r.confirmed_global)}</td>
         <td class="num">${fmtNum(r.recovered_global)}</td>
         <td class="num">${fmtNum(r.confirmed_deaths_global)}</td>
-        <td class="source">${r.primary_source || ""}</td>
+        <td class="source">${shortSource(r.primary_source)}</td>
       `;
       body.appendChild(tr);
     });
@@ -592,7 +613,7 @@
       const rows = parseCSV(text).filter(r => r.country);
       const body = document.getElementById("declarations-body");
       if (!rows.length) {
-        body.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--color-subtle);">No countries listed.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--color-subtle);">No countries listed.</td></tr>`;
         return;
       }
       body.innerHTML = "";
@@ -609,12 +630,11 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${r.country}</strong></td>
-          <td class="nowrap">${r.first_report_date || ""}</td>
+          <td class="nowrap">${fmtDate(r.first_report_date)}</td>
           <td>${r.case_status || ""}</td>
           <td>${cdc}</td>
           <td>${travel}</td>
           <td>${who}</td>
-          <td class="source">${r.notes || ""}</td>
         `;
         body.appendChild(tr);
       });
@@ -622,7 +642,7 @@
     .catch(err => {
       console.error(err);
       document.getElementById("declarations-body").innerHTML =
-        `<tr><td colspan="7"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
+        `<tr><td colspan="6"><div class="error">Could not load data/declarations.csv.</div></td></tr>`;
     });
 
   // ----- Lightbox: click chart to enlarge ------------------------------------

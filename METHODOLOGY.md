@@ -14,6 +14,34 @@ The CSVs, `story.md`, and `notes.md` in `data/` are the source of truth. The XLS
 - `data/story.md` — narrative summary. Markdown with two sections: "Story so far" (slow-moving context) and "Latest update" (the most recent material development, refreshed by the daily run when warranted). Rendered as the lead block on the site. **"Latest update" holds exactly one entry.** A run that refreshes it REPLACES the existing entry outright; it does not push the old one down behind a `---` rule. Older entries are dropped, not archived (Web's call, 2026-08-02: the section had accumulated five stacked entries back to 28 July, which buries the current figure). Two consequences for the writing: an entry must stand on its own without referring to a previous day's entry as if the reader can see it, and any context worth keeping past its news cycle belongs in "Story so far", not in a retained old entry. The revision history of the narrative lives in git; `notes.md` remains the append-only log.
 - `data/notes.md` — append-only methodology and revision log.
 
+## Site text rules
+
+Everything a visitor reads on the site comes from `data/story.md`, the display fields of `data/declarations.csv`, and the first link in each `primary_source`. Write those for a general reader in a hurry. Process detail belongs in `data/notes.md` and the `notes` column, never on the page. Set 2026-10-20 after a cleanup pass; `src/validate.py` enforces the limits marked (checked).
+
+**Keep off the page:** run counts ("fourteenth run"), gap and backfill mechanics, row-seating conventions, which rows are provisional, constants, sweeper or git status, source-verification reads, corrections of earlier readings, and ALL-CAPS emphasis. If a sentence explains how the tracker works rather than what the outbreak did, it goes in `notes.md`.
+
+**`story.md` — Story so far**
+- At most 6 paragraphs and 400 words (checked). Each paragraph makes one point in 2 to 4 sentences.
+- Slow-moving context only. Update it when the shape of the outbreak changes (a new country, a declaration, a milestone), and cut an older paragraph if the new one pushes past the limit.
+
+**`story.md` — Latest update**
+- One entry, at most 3 short paragraphs and 150 words (checked). Opens with the bold date, e.g. `**October 21.**`, then the news in the first sentence.
+- State the headline total once, in bold. Do not restate per-country tallies already in the Countries table.
+- If nothing material happened, leave the entry alone. Do not write an entry that says nothing changed.
+
+**Style (both sections)**
+- Short declarative sentences, active voice, plain words. No em dashes (checked). No ALL-CAPS words (checked).
+- At most 2 bold phrases per section. One link per claim, on the source name or the key phrase.
+- US month-day dates in prose ("October 21"). Do not name private individuals; officials may be named only when the name matters to the story.
+
+**`declarations.csv` display fields** (`case_status`, `cdc_advisory`, `cdc_travel_notice_level`, `who_status`)
+- A label, not a sentence: at most 60 characters (checked).
+- Patterns: `Active. 9 confirmed, 1 death, one cluster` · `Over (Aug 27). 20 confirmed, 2 deaths` · `HAN-00530` or `None` · `Level 2` or `None` · `PHEIC since May 17; reaffirmed Aug 18` · `Covered by PHEIC; WHO statement Oct 20`.
+- Dates as `Mon D` ("Oct 20"). The supporting evidence, verification reads and history go in the `notes` column, which the site does not show.
+
+**`timeseries.csv` primary_source**
+- Start the citation with a markdown link whose text names the source briefly (for example `[DRC INSP SitRep 157](https://...)`), after any `BACKFILL (...):` prefix. The site shows only that link text. Longer provenance can follow it in the same cell.
+
 ## Adding a new country
 
 When a third country starts reporting cases:
