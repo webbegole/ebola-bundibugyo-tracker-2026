@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 21.** Nigeria reported its first case, making it the fifth country in this outbreak. A woman who had recently travelled to Uganda fell ill in Abuja on October 7 and tested positive on October 20, [WHO AFRO](https://afro.who.int/countries/nigeria/news/nigeria-confirms-imported-case-ebola-bundibugyo-virus-disease) says. Officials are tracing 44 contacts. The source of her infection is under investigation.
+**October 22.** DRC published two reports after four days of silence, and Nigeria's case entered the count. The total is now **9,735 confirmed cases and 4,690 confirmed deaths**.
 
-Kenya confirmed its ninth case, a relative of the first patient who was already in quarantine. The health ministry says all nine cases belong to one cluster.
+WHO's [weekly situation report](https://afro.who.int/countries/nigeria/publication/ebola-bundibugyo-virus-disease-outbreak-democratic-republic-congo-uganda-weekly-external-situation) places the outbreak in an eighth DRC province, Nord-Ubangi, and in 66 health zones. It calls the outbreak increasingly challenging.
 
-DRC has not published new figures since October 18. The total stands at **9,581 confirmed cases and 4,605 confirmed deaths**. Kenya's ninth case and Nigeria's first will enter the series with the next DRC report.
+Uganda says it has [no active cases](https://english.news.cn/africa/20261021/f31984241b4a4419834022b423329179/c.html). Its health ministry says the patient now ill in Nigeria had travelled to eastern DRC for business before passing through Uganda, and that transit alone does not show where she was infected.
