@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 23.** WHO and Africa CDC say there is no confirmed information that Nigeria's patient travelled to the Democratic Republic of the Congo, [contradicting Uganda's account](https://theprint.in/world/who-africa-cdc-say-nigeria-ebola-patient-not-confirmed-to-have-visited-congo/3079111/) given two days earlier. Where she was infected is not known.
+**October 24.** Kenya has recorded a second Ebola death. The patient was a 65-year-old woman, a close family member of the country's first case, who had been under quarantine before her symptoms began, [according to the health ministry](https://citizen.digital/article/ministry-of-health-announces-second-ebola-death-in-kenya-n392642). Kenya says all of its cases remain inside one cluster of known contacts and there is no sign of community spread.
 
-WHO says the information it holds places her in Uganda from September 16 until she flew back to Abuja on October 3, with no travel outside the country recorded. Switzerland says she is believed to have caught the virus while travelling in Uganda. Uganda says it has no cases and asks what proof of a Congo trip exists.
+Nigeria's health minister said genetic sequencing puts the virus in Nigeria's single case [one mutation away](https://www.premiumtimesng.com/health/health-news/919752-ebola-nigeria-case-highly-similar-to-kenya-infection-minister.html) from the one that killed Kenya's first patient. He said the result does not establish how she was infected.
 
-DRC published no new report on October 22. The total stands at **9,735 confirmed cases and 4,690 confirmed deaths**.
+DRC has published no new report since October 20. The total stands at **9,735 confirmed cases and 4,690 confirmed deaths**.
