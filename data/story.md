@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 24.** Kenya has recorded a second Ebola death. The patient was a 65-year-old woman, a close family member of the country's first case, who had been under quarantine before her symptoms began, [according to the health ministry](https://citizen.digital/article/ministry-of-health-announces-second-ebola-death-in-kenya-n392642). Kenya says all of its cases remain inside one cluster of known contacts and there is no sign of community spread.
+**October 25.** Congo published two delayed situation reports on October 24, bringing the outbreak total to **9,847 confirmed cases and 4,761 confirmed deaths**. New confirmed cases ran at 71 and then 51 a day. Test positivity fell to 9.4 percent, the lowest of recent weeks.
 
-Nigeria's health minister said genetic sequencing puts the virus in Nigeria's single case [one mutation away](https://www.premiumtimesng.com/health/health-news/919752-ebola-nigeria-case-highly-similar-to-kenya-infection-minister.html) from the one that killed Kenya's first patient. He said the result does not establish how she was infected.
+A vaccine trial has started. The first participant was [vaccinated in Bunia](https://cepi.net/first-participant-vaccinated-pivotal-phase-23-bundibugyo-vaccine-trial-drc) on October 23 in the Tumaini study, run by Congo's biomedical research institute with the University of Antwerp. Ervebo goes first. Two candidates built for Bundibugyo are due to follow.
 
-DRC has published no new report since October 20. The total stands at **9,735 confirmed cases and 4,690 confirmed deaths**.
+Kenya has recorded a second death, [a close family member](https://citizen.digital/article/ministry-of-health-announces-second-ebola-death-in-kenya-n392642) of its first case who was already in quarantine.
