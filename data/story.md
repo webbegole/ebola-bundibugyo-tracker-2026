@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 25.** Congo published two delayed situation reports on October 24, bringing the outbreak total to **9,847 confirmed cases and 4,761 confirmed deaths**. New confirmed cases ran at 71 and then 51 a day. Test positivity fell to 9.4 percent, the lowest of recent weeks.
+**October 26.** The outbreak total reached **9,907 confirmed cases and 4,807 confirmed deaths** on October 24, the most recent day Congo has reported. Congo added 60 confirmed cases and 46 deaths that day, and recoveries reached 2,665.
 
-A vaccine trial has started. The first participant was [vaccinated in Bunia](https://cepi.net/first-participant-vaccinated-pivotal-phase-23-bundibugyo-vaccine-trial-drc) on October 23 in the Tumaini study, run by Congo's biomedical research institute with the University of Antwerp. Ervebo goes first. Two candidates built for Bundibugyo are due to follow.
+A vaccine trial is under way. The first participant was [vaccinated in Bunia](https://cepi.net/first-participant-vaccinated-pivotal-phase-23-bundibugyo-vaccine-trial-drc) on October 23 in the Tumaini study, run by Congo's biomedical research institute with the University of Antwerp. Two candidates built for Bundibugyo are due to follow.
 
-Kenya has recorded a second death, [a close family member](https://citizen.digital/article/ministry-of-health-announces-second-ebola-death-in-kenya-n392642) of its first case who was already in quarantine.
+Kenya holds at nine cases and two deaths, all within one cluster of known contacts. Nigeria still has one case and no secondary spread.
