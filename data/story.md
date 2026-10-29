@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 28.** Congo's confirmed case count passed 10,000. The outbreak total reached **10,091 confirmed cases and 4,891 confirmed deaths** on October 26, the most recent day Congo has reported. Congo added 96 confirmed cases and 46 deaths that day, and 40 of those deaths happened in the community rather than in a treatment centre.
+**October 29.** Congo reported its lowest daily test positivity in weeks. The outbreak total stands at **10,224 confirmed cases and 4,964 confirmed deaths** through October 28. Congo added 52 confirmed cases that day, down from 81 the day before, and 11 percent of samples came back positive against 21 percent a day earlier.
 
-CDC calls it the [second-largest Ebola outbreak on record](https://www.cdc.gov/ebola/situation-summary/). The virus has now reached 66 of Congo's 178 health zones across eight provinces. Ituri is still the epicentre and holds about 72 percent of confirmed cases.
+Deaths are approaching 5,000. Recoveries rose too, with 41 patients discharged after two negative tests.
 
-Kenya released its first 20 contacts from quarantine on October 26, after 21 days without symptoms. Roughly 98 more are due out this week.
+CDC has [added an entry rule](https://www.cdc.gov/ebola/situation-summary/). From November 3, everyone boarding an international flight to the United States must sign a statement that they have not been in Congo in the previous 21 days.
