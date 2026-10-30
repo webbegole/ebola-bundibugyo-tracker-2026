@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 29.** Congo reported its lowest daily test positivity in weeks. The outbreak total stands at **10,224 confirmed cases and 4,964 confirmed deaths** through October 28. Congo added 52 confirmed cases that day, down from 81 the day before, and 11 percent of samples came back positive against 21 percent a day earlier.
+**October 30.** Experts now describe the outbreak as a plateau rather than a decline. [AP reported](https://abcnews.com/Health/wireStory/experts-warn-wider-spread-ebola-outbreak-reaches-plateau-137674660) on October 29 that Congo is adding roughly 400 to 500 confirmed cases a week, a rate that has held steady for weeks without falling. The total stands at **10,224 confirmed cases and 4,964 confirmed deaths**.
 
-Deaths are approaching 5,000. Recoveries rose too, with 41 patients discharged after two negative tests.
+Contact tracing is still the weak point. Fewer than a quarter of new cases are found among the known contacts of earlier patients, so most infections surface outside the surveillance net.
 
-CDC has [added an entry rule](https://www.cdc.gov/ebola/situation-summary/). From November 3, everyone boarding an international flight to the United States must sign a statement that they have not been in Congo in the previous 21 days.
+There was one good moment. The Doctors Without Borders treatment centre in Mongbwalu, where the outbreak began, [discharged its last patient](https://www.aljazeera.com/video/newsfeed/2026/10/29/incredible-celebrations-as-last-patient-leaves-a-drc-ebola-centre). Staff sang and danced in the ward as the patient walked out.
