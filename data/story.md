@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 30.** Experts now describe the outbreak as a plateau rather than a decline. [AP reported](https://abcnews.com/Health/wireStory/experts-warn-wider-spread-ebola-outbreak-reaches-plateau-137674660) on October 29 that Congo is adding roughly 400 to 500 confirmed cases a week, a rate that has held steady for weeks without falling. The total stands at **10,224 confirmed cases and 4,964 confirmed deaths**.
+**October 31.** Confirmed deaths in Congo have passed 5,000. The [Associated Press reported](https://abcnews.com/amp/Health/wireStory/congos-ebola-deaths-top-5000-fear-continent-wide-137730518) health ministry data putting Congo at 5,026 deaths among 10,351 confirmed cases. Across all five reporting countries the total is now **10,382 confirmed cases and 5,030 confirmed deaths**.
 
-Contact tracing is still the weak point. Fewer than a quarter of new cases are found among the known contacts of earlier patients, so most infections surface outside the surveillance net.
+Most of the spread is still invisible to the response. Africa CDC says about 80 percent of new cases come from outside monitored contact chains, and WHO says a third of recorded deaths happened before the person was ever tested.
 
-There was one good moment. The Doctors Without Borders treatment centre in Mongbwalu, where the outbreak began, [discharged its last patient](https://www.aljazeera.com/video/newsfeed/2026/10/29/incredible-celebrations-as-last-patient-leaves-a-drc-ebola-centre). Staff sang and danced in the ward as the patient walked out.
+The outbreak has now been recorded in three African regions, the most geographically widespread on record. Active cases sit in 50 of the 67 Congolese health zones the virus has reached.
