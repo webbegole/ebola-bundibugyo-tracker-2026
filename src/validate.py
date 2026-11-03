@@ -117,11 +117,23 @@ NO_DIP_EXEMPTIONS_TIMESERIES = {
     # This carve-out moved here from 2026-06-01, which now holds the same
     # post-cleanup level (no dip) after the reconciliation.
     "2026-05-31": {"suspected_global", "total_global"},
+    # 2026-11-01: INSP SitRep 169 (rapportage 30 Oct) carried a one-day Ituri
+    # database harmonisation raising that province's cumulative deaths from
+    # 3 436 to 3 750 (+314), taking the national total to 5 372. SitRep 170
+    # (rapportage 31 Oct) reverses it without announcement, returning Ituri to
+    # 3 483 (= 3 436 + 19 + 28) and the national total to 5 103. Applied as a
+    # two-source dip under the standard no-dip threshold, not the MoH carve-out:
+    # the corroborating high-value sources are DRC INSP SitRep 170 and the CDC
+    # Situation Summary (page 2 Nov, as of 31 Oct, DRC 10 467 / 5 103, five-
+    # country total 10 498 / 5 107). The WBC24/BNO graphic embedded 1 Nov agrees.
+    "2026-11-01": {"confirmed_deaths_global"},
 }
 NO_DIP_EXEMPTIONS_BREAKDOWN = {
     # (date, country) -> set of exempt column names
     ("2026-05-30", "DRC"): {"suspected", "suspected_deaths"},
     ("2026-05-31", "DRC"): {"suspected"},
+    # 2026-11-01: DRC side of the reversed Ituri harmonisation above.
+    ("2026-11-01", "DRC"): {"confirmed_deaths"},
 }
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
