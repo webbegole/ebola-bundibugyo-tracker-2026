@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**October 31.** Confirmed deaths in Congo have passed 5,000. The [Associated Press reported](https://abcnews.com/amp/Health/wireStory/congos-ebola-deaths-top-5000-fear-continent-wide-137730518) health ministry data putting Congo at 5,026 deaths among 10,351 confirmed cases. Across all five reporting countries the total is now **10,382 confirmed cases and 5,030 confirmed deaths**.
+**November 2.** Kenya has discharged its first recovered Ebola patients. Five people left hospital after testing negative, [the Associated Press reported](https://abcnews.com/Health/wireStory/kenya-releases-5-ebola-patients-after-negative-tests-137813664), and 46 contacts of the first patient finished quarantine. Two remain in care. Kenya has seen no spread beyond the chain that began with one traveller from Congo.
 
-Most of the spread is still invisible to the response. Africa CDC says about 80 percent of new cases come from outside monitored contact chains, and WHO says a third of recorded deaths happened before the person was ever tested.
+Across all five reporting countries the total is now **10,563 confirmed cases and 5,130 confirmed deaths**.
 
-The outbreak has now been recorded in three African regions, the most geographically widespread on record. Active cases sit in 50 of the 67 Congolese health zones the virus has reached.
+Congo [reported](https://insp.cd/sitrep-n171-mve-bdbv-01-11-2026/) 65 new confirmed cases and 23 deaths in a single day. North Kivu now accounts for 60 percent of new cases and has the highest death rate of any province. Ituri still holds about 70 percent of all confirmed cases.
