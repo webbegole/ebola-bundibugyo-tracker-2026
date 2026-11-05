@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 2.** Kenya has discharged its first recovered Ebola patients. Five people left hospital after testing negative, [the Associated Press reported](https://abcnews.com/Health/wireStory/kenya-releases-5-ebola-patients-after-negative-tests-137813664), and 46 contacts of the first patient finished quarantine. Two remain in care. Kenya has seen no spread beyond the chain that began with one traveller from Congo.
+**November 4.** The World Health Organization has [added two vaccine candidates](https://www.who.int/news/item/04-11-2026-two-new-candidate-vaccines-to-join-ebola-trial-as-treatment-research-advances) to the Tumaini trial in Congo. Oxford's ChAdOx1 and Moderna's mRNA-1469 are the first vaccines designed against Bundibugyo virus to be tested during an outbreak of it. Results are expected in early 2027.
 
-Across all five reporting countries the total is now **10,563 confirmed cases and 5,130 confirmed deaths**.
+Across all five reporting countries the total is now **10,699 confirmed cases and 5,202 confirmed deaths**.
 
-Congo [reported](https://insp.cd/sitrep-n171-mve-bdbv-01-11-2026/) 65 new confirmed cases and 23 deaths in a single day. North Kivu now accounts for 60 percent of new cases and has the highest death rate of any province. Ituri still holds about 70 percent of all confirmed cases.
+Congo [reported](https://insp.cd/sitrep-n173-mve-bdbv-03-11-2026/) 62 new confirmed cases and 34 deaths in a single day. North Kivu accounted for 36 of the new cases and has a death rate of 55 percent. A British health worker who tested positive in Congo is [being flown home](https://www.rte.ie/news/uk/2026/1105/1598091-ebola-uk-patient/) for treatment in London.
