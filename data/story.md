@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 4.** The World Health Organization has [added two vaccine candidates](https://www.who.int/news/item/04-11-2026-two-new-candidate-vaccines-to-join-ebola-trial-as-treatment-research-advances) to the Tumaini trial in Congo. Oxford's ChAdOx1 and Moderna's mRNA-1469 are the first vaccines designed against Bundibugyo virus to be tested during an outbreak of it. Results are expected in early 2027.
+**November 7.** The World Health Organization has published its [first weekly situation report in three weeks](https://www.afro.who.int/countries/nigeria/publication/bundibugyo-virus-disease-outbreak-democratic-republic-congo-kenya-nigeria-weekly-external-situation). It finds the outbreak holding at a high plateau, between 67 and 76 new confirmed cases a day through late October, below the mid-August peak.
 
-Across all five reporting countries the total is now **10,699 confirmed cases and 5,202 confirmed deaths**.
+The shape of the epidemic is changing. Ituri is still the largest source of cases, but its share is falling. North Kivu rose almost 25 percent over the latest three weeks and now reports nearly as many cases each day as Ituri. Deaths there rose faster still.
 
-Congo [reported](https://insp.cd/sitrep-n173-mve-bdbv-03-11-2026/) 62 new confirmed cases and 34 deaths in a single day. North Kivu accounted for 36 of the new cases and has a death rate of 55 percent. A British health worker who tested positive in Congo is [being flown home](https://www.rte.ie/news/uk/2026/1105/1598091-ebola-uk-patient/) for treatment in London.
+Across all five reporting countries the total is now **10,772 confirmed cases and 5,234 confirmed deaths**.
