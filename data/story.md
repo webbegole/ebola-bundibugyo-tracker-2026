@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 7.** The World Health Organization has published its [first weekly situation report in three weeks](https://www.afro.who.int/countries/nigeria/publication/bundibugyo-virus-disease-outbreak-democratic-republic-congo-kenya-nigeria-weekly-external-situation). It finds the outbreak holding at a high plateau, between 67 and 76 new confirmed cases a day through late October, below the mid-August peak.
+**November 9.** The outbreak has reached **10,951 confirmed cases and 5,327 confirmed deaths**. Congo reported 41 new confirmed cases on November 7, down from 76 the day before, though the week as a whole held near the plateau of 60 to 76 a day that has run since late October.
 
-The shape of the epidemic is changing. Ituri is still the largest source of cases, but its share is falling. North Kivu rose almost 25 percent over the latest three weeks and now reports nearly as many cases each day as Ituri. Deaths there rose faster still.
+A British doctor who caught the virus while working in Congo was [flown to London](https://www.itv.com/news/2026-11-05/british-doctor-infected-with-ebola-in-congo-being-treated-in-london-hospital) for treatment on November 5. The case is counted in Congo's total. Britain is not a reporting country.
 
-Across all five reporting countries the total is now **10,772 confirmed cases and 5,234 confirmed deaths**.
+Kenya has not confirmed a new case since mid-October and has [one patient left in treatment](https://nation.africa/kenya/health/kenya-s-ebola-battle-the-wins-gaps-and-42-day-countdown--5656024), starting a 42-day countdown to being declared free of the disease.
