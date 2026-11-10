@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 9.** The outbreak has reached **10,951 confirmed cases and 5,327 confirmed deaths**. Congo reported 41 new confirmed cases on November 7, down from 76 the day before, though the week as a whole held near the plateau of 60 to 76 a day that has run since late October.
+**November 10.** The outbreak now stands at **11,021 confirmed cases and 5,358 confirmed deaths**, passing 11,000 cases. Congo [reported 70 new confirmed cases](https://insp.cd/sitrep-n178-mve-bdbv-08-11-2026/) on November 8, up about 70 percent from 41 the day before.
 
-A British doctor who caught the virus while working in Congo was [flown to London](https://www.itv.com/news/2026-11-05/british-doctor-infected-with-ebola-in-congo-being-treated-in-london-hospital) for treatment on November 5. The case is counted in Congo's total. Britain is not a reporting country.
+Ituri drove the rebound with 40 of those cases and now holds just under 70 percent of all confirmed cases. North Kivu reported 23 and carries a fatality rate near 55 percent, above the national average of 48.7 percent.
 
-Kenya has not confirmed a new case since mid-October and has [one patient left in treatment](https://nation.africa/kenya/health/kenya-s-ebola-battle-the-wins-gaps-and-42-day-countdown--5656024), starting a 42-day countdown to being declared free of the disease.
+Kenya's health ministry says the country has gone 18 days without a new confirmed case and has recorded six recoveries.
