@@ -8,12 +8,12 @@ The response has scaled fast. By [day 100](https://www.afro.who.int/countries/de
 
 Conflict, population movement and hostility to the response make containment harder. Treatment centres have been attacked and burned. In September a local official was [beaten to death](https://www.africanews.com/2026/09/29/congolese-politician-beaten-to-death-after-promoting-ebola-awareness/) in Butembo after saying on the radio that Ebola is real.
 
-The virus has reached eight DRC provinces and four other countries. Uganda's outbreak was declared over on August 27. France's single imported case recovered in July. Kenya and Nigeria still have active cases.
+The virus has reached eight DRC provinces and four other countries. Uganda's outbreak was declared over on August 27. France's single imported case recovered in July. Kenya discharged its last patient on November 11. Congo is now the only country with active transmission.
 
 ## Latest update
 
-**November 10.** The outbreak now stands at **11,021 confirmed cases and 5,358 confirmed deaths**, passing 11,000 cases. Congo [reported 70 new confirmed cases](https://insp.cd/sitrep-n178-mve-bdbv-08-11-2026/) on November 8, up about 70 percent from 41 the day before.
+**November 11.** Kenya [discharged its last Ebola patient](https://www.news4jax.com/health/2026/11/11/kenya-discharges-last-ebola-patient-beginning-countdown-to-ebola-free-declaration/) and began a 42-day countdown to being declared free of the virus. Health Minister Aden Duale said the countdown ends December 23 if no new infection is recorded. Kenya has gone more than three weeks without a new case.
 
-Ituri drove the rebound with 40 of those cases and now holds just under 70 percent of all confirmed cases. North Kivu reported 23 and carries a fatality rate near 55 percent, above the national average of 48.7 percent.
+Congo [reported 52 new confirmed cases](https://insp.cd/sitrep-n179-mve-bdbv-09-11-2026/) on November 9, down about 26 percent from the day before. The outbreak total stands at **11,073 confirmed cases and 5,391 confirmed deaths**.
 
-Kenya's health ministry says the country has gone 18 days without a new confirmed case and has recorded six recoveries.
+Ituri now holds close to 70 percent of Congo's confirmed cases. North Kivu reported 17 of the new cases and carries a fatality rate of 55 percent, above the national average of 48.8 percent.
