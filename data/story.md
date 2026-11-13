@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 11.** Kenya [discharged its last Ebola patient](https://www.news4jax.com/health/2026/11/11/kenya-discharges-last-ebola-patient-beginning-countdown-to-ebola-free-declaration/) and began a 42-day countdown to being declared free of the virus. Health Minister Aden Duale said the countdown ends December 23 if no new infection is recorded. Kenya has gone more than three weeks without a new case.
+**November 12.** Africa CDC said attacks on health workers are [hampering the Ebola response](https://www.timeslive.co.za/news/africa/2026-11-12-attacks-on-health-workers-hamper-drc-ebola-fight-africa-cdc-warns/) in eastern Congo. It counted four armed attacks, 16 assaults on responders and 11 health facilities burned or targeted, and said more than 1,000 contacts have been lost to follow-up.
 
-Congo [reported 52 new confirmed cases](https://insp.cd/sitrep-n179-mve-bdbv-09-11-2026/) on November 9, down about 26 percent from the day before. The outbreak total stands at **11,073 confirmed cases and 5,391 confirmed deaths**.
+Congo [reported 83 new confirmed cases](https://insp.cd/sitrep-n181-mve-bdbv-11-11-2026/) on November 11, up from 72 the day before. The outbreak total stands at **11,228 confirmed cases and 5,475 confirmed deaths**.
 
-Ituri now holds close to 70 percent of Congo's confirmed cases. North Kivu reported 17 of the new cases and carries a fatality rate of 55 percent, above the national average of 48.8 percent.
+North Kivu logged 41 of those cases and Ituri 37. It is the first day in this series that North Kivu has led Ituri on new cases.
