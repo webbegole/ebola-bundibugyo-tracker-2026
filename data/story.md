@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 12.** Africa CDC said attacks on health workers are [hampering the Ebola response](https://www.timeslive.co.za/news/africa/2026-11-12-attacks-on-health-workers-hamper-drc-ebola-fight-africa-cdc-warns/) in eastern Congo. It counted four armed attacks, 16 assaults on responders and 11 health facilities burned or targeted, and said more than 1,000 contacts have been lost to follow-up.
+**November 13.** Nigeria finished monitoring all 62 contacts of its single imported Ebola case with [no secondary infections](https://www.channelstv.com/2026/11/13/no-secondary-ebola-infection-as-ncdc-completes-monitoring-of-62-contacts/). Thirteen contacts developed symptoms during the 21 days and every one tested negative.
 
-Congo [reported 83 new confirmed cases](https://insp.cd/sitrep-n181-mve-bdbv-11-11-2026/) on November 11, up from 72 the day before. The outbreak total stands at **11,228 confirmed cases and 5,475 confirmed deaths**.
+Congo [reported 57 new confirmed cases](https://insp.cd/sitrep-n182-mve-bdbv-12-11-2026/) on November 12, down from 83 the day before. The outbreak total stands at **11,285 confirmed cases and 5,509 confirmed deaths**.
 
-North Kivu logged 41 of those cases and Ituri 37. It is the first day in this series that North Kivu has led Ituri on new cases.
+North Kivu logged 26 of those cases and Ituri 25. It is the second day running that North Kivu has led.
