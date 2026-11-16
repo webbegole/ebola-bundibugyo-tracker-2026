@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 13.** Nigeria finished monitoring all 62 contacts of its single imported Ebola case with [no secondary infections](https://www.channelstv.com/2026/11/13/no-secondary-ebola-infection-as-ncdc-completes-monitoring-of-62-contacts/). Thirteen contacts developed symptoms during the 21 days and every one tested negative.
+**November 15.** Six months after the outbreak was declared, Africa CDC said it is [still not under control](https://www.aljazeera.com/news/2026/11/15/africa-cdc-says-ebola-outbreak-in-dr-congo-still-not-under-control). Director general Jean Kaseya warned it could become the worst Ebola outbreak on record, and called coordination between Congo and its donors a collective failure. Only 1.3 billion dollars of the 2.9 billion pledged has been released.
 
-Congo [reported 57 new confirmed cases](https://insp.cd/sitrep-n182-mve-bdbv-12-11-2026/) on November 12, down from 83 the day before. The outbreak total stands at **11,285 confirmed cases and 5,509 confirmed deaths**.
+Congo [reported 60 new confirmed cases](https://insp.cd/sitrep-n184-mve-bdbv-14-11-2026/) on November 14. The outbreak total stands at **11,407 confirmed cases and 5,572 confirmed deaths**.
 
-North Kivu logged 26 of those cases and Ituri 25. It is the second day running that North Kivu has led.
+More than 80 percent of new cases are found outside contact lists, and most deaths still happen in the community rather than in a treatment centre.
