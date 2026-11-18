@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 15.** Six months after the outbreak was declared, Africa CDC said it is [still not under control](https://www.aljazeera.com/news/2026/11/15/africa-cdc-says-ebola-outbreak-in-dr-congo-still-not-under-control). Director general Jean Kaseya warned it could become the worst Ebola outbreak on record, and called coordination between Congo and its donors a collective failure. Only 1.3 billion dollars of the 2.9 billion pledged has been released.
+**November 17.** WHO's emergency committee met for the third time on the Bundibugyo epidemic. Director-General Tedros Adhanom Ghebreyesus told it that [cases have more than doubled](https://www.who.int/news-room/speeches/item/who-director-general-s-opening-remarks-at-the-third-ihr-emergency-committee-meeting-on-bundibugyo-virus-disease-epidemic-in-the-democratic-republic-of-the-congo---17-november-2026) since the committee last met three months ago. Congo is reporting 400 to 500 new cases a week across 67 health zones. The committee has not published its determination.
 
-Congo [reported 60 new confirmed cases](https://insp.cd/sitrep-n184-mve-bdbv-14-11-2026/) on November 14. The outbreak total stands at **11,407 confirmed cases and 5,572 confirmed deaths**.
+Children are now more than a quarter of confirmed cases and a third of deaths. Seven in ten confirmed cases in children under five have died.
 
-More than 80 percent of new cases are found outside contact lists, and most deaths still happen in the community rather than in a treatment centre.
+Congo [reported 72 new confirmed cases](https://insp.cd/sitrep-n186-mve-bdbv-16-11-2026/) on November 16. The outbreak total stands at **11,535 confirmed cases and 5,634 confirmed deaths**.
