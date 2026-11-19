@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 17.** WHO's emergency committee met for the third time on the Bundibugyo epidemic. Director-General Tedros Adhanom Ghebreyesus told it that [cases have more than doubled](https://www.who.int/news-room/speeches/item/who-director-general-s-opening-remarks-at-the-third-ihr-emergency-committee-meeting-on-bundibugyo-virus-disease-epidemic-in-the-democratic-republic-of-the-congo---17-november-2026) since the committee last met three months ago. Congo is reporting 400 to 500 new cases a week across 67 health zones. The committee has not published its determination.
+**November 18.** WHO published its [first weekly situation report](https://www.afro.who.int/countries/kenya/publication/ebola-bundibugyo-virus-disease-outbreak-democratic-republic-congo-uganda-weekly-external-situation) in eight days. Congo recorded 442 confirmed cases and 239 confirmed deaths in the week to November 15. Across three weeks, reported cases fell 6.7 percent and deaths fell 4.6 percent.
 
-Children are now more than a quarter of confirmed cases and a third of deaths. Seven in ten confirmed cases in children under five have died.
+The decline is uneven. Ituri is easing. Nord-Kivu is not, and Beni remains the health zone with the most cases. Watsa in Haut-Uele reported its first cases. The share of deaths happening in the community fell to 59 percent, its lowest weekly level since August.
 
-Congo [reported 72 new confirmed cases](https://insp.cd/sitrep-n186-mve-bdbv-16-11-2026/) on November 16. The outbreak total stands at **11,535 confirmed cases and 5,634 confirmed deaths**.
+Congo [reported 109 new confirmed cases](https://insp.cd/sitrep-n187-mve-bdbv-17-11-2026/) on November 17. The outbreak total stands at **11,644 confirmed cases and 5,682 confirmed deaths**. WHO's emergency committee has still not published its determination.
