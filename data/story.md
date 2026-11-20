@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 18.** WHO published its [first weekly situation report](https://www.afro.who.int/countries/kenya/publication/ebola-bundibugyo-virus-disease-outbreak-democratic-republic-congo-uganda-weekly-external-situation) in eight days. Congo recorded 442 confirmed cases and 239 confirmed deaths in the week to November 15. Across three weeks, reported cases fell 6.7 percent and deaths fell 4.6 percent.
+**November 19.** WHO kept the outbreak classed as a [public health emergency of international concern](https://x.com/DrTedros/status/2123033929565315254). Its emergency committee met on November 17 and the decision was announced the next day. Updated recommendations have not been published yet.
 
-The decline is uneven. Ituri is easing. Nord-Kivu is not, and Beni remains the health zone with the most cases. Watsa in Haut-Uele reported its first cases. The share of deaths happening in the community fell to 59 percent, its lowest weekly level since August.
+Tedros Adhanom Ghebreyesus said the response has [made real progress six months in](https://www.who.int/news-room/speeches/item/who-director-general-s-opening-remarks-at-the-third-ihr-emergency-committee-meeting-on-bundibugyo-virus-disease-epidemic-in-the-democratic-republic-of-the-congo---17-november-2026) but the battle is far from over. Two thirds of confirmed deaths still happen outside treatment centres. Children are more than a quarter of cases.
 
-Congo [reported 109 new confirmed cases](https://insp.cd/sitrep-n187-mve-bdbv-17-11-2026/) on November 17. The outbreak total stands at **11,644 confirmed cases and 5,682 confirmed deaths**. WHO's emergency committee has still not published its determination.
+Congo [reported 67 new confirmed cases](https://insp.cd/sitrep-n188-mve-bdbv-18-11-2026/) on November 19, down 38 percent in a day. The total stands at **11,711 confirmed cases and 5,719 confirmed deaths**. Contact tracing fell to 79 percent.
