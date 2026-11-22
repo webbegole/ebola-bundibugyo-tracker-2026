@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 19.** WHO kept the outbreak classed as a [public health emergency of international concern](https://x.com/DrTedros/status/2123033929565315254). Its emergency committee met on November 17 and the decision was announced the next day. Updated recommendations have not been published yet.
+**November 22.** Heavy fighting near a hospital in Ituri left WHO staff and response partners [sheltering in a maternity ward for more than 24 hours](https://x.com/DrTedros/status/2124555044557041855). Attacks across eastern Congo have grown more frequent since late October, disrupting the Ebola response.
 
-Tedros Adhanom Ghebreyesus said the response has [made real progress six months in](https://www.who.int/news-room/speeches/item/who-director-general-s-opening-remarks-at-the-third-ihr-emergency-committee-meeting-on-bundibugyo-virus-disease-epidemic-in-the-democratic-republic-of-the-congo---17-november-2026) but the battle is far from over. Two thirds of confirmed deaths still happen outside treatment centres. Children are more than a quarter of cases.
+WHO published a [new outbreak report](https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON630) on November 20 and kept the emergency classification in place. The updated recommendations promised last week are still unpublished.
 
-Congo [reported 67 new confirmed cases](https://insp.cd/sitrep-n188-mve-bdbv-18-11-2026/) on November 19, down 38 percent in a day. The total stands at **11,711 confirmed cases and 5,719 confirmed deaths**. Contact tracing fell to 79 percent.
+Congo reported 43 new confirmed cases on November 20, down from 67 the day before. The total stands at **11,754 confirmed cases and 5,756 confirmed deaths**.
