@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 22.** Heavy fighting near a hospital in Ituri left WHO staff and response partners [sheltering in a maternity ward for more than 24 hours](https://x.com/DrTedros/status/2124555044557041855). Attacks across eastern Congo have grown more frequent since late October, disrupting the Ebola response.
+**November 23.** Reuters says the real death toll is far above the official count. Its [satellite analysis of graveyards](https://www.reuters.com/investigations/fields-graves-hidden-deaths-reveal-scale-ebola-disaster-2026-11-23/) found more than 1,000 excess deaths in Bunia by early November, over 50 percent more than the town's official Ebola tally. In Mongbwalu the gap was about 25 percent by August.
 
-WHO published a [new outbreak report](https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON630) on November 20 and kept the emergency classification in place. The updated recommendations promised last week are still unpublished.
+WHO told Reuters it keeps finding cases and deaths that were never detected, and that under-detection is likely worse in remote and insecure areas. Congo's health ministry did not comment on the analysis.
 
-Congo reported 43 new confirmed cases on November 20, down from 67 the day before. The total stands at **11,754 confirmed cases and 5,756 confirmed deaths**.
+Congo reported 39 new confirmed cases on November 20, the fewest this month. The total stands at **11,793 confirmed cases and 5,779 confirmed deaths**.
