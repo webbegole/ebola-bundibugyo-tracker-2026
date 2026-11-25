@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 24.** WHO staff and Congolese health ministry colleagues have been evacuated from a hospital in Akwe, Ituri, after sheltering through more than three days of fighting, the [WHO director-general said](https://x.com/DrTedros/status/2125204374259454343). WHO has also moved its Ebola team out of Mongbwalu until the area is calmer.
+**November 25.** New Ebola cases in Congo rose for three days running, reversing the fall recorded the week before. Health authorities [reported](https://insp.cd/sitrep-n193-mve-bdbv-23-11-2026/) 59 new confirmed cases on November 21, 65 on November 22 and 69 on November 23, after a monthly low of 39.
 
-Both towns sit in the part of Ituri where the outbreak began. WHO again called for health workers and responders to be protected.
+The virus reached a new health zone, Kibirizi in Nord-Kivu, bringing the number affected to 69 of 178. Nord-Kivu accounts for about half of all new cases and has a higher death rate than the national average.
 
-WHO and Africa CDC [launched a joint continental response plan](https://x.com/WHOAFRO/status/2125211905761370547) the same day, putting the Ebola response under one budget with shared financial tracking. The outbreak total stands at **11,793 confirmed cases and 5,779 confirmed deaths**.
+The outbreak total stands at **11,986 confirmed cases and 5,871 confirmed deaths**.
