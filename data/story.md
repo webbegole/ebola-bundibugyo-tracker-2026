@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 25.** New Ebola cases in Congo rose for three days running, reversing the fall recorded the week before. Health authorities [reported](https://insp.cd/sitrep-n193-mve-bdbv-23-11-2026/) 59 new confirmed cases on November 21, 65 on November 22 and 69 on November 23, after a monthly low of 39.
+**November 26.** The outbreak passed 12,000 confirmed cases in Congo. Health authorities [reported](https://insp.cd/sitrep-n194-mve-bdbv-24-11-2026/) 66 new confirmed cases and 37 confirmed deaths on November 24. New cases have held in the sixties for three days after a monthly low of 39.
 
-The virus reached a new health zone, Kibirizi in Nord-Kivu, bringing the number affected to 69 of 178. Nord-Kivu accounts for about half of all new cases and has a higher death rate than the national average.
+Nord-Kivu drove almost half the new cases. The province has a 55.9 percent death rate, well above the national 49.1 percent. No new health zone was affected.
 
-The outbreak total stands at **11,986 confirmed cases and 5,871 confirmed deaths**.
+Across the five countries that have reported cases, the total stands at **12,052 confirmed cases and 5,908 confirmed deaths**.

@@ -616,3 +616,8 @@ date,country,suspected,confirmed,suspected_deaths,confirmed_deaths,recovered,pri
 2026-11-24,France,,1,,0,1,"BACKFILL (added 2026-11-25 run, daily-row policy): Carried unchanged from the 2026-11-21 row; no new France figure published.",2026-11-25
 2026-11-24,Kenya,,9,,2,7,"BACKFILL (added 2026-11-25 run, daily-row policy): Carried unchanged from the 2026-11-21 row; no new Kenya figure published.",2026-11-25
 2026-11-24,Nigeria,,1,,0,0,"BACKFILL (added 2026-11-25 run, daily-row policy): Carried unchanged from the 2026-11-21 row; no new Nigeria figure published.",2026-11-25
+2026-11-25,DRC,116,12021,0,5904,3332,"BACKFILL (added 2026-11-26 run, daily-row policy): [DRC INSP SitRep N°194/MVE-BDBV/24/11/2026](https://insp.cd/sitrep-n194-mve-bdbv-24-11-2026/), rapportage 24 novembre 2026, publication 25 novembre 2026. Cumul 12021 cas confirmés, 5904 décès confirmés, 3332 guéris.",2026-11-26
+2026-11-25,Uganda,,20,,2,18,"BACKFILL (added 2026-11-26 run, daily-row policy): Carried unchanged from the 2026-11-24 row; no new Uganda figure published.",2026-11-26
+2026-11-25,France,,1,,0,1,"BACKFILL (added 2026-11-26 run, daily-row policy): Carried unchanged from the 2026-11-24 row; no new France figure published.",2026-11-26
+2026-11-25,Kenya,,9,,2,7,"BACKFILL (added 2026-11-26 run, daily-row policy): Carried unchanged from the 2026-11-24 row; no new Kenya figure published.",2026-11-26
+2026-11-25,Nigeria,,1,,0,0,"BACKFILL (added 2026-11-26 run, daily-row policy): Carried unchanged from the 2026-11-24 row; no new Nigeria figure published.",2026-11-26
