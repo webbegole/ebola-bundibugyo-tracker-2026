@@ -12,8 +12,8 @@ The virus has reached eight DRC provinces and four other countries. Uganda's out
 
 ## Latest update
 
-**November 26.** The outbreak passed 12,000 confirmed cases in Congo. Health authorities [reported](https://insp.cd/sitrep-n194-mve-bdbv-24-11-2026/) 66 new confirmed cases and 37 confirmed deaths on November 24. New cases have held in the sixties for three days after a monthly low of 39.
+**November 27.** Fighting in eastern Congo is pushing Ebola responders out of the areas that need them most. Clashes between the army and the Convention for the Popular Revolution have intensified in Ituri, and a response team [came under gunfire](https://www.aljazeera.com/news/2026/11/26/dr-congo-ebola-cases-surpass-12000-as-fighting-disrupts-response-in-east) near Bunia on November 23.
 
-Nord-Kivu drove almost half the new cases. The province has a 55.9 percent death rate, well above the national 49.1 percent. No new health zone was affected.
+Health authorities [reported](https://insp.cd/sitrep-n195-mve-bdbv-25-11-2026/) 68 new confirmed cases and 39 confirmed deaths on November 25. Nord-Kivu took 36 of those against Ituri's 20. No new health zone was affected.
 
-Across the five countries that have reported cases, the total stands at **12,052 confirmed cases and 5,908 confirmed deaths**.
+Across the five countries that have reported cases, the total stands at **12,120 confirmed cases and 5,947 confirmed deaths**.
